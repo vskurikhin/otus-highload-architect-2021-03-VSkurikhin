@@ -24,7 +24,7 @@ func main() {
 	err := godotenv.Load(envFile)
 	if err != nil {
 		logger := logrus.WithError(err)
-		logger.Fatalln("main: can't load configuration")
+		logger.Warnln("main: can't load configuration")
 	}
 	environ, err := config.Environ()
 	if err != nil {
