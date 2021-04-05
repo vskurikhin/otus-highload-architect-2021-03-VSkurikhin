@@ -11,7 +11,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"hl.svn.su/highload-architect/app/config"
-	"hl.svn.su/highload-architect/app/server"
+	"hl.svn.su/highload-architect/cmd"
 )
 
 func main() {
@@ -34,6 +34,14 @@ func main() {
 	if logrus.IsLevelEnabled(logrus.TraceLevel) {
 		fmt.Println(config.String())
 	}
+
+	// Инициировать приложение
+	app, err := cmd.InitializeApplication(config)
+	if err != nil {
+		logger := logrus.WithError(err)
+		logger.Fatalln("main: cannot initialize server")
+	}
+	fmt.Print(app)
 }
 
 // вспомогательная функция настраивает ведение логгирования.
@@ -53,19 +61,5 @@ func initLogging(c config.Config) {
 		logrus.SetFormatter(&logrus.JSONFormatter{
 			PrettyPrint: c.Logging.Pretty,
 		})
-	}
-}
-
-// application является основной main структурой для сервера.
-type application struct {
-	Server *server.Server
-}
-
-// newApplication создает новую структуру приложения application.
-func newApplication(
-	Server *server.Server,
-) application {
-	return application{
-		Server: Server,
 	}
 }
