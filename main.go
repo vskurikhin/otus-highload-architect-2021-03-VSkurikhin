@@ -10,56 +10,56 @@ import (
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
+	"golang.org/x/sync/errgroup"
 	"hl.svn.su/highload-architect/app/config"
 	"hl.svn.su/highload-architect/cmd"
 )
 
 func main() {
 	// Загрузка конфигурации
-	var envfile string
-	flag.StringVar(&envfile, "env-file", "../.env", "Read in a file of environment variables")
+	var envFile string
+	flag.StringVar(&envFile, "env-file", "../.env", "Read in a file of environment variables")
 	flag.Parse()
 
-	godotenv.Load(envfile)
-	config, err := config.Environ()
+	err := godotenv.Load(envFile)
+	if err != nil {
+		logger := logrus.WithError(err)
+		logger.Fatalln("main: can't load configuration")
+	}
+	environ, err := config.Environ()
 	if err != nil {
 		logger := logrus.WithError(err)
 		logger.Fatalln("main: invalid configuration")
 	}
 	// Инициализация логгирования
-	initLogging(config)
+	cmd.InitLogging(environ)
 
 	// Если логгирование на уровне трассировки включено, вывести
 	// параметры конфигурации.
 	if logrus.IsLevelEnabled(logrus.TraceLevel) {
-		fmt.Println(config.String())
+		fmt.Println(environ.String())
 	}
 
-	// Инициировать приложение
-	app, err := cmd.InitializeApplication(config)
+	// Инициализация приложения
+	app, err := cmd.InitializeApplication(environ)
 	if err != nil {
 		logger := logrus.WithError(err)
 		logger.Fatalln("main: cannot initialize server")
 	}
-	fmt.Print(app)
-}
 
-// вспомогательная функция настраивает ведение логгирования.
-func initLogging(c config.Config) {
-	if c.Logging.Debug {
-		logrus.SetLevel(logrus.DebugLevel)
-	}
-	if c.Logging.Trace {
-		logrus.SetLevel(logrus.TraceLevel)
-	}
-	if c.Logging.Text {
-		logrus.SetFormatter(&logrus.TextFormatter{
-			ForceColors:   c.Logging.Color,
-			DisableColors: !c.Logging.Color,
-		})
-	} else {
-		logrus.SetFormatter(&logrus.JSONFormatter{
-			PrettyPrint: c.Logging.Pretty,
-		})
+	// Запуск сервера
+	g := errgroup.Group{}
+	g.Go(func() error {
+		logrus.WithFields(
+			logrus.Fields{
+				"Host": environ.Server.Host,
+			},
+		).Info("starting the http server")
+		return app.Server.ListenAndServe()
+	})
+
+	// Ожидение the gorouitine
+	if err := g.Wait(); err != nil {
+		logrus.WithError(err).Fatalln("program terminated")
 	}
 }
