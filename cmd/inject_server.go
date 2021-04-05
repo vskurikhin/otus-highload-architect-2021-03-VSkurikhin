@@ -4,6 +4,7 @@ import (
 	"github.com/fate-lovely/phi"
 	"github.com/google/wire"
 	"hl.svn.su/highload-architect/app/config"
+	"hl.svn.su/highload-architect/app/handlers/root"
 	"hl.svn.su/highload-architect/app/server"
 )
 
@@ -25,5 +26,9 @@ func provideServer(handler phi.Handler, config config.Config) *server.Server {
 // provideRouter это функция провайдера Wire, которая возвращает маршрутизатор,
 // обслуживающий предоставленные обработчики.
 func provideRouter() phi.Handler {
-	return nil
+
+	router := phi.NewRouter()
+	router.Mount("/", root.Handler())
+
+	return router
 }
