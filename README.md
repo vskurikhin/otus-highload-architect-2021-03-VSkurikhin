@@ -6,6 +6,3 @@
 
 Виктор Скурихин (Victor Skurikhin)
 
-## TOC
-- [Лекции](lectures.md)
-  1 [Проблемы высоких нагрузок ](lectures.md#High-load-problems)
