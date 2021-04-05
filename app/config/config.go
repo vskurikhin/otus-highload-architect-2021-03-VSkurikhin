@@ -26,10 +26,10 @@ type (
 )
 
 // Environ возвращает настройки из окружения.
-func Environ() (Config, error) {
+func Environ() (*Config, error) {
 	cfg := Config{}
 	err := envconfig.Process("", &cfg)
-	return cfg, err
+	return &cfg, err
 }
 
 // String возвращает конфигурацию в строковом формате.

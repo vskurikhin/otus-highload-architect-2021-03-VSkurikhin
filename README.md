@@ -22,11 +22,11 @@
 
 # Библиотеки
 
-- https://github.com/valyala/fasthttp
-- https://github.com/google/wire
-- https://github.com/fate-lovely/phi
+- https://github.com/dgrijalva/jwt-go
 - https://github.com/joho/godotenv
 - https://github.com/kelseyhightower/envconfig
-- https://github.com/sirupsen/logrus
+- https://github.com/savsgio/atreugo/v11
+- https://github.com/savsgio/go-logger/v2
+- https://github.com/valyala/fasthttp
 - https://golang.org/x/sync
 - https://gopkg.in/yaml.v2
