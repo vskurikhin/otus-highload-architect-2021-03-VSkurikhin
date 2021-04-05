@@ -4,8 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"github.com/joho/godotenv"
+	"github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/server"
 )
 
 func init() { //nolint:gochecknoinits
@@ -29,5 +31,18 @@ func main() {
 	// параметры конфигурации.
 	if environ != nil && environ.Logging.Debug {
 		fmt.Println(environ.String())
+	}
+
+	// Создать инстанс сервера
+	s := server.New(environ)
+
+	// Зарегистрировать индексный маршрут
+	s.GET("/", func(ctx *atreugo.RequestCtx) error {
+		return nil
+	})
+
+	// Run
+	if err := s.ListenAndServe(); err != nil {
+		panic(err)
 	}
 }
