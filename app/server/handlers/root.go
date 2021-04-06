@@ -3,7 +3,9 @@ package handlers
 import (
 	"fmt"
 	sa "github.com/savsgio/atreugo/v11"
+	"github.com/valyala/fasthttp"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/message"
 )
 
 func (h *Handlers) Root(ctx *sa.RequestCtx) error {
@@ -15,5 +17,9 @@ func root(ctx *sa.RequestCtx) string {
 }
 
 func rootOut(jwt []byte) string {
-	return fmt.Sprintf(`<h1>You are login with JWT</h1> JWT cookie value: %s`, jwt)
+
+	msg := fmt.Sprintf(`You are login with JWT cookie value: %s`, jwt)
+	apiMessage := message.ApiMessage{Code: fasthttp.StatusOK, Message: msg}
+
+	return apiMessage.String()
 }

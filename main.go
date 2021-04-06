@@ -45,6 +45,9 @@ func main() {
 	// Зарегистрировать индексный маршрут
 	s.GET("/", h.Root)
 
+	// Зарегистрировать login маршрут
+	s.POST("/login", h.Login)
+
 	// Run
 	if err := s.ListenAndServe(); err != nil {
 		panic(err)
