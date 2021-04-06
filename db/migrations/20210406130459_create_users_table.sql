@@ -5,8 +5,8 @@ SELECT 'up SQL query';
 
 CREATE TABLE users (
  id         BINARY(16) NOT NULL PRIMARY KEY,
- username   VARCHAR(32),
- password   VARCHAR(64),
+ username   VARCHAR(32) NOT NULL,
+ password   VARCHAR(64) NOT NULL,
  name       VARCHAR(1478),
  surname    VARCHAR(700),
  age        SMALLINT,

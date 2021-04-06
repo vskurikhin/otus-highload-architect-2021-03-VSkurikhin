@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
@@ -47,6 +48,9 @@ func main() {
 
 	// Зарегистрировать login маршрут
 	s.POST("/login", h.Login)
+
+	// Зарегистрировать индексный маршрут
+	s.GET("/user", h.List)
 
 	// Run
 	if err := s.ListenAndServe(); err != nil {
