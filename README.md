@@ -15,12 +15,15 @@
 
 # Установка
 
-- [Установить](https://github.com/pressly/goose) `go get -u github.com/pressly/goose/cmd/goose`
-- [Создать БД, пользователя и раздать привелегии](db/create/create.sql) `cat ./db/create/create.sql | mysql`
-- Выполнить скрипты миграции БД\
+- [Установить](https://github.com/pressly/goose):\
+  `go get -u github.com/pressly/goose/cmd/goose`
+- [Создать БД, пользователя и раздать привелегии](db/create/create.sql):\
+  `cat ./db/create/create.sql | mysql`
+- Выполнить скрипты миграции БД:\
   `goose -v -dir ./db/migrations mysql "hl:password@/hl?parseTime=true" up`
 - [Скачать репозиторий](https://github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin.git)
-- Выкачать зависимости `go mod download`
+- Выкачать зависимости:\
+  `go mod download`
 - `go run .`
 
 # Библиотеки
