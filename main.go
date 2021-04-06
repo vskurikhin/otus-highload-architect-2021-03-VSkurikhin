@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/joho/godotenv"
-	"github.com/savsgio/atreugo/v11"
+	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/server"
@@ -36,8 +36,11 @@ func main() {
 	// Создать инстанс сервера
 	s := server.New(environ)
 
+	// Зарегистрируйте для аутентификации перед обработкой запросов.
+	s.UseBefore(s.JWT.AuthCheckToken)
+
 	// Зарегистрировать индексный маршрут
-	s.GET("/", func(ctx *atreugo.RequestCtx) error {
+	s.GET("/", func(ctx *sa.RequestCtx) error {
 		return nil
 	})
 

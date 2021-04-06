@@ -23,6 +23,7 @@
 # Библиотеки
 
 - https://github.com/dgrijalva/jwt-go
+- https://github.com/google/uuid
 - https://github.com/joho/godotenv
 - https://github.com/kelseyhightower/envconfig
 - https://github.com/savsgio/atreugo/v11
