@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 	"github.com/joho/godotenv"
-	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/server"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/server/handlers"
 )
 
 func init() { //nolint:gochecknoinits
@@ -39,10 +39,11 @@ func main() {
 	// Зарегистрируйте для аутентификации перед обработкой запросов.
 	s.UseBefore(s.JWT.AuthCheckToken)
 
+	// Обработчики запросов.
+	h := handlers.Handlers{Server: s}
+
 	// Зарегистрировать индексный маршрут
-	s.GET("/", func(ctx *sa.RequestCtx) error {
-		return nil
-	})
+	s.GET("/", h.Root)
 
 	// Run
 	if err := s.ListenAndServe(); err != nil {
