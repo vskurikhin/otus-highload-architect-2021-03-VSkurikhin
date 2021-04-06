@@ -15,13 +15,22 @@
 
 # Установка
 
-- [Установить](https://github.com/pressly/goose):\
+- [Установить](https://github.com/pressly/goose) :\
   `go get -u github.com/pressly/goose/cmd/goose`
-- [Создать БД, пользователя и раздать привелегии](db/create/create.sql):\
+- [Скачать репозиторий](https://github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin.git)
+- [Создать БД, пользователя и раздать привелегии](db/create/create.sql) :\
   `cat ./db/create/create.sql | mysql`
 - Выполнить скрипты миграции БД:\
   `goose -v -dir ./db/migrations mysql "hl:password@/hl?parseTime=true" up`
-- [Скачать репозиторий](https://github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin.git)
+- При необходимости обновиить React:
+  ```
+  cd web
+  npm install
+  npm run dev
+  cd ..
+  ```
+  Собранное React приложение уже присутвует в репозитории: `app-bundle.js`.
+  Клиентское JavaScript приложение отрабатывает в браузере клиента.  
 - Выкачать зависимости:\
   `go mod download`
 - `go run .`

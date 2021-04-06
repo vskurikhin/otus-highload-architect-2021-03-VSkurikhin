@@ -3,6 +3,7 @@ package server
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
@@ -48,6 +49,25 @@ func New(cfg *config.Config) *Server {
 
 func (s *Server) UseBefore(fns sa.Middleware) *sa.Router {
 	return s.Server.UseBefore(fns)
+}
+
+func (s *Server) StaticCustom() *sa.Path {
+
+	pathRewriteCalled := false
+
+	return s.Server.StaticCustom("/", &sa.StaticFS{
+		Root:               "web/public",
+		GenerateIndexPages: true,
+		AcceptByteRange:    true,
+		PathRewrite: func(ctx *sa.RequestCtx) []byte {
+			pathRewriteCalled = true
+
+			return ctx.Path()
+		},
+		PathNotFound: func(ctx *sa.RequestCtx) error {
+			return ctx.TextResponse("File not found", 404)
+		},
+	})
 }
 
 // GET устанавливает обработчик для GET запросов

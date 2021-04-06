@@ -6,12 +6,28 @@ import (
 	"github.com/valyala/fasthttp"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/message"
+	"log"
+	"regexp"
 )
+
+var generated = regexp.MustCompile(`^/generated/.*$`)
 
 // AuthCheckToken проверка авторизации по токену jwt
 func (j *JWT) AuthCheckToken(ctx *sa.RequestCtx) error {
+
 	// пропускаем точку авторизации.
-	if string(ctx.Path()) == "/login" {
+	path := string(ctx.Path())
+	log.Println(path)
+	switch {
+	case path == "/":
+		return ctx.Next()
+	case path == "/favicon.ico":
+		return ctx.Next()
+	case path == "/login":
+		return ctx.Next()
+	case path == "/index.html":
+		return ctx.Next()
+	case generated.MatchString(path):
 		return ctx.Next()
 	}
 

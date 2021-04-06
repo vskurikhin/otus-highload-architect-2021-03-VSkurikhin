@@ -39,6 +39,9 @@ func main() {
 	// Зарегистрируйте для аутентификации перед обработкой запросов.
 	s.UseBefore(s.JWT.AuthCheckToken)
 
+	// Обработка статичных фалов из каталога web/public.
+	s.StaticCustom()
+
 	// Обработчики запросов.
 	h := handlers.Handlers{Server: s}
 
