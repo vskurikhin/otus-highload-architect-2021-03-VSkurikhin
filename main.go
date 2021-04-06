@@ -1,65 +1,51 @@
-// Copyright 2021 Victor N. Skurikhin
-//
-// Licensed under the Unlicense;
-// For more information, please refer to <https://unlicense.org>
-
 package main
 
 import (
 	"flag"
 	"fmt"
 	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
-	"golang.org/x/sync/errgroup"
-	"hl.svn.su/highload-architect/app/config"
-	"hl.svn.su/highload-architect/cmd"
+	sa "github.com/savsgio/atreugo/v11"
+	"github.com/savsgio/go-logger/v2"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/server"
 )
 
+func init() { //nolint:gochecknoinits
+	logger.SetLevel(logger.DEBUG)
+}
+
 func main() {
+
 	// Загрузка конфигурации
 	var envFile string
 	flag.StringVar(&envFile, "env-file", "../.env", "Read in a file of environment variables")
 	flag.Parse()
-
 	err := godotenv.Load(envFile)
+
 	if err != nil {
-		logger := logrus.WithError(err)
-		logger.Warnln("main: can't load configuration")
+		logger.Debug("main: can't load configuration")
 	}
 	environ, err := config.Environ()
-	if err != nil {
-		logger := logrus.WithError(err)
-		logger.Fatalln("main: invalid configuration")
-	}
-	// Инициализация логгирования
-	cmd.InitLogging(environ)
 
 	// Если логгирование на уровне трассировки включено, вывести
 	// параметры конфигурации.
-	if logrus.IsLevelEnabled(logrus.TraceLevel) {
+	if environ != nil && environ.Logging.Debug {
 		fmt.Println(environ.String())
 	}
 
-	// Инициализация приложения
-	app, err := cmd.InitializeApplication(environ)
-	if err != nil {
-		logger := logrus.WithError(err)
-		logger.Fatalln("main: cannot initialize server")
-	}
+	// Создать инстанс сервера
+	s := server.New(environ)
 
-	// Запуск сервера
-	g := errgroup.Group{}
-	g.Go(func() error {
-		logrus.WithFields(
-			logrus.Fields{
-				"Host": environ.Server.Host,
-			},
-		).Info("starting the http server")
-		return app.Server.ListenAndServe()
+	// Зарегистрируйте для аутентификации перед обработкой запросов.
+	s.UseBefore(s.JWT.AuthCheckToken)
+
+	// Зарегистрировать индексный маршрут
+	s.GET("/", func(ctx *sa.RequestCtx) error {
+		return nil
 	})
 
-	// Ожидение the gorouitine
-	if err := g.Wait(); err != nil {
-		logrus.WithError(err).Fatalln("program terminated")
+	// Run
+	if err := s.ListenAndServe(); err != nil {
+		panic(err)
 	}
 }
