@@ -1,27 +1,57 @@
-import logo from './logo.svg';
 import './App.css';
 
-import React from 'react';
+import Dashboard from './components/Dashboard/Dashboard';
+import Login from "./components/Login/Login";
+import Preferences from './components/Preferences/Preferences';
+import Signin from "./components/Signin/Signin";
+
+import React, {useState} from 'react';
+import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom';
+
+function main() {
+    return (
+        <div className="wrapper">
+            <BrowserRouter>
+                <Switch>
+                    <Route path="/dashboard">
+                        <Dashboard/>
+                    </Route>
+                    <Route path="/preferences">
+                        <Preferences/>
+                    </Route>
+                    <Redirect from='/' to='/dashboard'/>
+                </Switch>
+            </BrowserRouter>
+        </div>
+    );
+}
+
+function login(setToken) {
+    return (
+        <div className="wrapper">
+            <BrowserRouter>
+                <Switch>
+                    <Route path="/signin">
+                        <Signin setToken={setToken}/>
+                    </Route>
+                    <Route path="/login">
+                        <Login setToken={setToken}/>
+                    </Route>
+                    <Redirect from='/' to='/login'/>
+                </Switch>
+            </BrowserRouter>
+        </div>
+    );
+}
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+    const [token, setToken] = useState();
+
+    if (!token) {
+        return login(setToken)
+    }
+    return main()
 }
 
 export default App;
