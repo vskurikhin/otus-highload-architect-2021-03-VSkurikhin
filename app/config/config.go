@@ -8,8 +8,17 @@ import (
 type (
 	// Config обеспечивает конфигурацию системы.
 	Config struct {
-		Server  Server
-		Logging Logging
+		DataBase DataBase
+		Server   Server
+		Logging  Logging
+	}
+	// DataBase обеспечивает конфигурацию подключения к БД.
+	DataBase struct {
+		Host     string `envconfig:"DB_HOST" default:"localhost"`
+		Port     int    `envconfig:"DB_HOST" default:"3306"`
+		DBName   string `envconfig:"DB_NAME" default:"hl"`
+		Username string `envconfig:"DB_USERNAME" default:"hl"`
+		Password string `envconfig:"DB_PASSWORD" default:"password"`
 	}
 	// Logging предоставляет конфигурацию журналирования.
 	Logging struct {
