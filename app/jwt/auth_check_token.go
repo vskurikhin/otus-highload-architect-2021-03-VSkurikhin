@@ -4,6 +4,7 @@ import (
 	"errors"
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/valyala/fasthttp"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
 )
 
 // AuthCheckToken проверка авторизации по токену jwt
@@ -13,7 +14,7 @@ func (j *JWT) AuthCheckToken(ctx *sa.RequestCtx) error {
 		return ctx.Next()
 	}
 
-	jwtCookie := ctx.Request.Header.Cookie("atreugo_jwt")
+	jwtCookie := ctx.Request.Header.Cookie(config.ACCESS_TOKEN_COOKIE)
 
 	if len(jwtCookie) == 0 {
 		return ctx.ErrorResponse(errors.New("login required"), fasthttp.StatusForbidden)
