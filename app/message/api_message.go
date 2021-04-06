@@ -32,6 +32,5 @@ func (a *ApiMessage) Marshal() []byte {
 		log.Println(err)
 		return nil
 	}
-
 	return apiMessage
 }

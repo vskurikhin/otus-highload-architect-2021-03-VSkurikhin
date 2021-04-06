@@ -5,6 +5,7 @@ import (
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/valyala/fasthttp"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/message"
 	"log"
 )
 
@@ -28,7 +29,12 @@ func (h *Handlers) Login(ctx *sa.RequestCtx) error {
 		cookie.SetValue(tokenString)
 		cookie.SetExpire(expireAt)
 		ctx.Response.Header.SetCookie(cookie)
-	}
 
-	return ctx.RedirectResponse("/", ctx.Response.StatusCode())
+		token := message.Token{Token: tokenString}
+
+		return ctx.HTTPResponse(token.String())
+	}
+	token := message.Token{Token: string(jwtCookie)}
+
+	return ctx.HTTPResponse(token.String())
 }
