@@ -11,5 +11,6 @@ require (
 	github.com/savsgio/atreugo/v11 v11.6.4
 	github.com/savsgio/go-logger/v2 v2.1.0
 	github.com/valyala/fasthttp v1.23.0
+	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

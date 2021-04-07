@@ -3,7 +3,7 @@
 SELECT 'up SQL query';
 -- +goose StatementEnd
 
-CREATE TABLE user_has_interest (
+CREATE TABLE user_has_interests (
  id          BINARY(16) NOT NULL PRIMARY KEY,
  user_id     BINARY(16) NOT NULL,
  interest_id BINARY(16) NOT NULL,

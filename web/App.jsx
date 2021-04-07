@@ -8,7 +8,7 @@ import Signin from "./components/Signin/Signin";
 import React, {useState} from 'react';
 import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom';
 
-function main() {
+function main(setToken) {
     return (
         <div className="wrapper">
             <BrowserRouter>
@@ -18,6 +18,12 @@ function main() {
                     </Route>
                     <Route path="/preferences">
                         <Preferences/>
+                    </Route>
+                    <Route path="/signin">
+                        <Signin setToken={setToken}/>
+                    </Route>
+                    <Route path="/login">
+                        <Login setToken={setToken}/>
                     </Route>
                     <Redirect from='/' to='/dashboard'/>
                 </Switch>
@@ -51,7 +57,7 @@ function App() {
     if (!token) {
         return login(setToken)
     }
-    return main()
+    return main(setToken)
 }
 
 export default App;

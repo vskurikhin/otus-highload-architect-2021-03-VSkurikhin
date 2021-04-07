@@ -4,10 +4,10 @@ var webpack = require('webpack');
 module.exports = {
     devtool: 'source-map',
     entry: {
-        index: path.join(__dirname, 'src/index.jsx')
+        index: path.join(__dirname, 'web/index.jsx')
     },
     output: {
-        path: path.join(__dirname, 'public/generated'),
+        path: path.join(__dirname, 'web/public/generated'),
         filename: 'app-bundle.js'},
     resolve: {extensions: ['.js', '.jsx']},
     plugins: [
@@ -38,7 +38,7 @@ module.exports = {
                 test: /\.s[ac]ss$/i,
                 include: [
                     path.resolve(__dirname, 'node_modules'),
-                    path.resolve(__dirname, 'src')
+                    path.resolve(__dirname, 'web')
                 ],
                 use: [
                     // Creates `style` nodes from JS strings
