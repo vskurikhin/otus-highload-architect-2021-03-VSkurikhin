@@ -24,10 +24,8 @@
   `goose -v -dir ./db/migrations mysql "hl:password@/hl?parseTime=true" up`
 - При необходимости обновиить React:
   ```
-  cd web
   npm install
   npm run dev
-  cd ..
   ```
   Собранное React приложение уже присутвует в репозитории: `app-bundle.js`.\
   Клиентское JavaScript приложение отрабатывает в браузере клиента.  
