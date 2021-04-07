@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/index.jsx");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./web/index.jsx");
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -50269,9 +50269,9 @@ module.exports = g;
 
 /***/ }),
 
-/***/ "./src/App.css":
+/***/ "./web/App.css":
 /*!*********************!*\
-  !*** ./src/App.css ***!
+  !*** ./web/App.css ***!
   \*********************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -50284,16 +50284,16 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(true);
 // Module
-___CSS_LOADER_EXPORT___.push([module.i, ".App {\n  text-align: center;\n}\n\n.App-logo {\n  height: 40vmin;\n  pointer-events: none;\n}\n\n.wrapper {\n  padding: 20px;\n}\n\n@media (prefers-reduced-motion: no-preference) {\n  .App-logo {\n    animation: App-logo-spin infinite 20s linear;\n  }\n}\n\n.App-header {\n  background-color: #282c34;\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  font-size: calc(10px + 2vmin);\n  color: white;\n}\n\n.App-link {\n  color: #61dafb;\n}\n\n@keyframes App-logo-spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n", "",{"version":3,"sources":["webpack://src/App.css"],"names":[],"mappings":"AAAA;EACE,kBAAkB;AACpB;;AAEA;EACE,cAAc;EACd,oBAAoB;AACtB;;AAEA;EACE,aAAa;AACf;;AAEA;EACE;IACE,4CAA4C;EAC9C;AACF;;AAEA;EACE,yBAAyB;EACzB,iBAAiB;EACjB,aAAa;EACb,sBAAsB;EACtB,mBAAmB;EACnB,uBAAuB;EACvB,6BAA6B;EAC7B,YAAY;AACd;;AAEA;EACE,cAAc;AAChB;;AAEA;EACE;IACE,uBAAuB;EACzB;EACA;IACE,yBAAyB;EAC3B;AACF","sourcesContent":[".App {\n  text-align: center;\n}\n\n.App-logo {\n  height: 40vmin;\n  pointer-events: none;\n}\n\n.wrapper {\n  padding: 20px;\n}\n\n@media (prefers-reduced-motion: no-preference) {\n  .App-logo {\n    animation: App-logo-spin infinite 20s linear;\n  }\n}\n\n.App-header {\n  background-color: #282c34;\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  font-size: calc(10px + 2vmin);\n  color: white;\n}\n\n.App-link {\n  color: #61dafb;\n}\n\n@keyframes App-logo-spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.i, ".App {\n  text-align: center;\n}\n\n.App-logo {\n  height: 40vmin;\n  pointer-events: none;\n}\n\n.wrapper {\n  padding: 20px;\n}\n\n@media (prefers-reduced-motion: no-preference) {\n  .App-logo {\n    animation: App-logo-spin infinite 20s linear;\n  }\n}\n\n.App-header {\n  background-color: #282c34;\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  font-size: calc(10px + 2vmin);\n  color: white;\n}\n\n.App-link {\n  color: #61dafb;\n}\n\n@keyframes App-logo-spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n", "",{"version":3,"sources":["webpack://web/App.css"],"names":[],"mappings":"AAAA;EACE,kBAAkB;AACpB;;AAEA;EACE,cAAc;EACd,oBAAoB;AACtB;;AAEA;EACE,aAAa;AACf;;AAEA;EACE;IACE,4CAA4C;EAC9C;AACF;;AAEA;EACE,yBAAyB;EACzB,iBAAiB;EACjB,aAAa;EACb,sBAAsB;EACtB,mBAAmB;EACnB,uBAAuB;EACvB,6BAA6B;EAC7B,YAAY;AACd;;AAEA;EACE,cAAc;AAChB;;AAEA;EACE;IACE,uBAAuB;EACzB;EACA;IACE,yBAAyB;EAC3B;AACF","sourcesContent":[".App {\n  text-align: center;\n}\n\n.App-logo {\n  height: 40vmin;\n  pointer-events: none;\n}\n\n.wrapper {\n  padding: 20px;\n}\n\n@media (prefers-reduced-motion: no-preference) {\n  .App-logo {\n    animation: App-logo-spin infinite 20s linear;\n  }\n}\n\n.App-header {\n  background-color: #282c34;\n  min-height: 100vh;\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  justify-content: center;\n  font-size: calc(10px + 2vmin);\n  color: white;\n}\n\n.App-link {\n  color: #61dafb;\n}\n\n@keyframes App-logo-spin {\n  from {\n    transform: rotate(0deg);\n  }\n  to {\n    transform: rotate(360deg);\n  }\n}\n\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
 
 /***/ }),
 
-/***/ "./src/App.jsx":
+/***/ "./web/App.jsx":
 /*!*********************!*\
-  !*** ./src/App.jsx ***!
+  !*** ./web/App.jsx ***!
   \*********************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -50307,25 +50307,21 @@ Object.defineProperty(exports, "__esModule", {
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
-var _logo = __webpack_require__(/*! ./logo.svg */ "./src/logo.svg");
+__webpack_require__(/*! ./App.css */ "./web/App.css");
 
-var _logo2 = _interopRequireDefault(_logo);
-
-__webpack_require__(/*! ./App.css */ "./src/App.css");
-
-var _Dashboard = __webpack_require__(/*! ./components/Dashboard/Dashboard */ "./src/components/Dashboard/Dashboard.jsx");
+var _Dashboard = __webpack_require__(/*! ./components/Dashboard/Dashboard */ "./web/components/Dashboard/Dashboard.jsx");
 
 var _Dashboard2 = _interopRequireDefault(_Dashboard);
 
-var _Login = __webpack_require__(/*! ./components/Login/Login */ "./src/components/Login/Login.jsx");
+var _Login = __webpack_require__(/*! ./components/Login/Login */ "./web/components/Login/Login.jsx");
 
 var _Login2 = _interopRequireDefault(_Login);
 
-var _Preferences = __webpack_require__(/*! ./components/Preferences/Preferences */ "./src/components/Preferences/Preferences.jsx");
+var _Preferences = __webpack_require__(/*! ./components/Preferences/Preferences */ "./web/components/Preferences/Preferences.jsx");
 
 var _Preferences2 = _interopRequireDefault(_Preferences);
 
-var _Signin = __webpack_require__(/*! ./components/Signin/Signin */ "./src/components/Signin/Signin.jsx");
+var _Signin = __webpack_require__(/*! ./components/Signin/Signin */ "./web/components/Signin/Signin.jsx");
 
 var _Signin2 = _interopRequireDefault(_Signin);
 
@@ -50337,15 +50333,10 @@ var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_module
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function main() {
+function main(setToken) {
     return _react2.default.createElement(
         'div',
         { className: 'wrapper' },
-        _react2.default.createElement(
-            'h1',
-            null,
-            'Application'
-        ),
         _react2.default.createElement(
             _reactRouterDom.BrowserRouter,
             null,
@@ -50362,6 +50353,16 @@ function main() {
                     { path: '/preferences' },
                     _react2.default.createElement(_Preferences2.default, null)
                 ),
+                _react2.default.createElement(
+                    _reactRouterDom.Route,
+                    { path: '/signin' },
+                    _react2.default.createElement(_Signin2.default, { setToken: setToken })
+                ),
+                _react2.default.createElement(
+                    _reactRouterDom.Route,
+                    { path: '/login' },
+                    _react2.default.createElement(_Login2.default, { setToken: setToken })
+                ),
                 _react2.default.createElement(_reactRouterDom.Redirect, { from: '/', to: '/dashboard' })
             )
         )
@@ -50372,11 +50373,6 @@ function login(setToken) {
     return _react2.default.createElement(
         'div',
         { className: 'wrapper' },
-        _react2.default.createElement(
-            'h1',
-            null,
-            'Application'
-        ),
         _react2.default.createElement(
             _reactRouterDom.BrowserRouter,
             null,
@@ -50408,16 +50404,16 @@ function App() {
     if (!token) {
         return login(setToken);
     }
-    return main();
+    return main(setToken);
 }
 
 exports.default = App;
 
 /***/ }),
 
-/***/ "./src/components/Dashboard/Dashboard.jsx":
+/***/ "./web/components/Dashboard/Dashboard.jsx":
 /*!************************************************!*\
-  !*** ./src/components/Dashboard/Dashboard.jsx ***!
+  !*** ./web/components/Dashboard/Dashboard.jsx ***!
   \************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -50443,18 +50439,27 @@ function Dashboard() {
         "div",
         { className: "login-wrapper" },
         _react2.default.createElement(
-            "h2",
-            null,
-            "Dashboard"
-        ),
-        _react2.default.createElement(
             _reactRouterDom.Link,
-            { to: "/preferences", key: "preferences" },
+            { to: "/login", key: "login" },
             _react2.default.createElement(
                 "h2",
                 null,
-                "Preferences"
+                "Login"
             )
+        ),
+        _react2.default.createElement(
+            _reactRouterDom.Link,
+            { to: "/signin", key: "signin" },
+            _react2.default.createElement(
+                "h2",
+                null,
+                "Sign-in"
+            )
+        ),
+        _react2.default.createElement(
+            "h2",
+            null,
+            "Dashboard"
         ),
         _react2.default.createElement(
             "h1",
@@ -50466,9 +50471,9 @@ function Dashboard() {
 
 /***/ }),
 
-/***/ "./src/components/Login/Login.css":
+/***/ "./web/components/Login/Login.css":
 /*!****************************************!*\
-  !*** ./src/components/Login/Login.css ***!
+  !*** ./web/components/Login/Login.css ***!
   \****************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -50481,16 +50486,16 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(true);
 // Module
-___CSS_LOADER_EXPORT___.push([module.i, ".login-wrapper {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n", "",{"version":3,"sources":["webpack://src/components/Login/Login.css"],"names":[],"mappings":"AAAA;IACI,aAAa;IACb,sBAAsB;IACtB,mBAAmB;AACvB","sourcesContent":[".login-wrapper {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.i, ".login-wrapper {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n.my-divTable{\n    display: table;\n    width: 100%;\n}\n.my-divTableRow{\n    display: table-row;\n}\n.my-divTableHeading{\n    background-color: #EEE;\n    display: table-header-group;\n}\n.my-divTableCellLeft,.my-divTableHeadLeft{\n    width: 10%;\n    border: 0 solid #999999;\n    display: table-cell;\n    padding: 15px 10px;\n}\n.my-divTableCell,.my-divTableHead{\n    border: 0 solid #999999;\n    display: table-cell;\n    padding: 15px 10px;\n}\n.my-divTableCellRight,.my-divTableHeadRight{\n    width: 10%;\n    border: 0 solid #999999;\n    display: table-cell;\n    padding: 15px 10px;\n}\n.my-divTableHeading{\n    background-color: #EEE;\n    display: table-header-group;\n    font-weight: bold;\n}\n.my-divTableFoot{\n    background-color: #EEE;\n    display: table-footer-group;\n    font-weight: bold;\n}\n.my-divTableBody{\n    display: table-row-group;\n}\n.my-h5{\n    margin-block-start: 1.67em;\n    margin-block-end: 0.67em;\n    margin-inline-start: 0px;\n    margin-inline-end: 0px;\n}\n.my-p-inputtext{\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n    font-size: 1rem;\n    color: #333333;\n    background: #ffffff;\n    padding: 0.429rem 0.429rem;\n    border: 1px solid #a6a6a6;\n    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;\n    appearance: none;\n    border-radius: 3px;\n    min-width: 22.4em;\n    width: 100%;\n}\n.my-p-inputtext-uuid{\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n    font-size: 1rem;\n    color: #333333;\n    background: #ffffff;\n    padding: 0.429rem 0.429rem;\n    border: 1px solid #a6a6a6;\n    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;\n    appearance: none;\n    border-radius: 3px;\n    min-width: 22.4em;\n    width: 22.4em;\n}\n.my-p-button{\n    color: #ffffff;\n    background: #777777;\n    border: 1px solid #555555;\n    padding: 0.429rem 1rem;\n    font-size: 1rem;\n    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;\n    border-radius: 3px;\n}\n.p-selectbutton .p-button.p-highlight:hover{\n    background: #111f1f;\n    border-color: #111f1f;\n    color: #ffffff;\n}\n", "",{"version":3,"sources":["webpack://web/components/Login/Login.css"],"names":[],"mappings":"AAAA;IACI,aAAa;IACb,sBAAsB;IACtB,mBAAmB;AACvB;AACA;IACI,cAAc;IACd,WAAW;AACf;AACA;IACI,kBAAkB;AACtB;AACA;IACI,sBAAsB;IACtB,2BAA2B;AAC/B;AACA;IACI,UAAU;IACV,uBAAuB;IACvB,mBAAmB;IACnB,kBAAkB;AACtB;AACA;IACI,uBAAuB;IACvB,mBAAmB;IACnB,kBAAkB;AACtB;AACA;IACI,UAAU;IACV,uBAAuB;IACvB,mBAAmB;IACnB,kBAAkB;AACtB;AACA;IACI,sBAAsB;IACtB,2BAA2B;IAC3B,iBAAiB;AACrB;AACA;IACI,sBAAsB;IACtB,2BAA2B;IAC3B,iBAAiB;AACrB;AACA;IACI,wBAAwB;AAC5B;AACA;IACI,0BAA0B;IAC1B,wBAAwB;IACxB,wBAAwB;IACxB,sBAAsB;AAC1B;AACA;IACI,0JAA0J;IAC1J,eAAe;IACf,cAAc;IACd,mBAAmB;IACnB,0BAA0B;IAC1B,yBAAyB;IACzB,iFAAiF;IACjF,gBAAgB;IAChB,kBAAkB;IAClB,iBAAiB;IACjB,WAAW;AACf;AACA;IACI,0JAA0J;IAC1J,eAAe;IACf,cAAc;IACd,mBAAmB;IACnB,0BAA0B;IAC1B,yBAAyB;IACzB,iFAAiF;IACjF,gBAAgB;IAChB,kBAAkB;IAClB,iBAAiB;IACjB,aAAa;AACjB;AACA;IACI,cAAc;IACd,mBAAmB;IACnB,yBAAyB;IACzB,sBAAsB;IACtB,eAAe;IACf,iFAAiF;IACjF,kBAAkB;AACtB;AACA;IACI,mBAAmB;IACnB,qBAAqB;IACrB,cAAc;AAClB","sourcesContent":[".login-wrapper {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n.my-divTable{\n    display: table;\n    width: 100%;\n}\n.my-divTableRow{\n    display: table-row;\n}\n.my-divTableHeading{\n    background-color: #EEE;\n    display: table-header-group;\n}\n.my-divTableCellLeft,.my-divTableHeadLeft{\n    width: 10%;\n    border: 0 solid #999999;\n    display: table-cell;\n    padding: 15px 10px;\n}\n.my-divTableCell,.my-divTableHead{\n    border: 0 solid #999999;\n    display: table-cell;\n    padding: 15px 10px;\n}\n.my-divTableCellRight,.my-divTableHeadRight{\n    width: 10%;\n    border: 0 solid #999999;\n    display: table-cell;\n    padding: 15px 10px;\n}\n.my-divTableHeading{\n    background-color: #EEE;\n    display: table-header-group;\n    font-weight: bold;\n}\n.my-divTableFoot{\n    background-color: #EEE;\n    display: table-footer-group;\n    font-weight: bold;\n}\n.my-divTableBody{\n    display: table-row-group;\n}\n.my-h5{\n    margin-block-start: 1.67em;\n    margin-block-end: 0.67em;\n    margin-inline-start: 0px;\n    margin-inline-end: 0px;\n}\n.my-p-inputtext{\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n    font-size: 1rem;\n    color: #333333;\n    background: #ffffff;\n    padding: 0.429rem 0.429rem;\n    border: 1px solid #a6a6a6;\n    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;\n    appearance: none;\n    border-radius: 3px;\n    min-width: 22.4em;\n    width: 100%;\n}\n.my-p-inputtext-uuid{\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n    font-size: 1rem;\n    color: #333333;\n    background: #ffffff;\n    padding: 0.429rem 0.429rem;\n    border: 1px solid #a6a6a6;\n    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;\n    appearance: none;\n    border-radius: 3px;\n    min-width: 22.4em;\n    width: 22.4em;\n}\n.my-p-button{\n    color: #ffffff;\n    background: #777777;\n    border: 1px solid #555555;\n    padding: 0.429rem 1rem;\n    font-size: 1rem;\n    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;\n    border-radius: 3px;\n}\n.p-selectbutton .p-button.p-highlight:hover{\n    background: #111f1f;\n    border-color: #111f1f;\n    color: #ffffff;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
 
 /***/ }),
 
-/***/ "./src/components/Login/Login.jsx":
+/***/ "./web/components/Login/Login.jsx":
 /*!****************************************!*\
-  !*** ./src/components/Login/Login.jsx ***!
+  !*** ./web/components/Login/Login.jsx ***!
   \****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -50535,7 +50540,7 @@ var loginUser = function () {
 
 exports.default = Login;
 
-__webpack_require__(/*! ./Login.css */ "./src/components/Login/Login.css");
+__webpack_require__(/*! ./Login.css */ "./web/components/Login/Login.css");
 
 var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
@@ -50555,6 +50560,9 @@ function Login(_ref2) {
     var _this = this;
 
     var setToken = _ref2.setToken;
+
+
+    var history = (0, _reactRouterDom.useHistory)();
 
     var _useState = (0, _react.useState)(),
         _useState2 = _slicedToArray(_useState, 2),
@@ -50584,8 +50592,11 @@ function Login(_ref2) {
                             token = _context2.sent;
 
                             setToken(token);
+                            if (token) {
+                                history.push('/dashboard');
+                            }
 
-                        case 5:
+                        case 6:
                         case 'end':
                             return _context2.stop();
                     }
@@ -50616,44 +50627,117 @@ function Login(_ref2) {
             )
         ),
         _react2.default.createElement(
-            'h1',
+            'h2',
             null,
-            'Please Log In'
+            'Dashboard'
         ),
         _react2.default.createElement(
             'form',
             { onSubmit: handleSubmit },
             _react2.default.createElement(
-                'label',
-                null,
-                _react2.default.createElement(
-                    'p',
-                    null,
-                    'Username'
-                ),
-                _react2.default.createElement('input', { type: 'text', onChange: function onChange(e) {
-                        return setUserName(e.target.value);
-                    } })
-            ),
-            _react2.default.createElement(
-                'label',
-                null,
-                _react2.default.createElement(
-                    'p',
-                    null,
-                    'Password'
-                ),
-                _react2.default.createElement('input', { type: 'password', name: 'password', onChange: function onChange(e) {
-                        return setPassword(e.target.value);
-                    } })
-            ),
-            _react2.default.createElement(
                 'div',
-                null,
+                { className: 'my-divTable' },
                 _react2.default.createElement(
-                    'button',
-                    { type: 'submit' },
-                    'Submit'
+                    'div',
+                    { className: 'my-divTableBody' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'h1',
+                                null,
+                                'Please Log In'
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'p',
+                                null,
+                                'Username'
+                            ),
+                            _react2.default.createElement('input', { type: 'text', style: { width: "13.4em" }, onChange: function onChange(e) {
+                                    return setUserName(e.target.value);
+                                } })
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'p',
+                                null,
+                                'Password'
+                            ),
+                            _react2.default.createElement('input', { type: 'password', style: { width: "13.4em" }, name: 'password', onChange: function onChange(e) {
+                                    return setPassword(e.target.value);
+                                } })
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'button',
+                                { type: 'submit' },
+                                'Submit'
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    )
                 )
             )
         )
@@ -50666,9 +50750,9 @@ Login.propTypes = {
 
 /***/ }),
 
-/***/ "./src/components/Preferences/Preferences.jsx":
+/***/ "./web/components/Preferences/Preferences.jsx":
 /*!****************************************************!*\
-  !*** ./src/components/Preferences/Preferences.jsx ***!
+  !*** ./web/components/Preferences/Preferences.jsx ***!
   \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -50717,9 +50801,9 @@ function Preferences() {
 
 /***/ }),
 
-/***/ "./src/components/Signin/Signin.css":
+/***/ "./web/components/Signin/Signin.css":
 /*!******************************************!*\
-  !*** ./src/components/Signin/Signin.css ***!
+  !*** ./web/components/Signin/Signin.css ***!
   \******************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -50732,16 +50816,16 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(true);
 // Module
-___CSS_LOADER_EXPORT___.push([module.i, ".signin-wrapper {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n", "",{"version":3,"sources":["webpack://src/components/Signin/Signin.css"],"names":[],"mappings":"AAAA;IACI,aAAa;IACb,sBAAsB;IACtB,mBAAmB;AACvB","sourcesContent":[".signin-wrapper {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.i, ".signin-wrapper {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n.my-divTable{\n    display: table;\n    width: 100%;\n}\n.my-divTableRow{\n    display: table-row;\n}\n.my-divTableHeading{\n    background-color: #EEE;\n    display: table-header-group;\n}\n.my-divTableCellLeft,.my-divTableHeadLeft{\n    width: 10%;\n    border: 0 solid #999999;\n    display: table-cell;\n    padding: 15px 10px;\n}\n.my-divTableCell,.my-divTableHead{\n    border: 0 solid #999999;\n    display: table-cell;\n    padding: 15px 10px;\n}\n.my-divTableCellRight,.my-divTableHeadRight{\n    width: 10%;\n    border: 0 solid #999999;\n    display: table-cell;\n    padding: 15px 10px;\n}\n.my-divTableHeading{\n    background-color: #EEE;\n    display: table-header-group;\n    font-weight: bold;\n}\n.my-divTableFoot{\n    background-color: #EEE;\n    display: table-footer-group;\n    font-weight: bold;\n}\n.my-divTableBody{\n    display: table-row-group;\n}\n.my-h5{\n    margin-block-start: 1.67em;\n    margin-block-end: 0.67em;\n    margin-inline-start: 0px;\n    margin-inline-end: 0px;\n}\n.my-p-inputtext{\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n    font-size: 1rem;\n    color: #333333;\n    background: #ffffff;\n    padding: 0.429rem 0.429rem;\n    border: 1px solid #a6a6a6;\n    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;\n    appearance: none;\n    border-radius: 3px;\n    min-width: 22.4em;\n    width: 100%;\n}\n.my-p-inputtext-uuid{\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n    font-size: 1rem;\n    color: #333333;\n    background: #ffffff;\n    padding: 0.429rem 0.429rem;\n    border: 1px solid #a6a6a6;\n    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;\n    appearance: none;\n    border-radius: 3px;\n    min-width: 22.4em;\n    width: 22.4em;\n}\n.my-p-button{\n    color: #ffffff;\n    background: #777777;\n    border: 1px solid #555555;\n    padding: 0.429rem 1rem;\n    font-size: 1rem;\n    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;\n    border-radius: 3px;\n}\n.p-selectbutton .p-button.p-highlight:hover{\n    background: #111f1f;\n    border-color: #111f1f;\n    color: #ffffff;\n}\n", "",{"version":3,"sources":["webpack://web/components/Signin/Signin.css"],"names":[],"mappings":"AAAA;IACI,aAAa;IACb,sBAAsB;IACtB,mBAAmB;AACvB;AACA;IACI,cAAc;IACd,WAAW;AACf;AACA;IACI,kBAAkB;AACtB;AACA;IACI,sBAAsB;IACtB,2BAA2B;AAC/B;AACA;IACI,UAAU;IACV,uBAAuB;IACvB,mBAAmB;IACnB,kBAAkB;AACtB;AACA;IACI,uBAAuB;IACvB,mBAAmB;IACnB,kBAAkB;AACtB;AACA;IACI,UAAU;IACV,uBAAuB;IACvB,mBAAmB;IACnB,kBAAkB;AACtB;AACA;IACI,sBAAsB;IACtB,2BAA2B;IAC3B,iBAAiB;AACrB;AACA;IACI,sBAAsB;IACtB,2BAA2B;IAC3B,iBAAiB;AACrB;AACA;IACI,wBAAwB;AAC5B;AACA;IACI,0BAA0B;IAC1B,wBAAwB;IACxB,wBAAwB;IACxB,sBAAsB;AAC1B;AACA;IACI,0JAA0J;IAC1J,eAAe;IACf,cAAc;IACd,mBAAmB;IACnB,0BAA0B;IAC1B,yBAAyB;IACzB,iFAAiF;IACjF,gBAAgB;IAChB,kBAAkB;IAClB,iBAAiB;IACjB,WAAW;AACf;AACA;IACI,0JAA0J;IAC1J,eAAe;IACf,cAAc;IACd,mBAAmB;IACnB,0BAA0B;IAC1B,yBAAyB;IACzB,iFAAiF;IACjF,gBAAgB;IAChB,kBAAkB;IAClB,iBAAiB;IACjB,aAAa;AACjB;AACA;IACI,cAAc;IACd,mBAAmB;IACnB,yBAAyB;IACzB,sBAAsB;IACtB,eAAe;IACf,iFAAiF;IACjF,kBAAkB;AACtB;AACA;IACI,mBAAmB;IACnB,qBAAqB;IACrB,cAAc;AAClB","sourcesContent":[".signin-wrapper {\n    display: flex;\n    flex-direction: column;\n    align-items: center;\n}\n.my-divTable{\n    display: table;\n    width: 100%;\n}\n.my-divTableRow{\n    display: table-row;\n}\n.my-divTableHeading{\n    background-color: #EEE;\n    display: table-header-group;\n}\n.my-divTableCellLeft,.my-divTableHeadLeft{\n    width: 10%;\n    border: 0 solid #999999;\n    display: table-cell;\n    padding: 15px 10px;\n}\n.my-divTableCell,.my-divTableHead{\n    border: 0 solid #999999;\n    display: table-cell;\n    padding: 15px 10px;\n}\n.my-divTableCellRight,.my-divTableHeadRight{\n    width: 10%;\n    border: 0 solid #999999;\n    display: table-cell;\n    padding: 15px 10px;\n}\n.my-divTableHeading{\n    background-color: #EEE;\n    display: table-header-group;\n    font-weight: bold;\n}\n.my-divTableFoot{\n    background-color: #EEE;\n    display: table-footer-group;\n    font-weight: bold;\n}\n.my-divTableBody{\n    display: table-row-group;\n}\n.my-h5{\n    margin-block-start: 1.67em;\n    margin-block-end: 0.67em;\n    margin-inline-start: 0px;\n    margin-inline-end: 0px;\n}\n.my-p-inputtext{\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n    font-size: 1rem;\n    color: #333333;\n    background: #ffffff;\n    padding: 0.429rem 0.429rem;\n    border: 1px solid #a6a6a6;\n    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;\n    appearance: none;\n    border-radius: 3px;\n    min-width: 22.4em;\n    width: 100%;\n}\n.my-p-inputtext-uuid{\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\";\n    font-size: 1rem;\n    color: #333333;\n    background: #ffffff;\n    padding: 0.429rem 0.429rem;\n    border: 1px solid #a6a6a6;\n    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;\n    appearance: none;\n    border-radius: 3px;\n    min-width: 22.4em;\n    width: 22.4em;\n}\n.my-p-button{\n    color: #ffffff;\n    background: #777777;\n    border: 1px solid #555555;\n    padding: 0.429rem 1rem;\n    font-size: 1rem;\n    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;\n    border-radius: 3px;\n}\n.p-selectbutton .p-button.p-highlight:hover{\n    background: #111f1f;\n    border-color: #111f1f;\n    color: #ffffff;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
 
 /***/ }),
 
-/***/ "./src/components/Signin/Signin.jsx":
+/***/ "./web/components/Signin/Signin.jsx":
 /*!******************************************!*\
-  !*** ./src/components/Signin/Signin.jsx ***!
+  !*** ./web/components/Signin/Signin.jsx ***!
   \******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -50786,7 +50870,7 @@ var signinUser = function () {
 
 exports.default = Signin;
 
-__webpack_require__(/*! ./Signin.css */ "./src/components/Signin/Signin.css");
+__webpack_require__(/*! ./Signin.css */ "./web/components/Signin/Signin.css");
 
 var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
@@ -50807,6 +50891,9 @@ function Signin(_ref2) {
 
     var setToken = _ref2.setToken;
 
+
+    var history = (0, _reactRouterDom.useHistory)();
+
     var _useState = (0, _react.useState)(),
         _useState2 = _slicedToArray(_useState, 2),
         username = _useState2[0],
@@ -50816,6 +50903,36 @@ function Signin(_ref2) {
         _useState4 = _slicedToArray(_useState3, 2),
         password = _useState4[0],
         setPassword = _useState4[1];
+
+    var _useState5 = (0, _react.useState)(),
+        _useState6 = _slicedToArray(_useState5, 2),
+        name = _useState6[0],
+        setName = _useState6[1];
+
+    var _useState7 = (0, _react.useState)(),
+        _useState8 = _slicedToArray(_useState7, 2),
+        surname = _useState8[0],
+        setSurname = _useState8[1];
+
+    var _useState9 = (0, _react.useState)(),
+        _useState10 = _slicedToArray(_useState9, 2),
+        age = _useState10[0],
+        setAge = _useState10[1];
+
+    var _useState11 = (0, _react.useState)(),
+        _useState12 = _slicedToArray(_useState11, 2),
+        sex = _useState12[0],
+        setSex = _useState12[1];
+
+    var _useState13 = (0, _react.useState)(),
+        _useState14 = _slicedToArray(_useState13, 2),
+        city = _useState14[0],
+        setCity = _useState14[1];
+
+    var _useState15 = (0, _react.useState)(),
+        _useState16 = _slicedToArray(_useState15, 2),
+        interests = _useState16[0],
+        setInterests = _useState16[1];
 
     var handleSubmit = function () {
         var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
@@ -50828,15 +50945,24 @@ function Signin(_ref2) {
                             _context2.next = 3;
                             return signinUser({
                                 username: username,
-                                password: password
+                                password: password,
+                                name: name,
+                                surname: surname,
+                                age: age,
+                                sex: sex,
+                                city: city,
+                                interests: interests
                             });
 
                         case 3:
                             token = _context2.sent;
 
                             setToken(token);
+                            if (token) {
+                                history.push('/dashboard');
+                            }
 
-                        case 5:
+                        case 6:
                         case 'end':
                             return _context2.stop();
                     }
@@ -50867,44 +50993,273 @@ function Signin(_ref2) {
             'Sign-in'
         ),
         _react2.default.createElement(
-            'h1',
+            'h2',
             null,
-            'For register Sign in please'
+            'Dashboard'
         ),
         _react2.default.createElement(
             'form',
             { onSubmit: handleSubmit },
             _react2.default.createElement(
-                'label',
-                null,
-                _react2.default.createElement(
-                    'p',
-                    null,
-                    'Username'
-                ),
-                _react2.default.createElement('input', { type: 'text', onChange: function onChange(e) {
-                        return setUserName(e.target.value);
-                    } })
-            ),
-            _react2.default.createElement(
-                'label',
-                null,
-                _react2.default.createElement(
-                    'p',
-                    null,
-                    'Password'
-                ),
-                _react2.default.createElement('input', { type: 'password', name: 'password', onChange: function onChange(e) {
-                        return setPassword(e.target.value);
-                    } })
-            ),
-            _react2.default.createElement(
                 'div',
-                null,
+                { className: 'my-divTable' },
                 _react2.default.createElement(
-                    'button',
-                    { type: 'submit' },
-                    'Submit'
+                    'div',
+                    { className: 'my-divTableBody' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'h1',
+                                null,
+                                'For register Sign in please'
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'p',
+                                null,
+                                'Username'
+                            ),
+                            _react2.default.createElement('input', { type: 'text', onChange: function onChange(e) {
+                                    return setUserName(e.target.value);
+                                } })
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'p',
+                                null,
+                                'Password'
+                            ),
+                            _react2.default.createElement('input', { type: 'password', name: 'password', onChange: function onChange(e) {
+                                    return setPassword(e.target.value);
+                                } })
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'p',
+                                null,
+                                'Firstname'
+                            ),
+                            _react2.default.createElement('input', { type: 'text', name: 'name', onChange: function onChange(e) {
+                                    return setName(e.target.value);
+                                } })
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'p',
+                                null,
+                                'Surname'
+                            ),
+                            _react2.default.createElement('input', { type: 'text', name: 'surname', onChange: function onChange(e) {
+                                    return setSurname(e.target.value);
+                                } })
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'p',
+                                null,
+                                'Age'
+                            ),
+                            _react2.default.createElement('input', { type: 'text', name: 'age', onChange: function onChange(e) {
+                                    return setAge(e.target.value);
+                                } })
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'p',
+                                null,
+                                'Sex'
+                            ),
+                            _react2.default.createElement('input', { type: 'text', name: 'sex', onChange: function onChange(e) {
+                                    return setSex(e.target.value);
+                                } })
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'p',
+                                null,
+                                'City'
+                            ),
+                            _react2.default.createElement('input', { type: 'text', name: 'city', onChange: function onChange(e) {
+                                    return setCity(e.target.value);
+                                } })
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'p',
+                                null,
+                                'Interests'
+                            ),
+                            _react2.default.createElement('textarea', { rows: '10', cols: '42', name: 'interests', onChange: function onChange(e) {
+                                    return setInterests(e.target.value);
+                                } })
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'my-divTableRow' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellLeft' },
+                            '\xA0'
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCell' },
+                            _react2.default.createElement(
+                                'button',
+                                { type: 'submit' },
+                                'Submit'
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'my-divTableCellRight' },
+                            '\xA0'
+                        )
+                    )
                 )
             )
         )
@@ -50917,9 +51272,9 @@ Signin.propTypes = {
 
 /***/ }),
 
-/***/ "./src/index.css":
+/***/ "./web/index.css":
 /*!***********************!*\
-  !*** ./src/index.css ***!
+  !*** ./web/index.css ***!
   \***********************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -50932,16 +51287,16 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(true);
 // Module
-___CSS_LOADER_EXPORT___.push([module.i, "body {\n  margin: 0;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n\ncode {\n  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',\n    monospace;\n}\n", "",{"version":3,"sources":["webpack://src/index.css"],"names":[],"mappings":"AAAA;EACE,SAAS;EACT;;cAEY;EACZ,mCAAmC;EACnC,kCAAkC;AACpC;;AAEA;EACE;aACW;AACb","sourcesContent":["body {\n  margin: 0;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n\ncode {\n  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',\n    monospace;\n}\n"],"sourceRoot":""}]);
+___CSS_LOADER_EXPORT___.push([module.i, "body {\n  margin: 0;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n\ncode {\n  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',\n    monospace;\n}\n", "",{"version":3,"sources":["webpack://web/index.css"],"names":[],"mappings":"AAAA;EACE,SAAS;EACT;;cAEY;EACZ,mCAAmC;EACnC,kCAAkC;AACpC;;AAEA;EACE;aACW;AACb","sourcesContent":["body {\n  margin: 0;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif;\n  -webkit-font-smoothing: antialiased;\n  -moz-osx-font-smoothing: grayscale;\n}\n\ncode {\n  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',\n    monospace;\n}\n"],"sourceRoot":""}]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
 
 /***/ }),
 
-/***/ "./src/index.jsx":
+/***/ "./web/index.jsx":
 /*!***********************!*\
-  !*** ./src/index.jsx ***!
+  !*** ./web/index.jsx ***!
   \***********************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -50961,28 +51316,15 @@ __webpack_require__(/*! core-js/stable */ "./node_modules/core-js/stable/index.j
 
 __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
 
-__webpack_require__(/*! ./index.css */ "./src/index.css");
+__webpack_require__(/*! ./index.css */ "./web/index.css");
 
-var _App = __webpack_require__(/*! ./App */ "./src/App.jsx");
+var _App = __webpack_require__(/*! ./App */ "./web/App.jsx");
 
 var _App2 = _interopRequireDefault(_App);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _reactDom2.default.render(_react2.default.createElement(_App2.default, null), document.getElementById('root'));
-
-/***/ }),
-
-/***/ "./src/logo.svg":
-/*!**********************!*\
-  !*** ./src/logo.svg ***!
-  \**********************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4NDEuOSA1OTUuMyI+PGcgZmlsbD0iIzYxREFGQiI+PHBhdGggZD0iTTY2Ni4zIDI5Ni41YzAtMzIuNS00MC43LTYzLjMtMTAzLjEtODIuNCAxNC40LTYzLjYgOC0xMTQuMi0yMC4yLTEzMC40LTYuNS0zLjgtMTQuMS01LjYtMjIuNC01LjZ2MjIuM2M0LjYgMCA4LjMuOSAxMS40IDIuNiAxMy42IDcuOCAxOS41IDM3LjUgMTQuOSA3NS43LTEuMSA5LjQtMi45IDE5LjMtNS4xIDI5LjQtMTkuNi00LjgtNDEtOC41LTYzLjUtMTAuOS0xMy41LTE4LjUtMjcuNS0zNS4zLTQxLjYtNTAgMzIuNi0zMC4zIDYzLjItNDYuOSA4NC00Ni45Vjc4Yy0yNy41IDAtNjMuNSAxOS42LTk5LjkgNTMuNi0zNi40LTMzLjgtNzIuNC01My4yLTk5LjktNTMuMnYyMi4zYzIwLjcgMCA1MS40IDE2LjUgODQgNDYuNi0xNCAxNC43LTI4IDMxLjQtNDEuMyA0OS45LTIyLjYgMi40LTQ0IDYuMS02My42IDExLTIuMy0xMC00LTE5LjctNS4yLTI5LTQuNy0zOC4yIDEuMS02Ny45IDE0LjYtNzUuOCAzLTEuOCA2LjktMi42IDExLjUtMi42Vjc4LjVjLTguNCAwLTE2IDEuOC0yMi42IDUuNi0yOC4xIDE2LjItMzQuNCA2Ni43LTE5LjkgMTMwLjEtNjIuMiAxOS4yLTEwMi43IDQ5LjktMTAyLjcgODIuMyAwIDMyLjUgNDAuNyA2My4zIDEwMy4xIDgyLjQtMTQuNCA2My42LTggMTE0LjIgMjAuMiAxMzAuNCA2LjUgMy44IDE0LjEgNS42IDIyLjUgNS42IDI3LjUgMCA2My41LTE5LjYgOTkuOS01My42IDM2LjQgMzMuOCA3Mi40IDUzLjIgOTkuOSA1My4yIDguNCAwIDE2LTEuOCAyMi42LTUuNiAyOC4xLTE2LjIgMzQuNC02Ni43IDE5LjktMTMwLjEgNjItMTkuMSAxMDIuNS00OS45IDEwMi41LTgyLjN6bS0xMzAuMi02Ni43Yy0zLjcgMTIuOS04LjMgMjYuMi0xMy41IDM5LjUtNC4xLTgtOC40LTE2LTEzLjEtMjQtNC42LTgtOS41LTE1LjgtMTQuNC0yMy40IDE0LjIgMi4xIDI3LjkgNC43IDQxIDcuOXptLTQ1LjggMTA2LjVjLTcuOCAxMy41LTE1LjggMjYuMy0yNC4xIDM4LjItMTQuOSAxLjMtMzAgMi00NS4yIDItMTUuMSAwLTMwLjItLjctNDUtMS45LTguMy0xMS45LTE2LjQtMjQuNi0yNC4yLTM4LTcuNi0xMy4xLTE0LjUtMjYuNC0yMC44LTM5LjggNi4yLTEzLjQgMTMuMi0yNi44IDIwLjctMzkuOSA3LjgtMTMuNSAxNS44LTI2LjMgMjQuMS0zOC4yIDE0LjktMS4zIDMwLTIgNDUuMi0yIDE1LjEgMCAzMC4yLjcgNDUgMS45IDguMyAxMS45IDE2LjQgMjQuNiAyNC4yIDM4IDcuNiAxMy4xIDE0LjUgMjYuNCAyMC44IDM5LjgtNi4zIDEzLjQtMTMuMiAyNi44LTIwLjcgMzkuOXptMzIuMy0xM2M1LjQgMTMuNCAxMCAyNi44IDEzLjggMzkuOC0xMy4xIDMuMi0yNi45IDUuOS00MS4yIDggNC45LTcuNyA5LjgtMTUuNiAxNC40LTIzLjcgNC42LTggOC45LTE2LjEgMTMtMjQuMXpNNDIxLjIgNDMwYy05LjMtOS42LTE4LjYtMjAuMy0yNy44LTMyIDkgLjQgMTguMi43IDI3LjUuNyA5LjQgMCAxOC43LS4yIDI3LjgtLjctOSAxMS43LTE4LjMgMjIuNC0yNy41IDMyem0tNzQuNC01OC45Yy0xNC4yLTIuMS0yNy45LTQuNy00MS03LjkgMy43LTEyLjkgOC4zLTI2LjIgMTMuNS0zOS41IDQuMSA4IDguNCAxNiAxMy4xIDI0IDQuNyA4IDkuNSAxNS44IDE0LjQgMjMuNHpNNDIwLjcgMTYzYzkuMyA5LjYgMTguNiAyMC4zIDI3LjggMzItOS0uNC0xOC4yLS43LTI3LjUtLjctOS40IDAtMTguNy4yLTI3LjguNyA5LTExLjcgMTguMy0yMi40IDI3LjUtMzJ6bS03NCA1OC45Yy00LjkgNy43LTkuOCAxNS42LTE0LjQgMjMuNy00LjYgOC04LjkgMTYtMTMgMjQtNS40LTEzLjQtMTAtMjYuOC0xMy44LTM5LjggMTMuMS0zLjEgMjYuOS01LjggNDEuMi03Ljl6bS05MC41IDEyNS4yYy0zNS40LTE1LjEtNTguMy0zNC45LTU4LjMtNTAuNiAwLTE1LjcgMjIuOS0zNS42IDU4LjMtNTAuNiA4LjYtMy43IDE4LTcgMjcuNy0xMC4xIDUuNyAxOS42IDEzLjIgNDAgMjIuNSA2MC45LTkuMiAyMC44LTE2LjYgNDEuMS0yMi4yIDYwLjYtOS45LTMuMS0xOS4zLTYuNS0yOC0xMC4yek0zMTAgNDkwYy0xMy42LTcuOC0xOS41LTM3LjUtMTQuOS03NS43IDEuMS05LjQgMi45LTE5LjMgNS4xLTI5LjQgMTkuNiA0LjggNDEgOC41IDYzLjUgMTAuOSAxMy41IDE4LjUgMjcuNSAzNS4zIDQxLjYgNTAtMzIuNiAzMC4zLTYzLjIgNDYuOS04NCA0Ni45LTQuNS0uMS04LjMtMS0xMS4zLTIuN3ptMjM3LjItNzYuMmM0LjcgMzguMi0xLjEgNjcuOS0xNC42IDc1LjgtMyAxLjgtNi45IDIuNi0xMS41IDIuNi0yMC43IDAtNTEuNC0xNi41LTg0LTQ2LjYgMTQtMTQuNyAyOC0zMS40IDQxLjMtNDkuOSAyMi42LTIuNCA0NC02LjEgNjMuNi0xMSAyLjMgMTAuMSA0LjEgMTkuOCA1LjIgMjkuMXptMzguNS02Ni43Yy04LjYgMy43LTE4IDctMjcuNyAxMC4xLTUuNy0xOS42LTEzLjItNDAtMjIuNS02MC45IDkuMi0yMC44IDE2LjYtNDEuMSAyMi4yLTYwLjYgOS45IDMuMSAxOS4zIDYuNSAyOC4xIDEwLjIgMzUuNCAxNS4xIDU4LjMgMzQuOSA1OC4zIDUwLjYtLjEgMTUuNy0yMyAzNS42LTU4LjQgNTAuNnpNMzIwLjggNzguNHoiLz48Y2lyY2xlIGN4PSI0MjAuOSIgY3k9IjI5Ni41IiByPSI0NS43Ii8+PHBhdGggZD0iTTUyMC41IDc4LjF6Ii8+PC9nPjwvc3ZnPg==");
 
 /***/ })
 

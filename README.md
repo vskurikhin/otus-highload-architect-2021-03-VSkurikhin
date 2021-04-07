@@ -44,5 +44,6 @@
 - https://github.com/savsgio/atreugo/v11
 - https://github.com/savsgio/go-logger/v2
 - https://github.com/valyala/fasthttp
+- https://golang.org/x/crypto/bcrypt
 - https://golang.org/x/sync
 - https://gopkg.in/yaml.v2

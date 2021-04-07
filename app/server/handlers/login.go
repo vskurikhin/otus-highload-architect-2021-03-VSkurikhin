@@ -18,23 +18,28 @@ func (h *Handlers) Login(ctx *sa.RequestCtx) error {
 		if ctx.IsBodyStream() {
 			log.Println(ctx.PostBody())
 		}
-
-		tokenString, expireAt := h.Server.JWT.GenerateToken(sessionId)
-
-		// Set cookie for domain
-		cookie := fasthttp.AcquireCookie()
-		defer fasthttp.ReleaseCookie(cookie)
-
-		cookie.SetKey(config.ACCESS_TOKEN_COOKIE)
-		cookie.SetValue(tokenString)
-		cookie.SetExpire(expireAt)
-		ctx.Response.Header.SetCookie(cookie)
-
-		token := message.Token{Token: tokenString}
+		token := h.generateToken(ctx, sessionId)
 
 		return ctx.HTTPResponse(token.String())
 	}
 	token := message.Token{Token: string(jwtCookie)}
 
 	return ctx.HTTPResponse(token.String())
+}
+func (h *Handlers) generateToken(ctx *sa.RequestCtx, sessionId uuid.UUID) *message.Token {
+
+	tokenString, expireAt := h.Server.JWT.GenerateToken(sessionId)
+
+	// Set cookie for domain
+	cookie := fasthttp.AcquireCookie()
+	defer fasthttp.ReleaseCookie(cookie)
+
+	cookie.SetKey(config.ACCESS_TOKEN_COOKIE)
+	cookie.SetValue(tokenString)
+	cookie.SetExpire(expireAt)
+	ctx.Response.Header.SetCookie(cookie)
+
+	token := message.Token{Token: tokenString}
+
+	return &token
 }

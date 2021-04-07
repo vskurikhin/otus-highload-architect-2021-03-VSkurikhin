@@ -7,6 +7,7 @@ import (
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/dao"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/jwt"
 	"log"
 	"os"
@@ -14,23 +15,23 @@ import (
 
 // Server определяет параметры для запуска HTTP-сервера.
 type Server struct {
-	DB     *sql.DB
+	DAO    *dao.DAO
 	JWT    *jwt.JWT
 	Server *sa.Atreugo
 }
 
 func gracefulClose(db *sql.DB) {
-	// Set up channel on which to send signal notifications.
-	// We must use a buffered channel or risk missing the signal
-	// if we're not ready to receive when the signal is sent.
+	// Настраиваем канал для отправки сигнальных уведомлений.
+	// Нужно использовать буферизованный канал или есть риск пропустить сигнал
+	// если не готовы принять сигнал при отправке.
 	c := make(chan os.Signal, 1)
 
-	// Block until a signal is received.
+	// Блокировать до получения сигнала.
 	s := <-c
 	fmt.Println("Got signal:", s)
 	err := db.Close()
 	if err != nil {
-		log.Println(err) // proper error handling instead of panic in your app
+		log.Println(err)
 	}
 }
 
@@ -44,7 +45,7 @@ func New(cfg *config.Config) *Server {
 	go gracefulClose(db)
 	versionDB(db)
 
-	return &Server{DB: db, JWT: jwt.New(cfg), Server: sa.New(c)}
+	return &Server{DAO: dao.New(db), JWT: jwt.New(cfg), Server: sa.New(c)}
 }
 
 func (s *Server) UseBefore(fns sa.Middleware) *sa.Router {
@@ -102,7 +103,7 @@ func openDB(cfg *config.Config) *sql.DB {
 	db, err := sql.Open("mysql", dsn)
 
 	if err != nil {
-		panic(err.Error()) // proper error handling instead of panic in your app
+		panic(err.Error())
 	}
 	return db
 }

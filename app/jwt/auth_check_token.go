@@ -10,6 +10,7 @@ import (
 	"regexp"
 )
 
+var css = regexp.MustCompile(`^/css/.*$`)
 var generated = regexp.MustCompile(`^/generated/.*$`)
 
 // AuthCheckToken проверка авторизации по токену jwt
@@ -26,6 +27,10 @@ func (j *JWT) AuthCheckToken(ctx *sa.RequestCtx) error {
 	case path == "/login":
 		return ctx.Next()
 	case path == "/index.html":
+		return ctx.Next()
+	case path == "/signin":
+		return ctx.Next()
+	case css.MatchString(path):
 		return ctx.Next()
 	case generated.MatchString(path):
 		return ctx.Next()

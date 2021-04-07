@@ -16,6 +16,10 @@ func (l *Login) Id() uuid.UUID {
 	return l.id
 }
 
+func (l *Login) SetId(id uuid.UUID) {
+	l.id = id
+}
+
 func (l *Login) Password() string {
 	return l.password
 }

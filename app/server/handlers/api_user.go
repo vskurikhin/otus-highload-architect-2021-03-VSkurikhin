@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
@@ -10,12 +9,14 @@ import (
 	"github.com/valyala/fasthttp"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/message"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/model"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/security"
+	"strconv"
 	"strings"
 )
 
 func (h *Handlers) List(ctx *sa.RequestCtx) error {
 
-	u, err := list(h.Server.DB)
+	u, err := h.Server.DAO.User.ReadListAsString()
 
 	if err != nil {
 		errorCase := message.ApiMessage{
@@ -24,48 +25,55 @@ func (h *Handlers) List(ctx *sa.RequestCtx) error {
 		}
 		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
 	}
-
 	return ctx.HTTPResponse(u)
 }
 
-func list(db *sql.DB) (string, error) {
+func (h *Handlers) Signin(ctx *sa.RequestCtx) error {
 
-	stmtOut, err := db.Prepare(`
-		SELECT id, username, name, surname, age, sex, interests, city FROM users`)
+	var signIn model.Signin
+	err := json.Unmarshal(ctx.PostBody(), &signIn)
+
 	if err != nil {
-		logger.Errorf("%v", err.Error())
-		return "{}", err
+		errorCase := message.ApiMessage{
+			Code:    fasthttp.StatusPreconditionFailed,
+			Message: err.Error(),
+		}
+		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
 	}
-	defer func() { _ = stmtOut.Close() }()
-
-	rows, err := stmtOut.Query()
+	if logger.DebugEnabled() {
+		logger.Debugf("got: %s", signIn.String())
+	}
+	id := uuid.New()
+	password := security.HashAndSalt([]byte(signIn.Password))
+	login := model.Login{Username: signIn.Username}
+	login.SetId(id)
+	login.SetPassword(password)
+	err = h.Server.DAO.Login.Create(&login)
 	if err != nil {
-		logger.Errorf("%v", err.Error())
-		return "{}", err
-	}
-	defer rows.Close()
-
-	var users []string
-	for rows.Next() {
-		var id uuid.UUID
-		var u model.User
-		var interests string
-
-		err = rows.Scan(&id, &u.Username, &u.Name, &u.SurName, &u.Age, &u.Sex, &interests, &u.City)
-		if err != nil {
-			logger.Errorf("%v", err.Error())
-			return "{}", err
+		errorCase := message.ApiMessage{
+			Code:    fasthttp.StatusPreconditionFailed,
+			Message: err.Error(),
 		}
-		u.SetId(id)
-
-		err = json.Unmarshal([]byte(interests), &u.Interests)
-		if err != nil {
-			logger.Errorf("%v", err.Error())
-			return "{}", err
-		}
-		users = append(users, u.String())
+		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
 	}
-	return "[" + strings.Join(users, ", ") + "]", nil
+	age, _ := strconv.ParseInt(signIn.Age, 10, 32)
+	sex, _ := strconv.ParseInt(signIn.Age, 10, 1)
+	interests := strings.Split(signIn.Interests, "\n")
+	user := model.Create(id, signIn.Username, &signIn.Name, &signIn.Surname, int(age), int(sex), interests, &signIn.City)
+	if logger.DebugEnabled() {
+		logger.Debugf("got: %s", user.String())
+	}
+	err = h.Server.DAO.User.Create(user)
+	if err != nil {
+		errorCase := message.ApiMessage{
+			Code:    fasthttp.StatusPreconditionFailed,
+			Message: err.Error(),
+		}
+		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
+	}
+	token := h.generateToken(ctx, id)
+
+	return ctx.HTTPResponse(token.String())
 }
 
 func (h *Handlers) Create(ctx *sa.RequestCtx) error {
@@ -84,7 +92,7 @@ func (h *Handlers) Create(ctx *sa.RequestCtx) error {
 	if logger.DebugEnabled() {
 		logger.Debugf("got: %s", user.String())
 	}
-	err = create(h.Server.DB, &user)
+	err = h.Server.DAO.User.Create(&user)
 	if err != nil {
 		errorCase := message.ApiMessage{
 			Code:    fasthttp.StatusPreconditionFailed,
@@ -98,31 +106,4 @@ func (h *Handlers) Create(ctx *sa.RequestCtx) error {
 		Message: msg,
 	}
 	return ctx.HTTPResponse(created.String())
-}
-
-func create(db *sql.DB, user *model.User) error {
-
-	// Prepare statement for inserting data
-	stmtIns, err := db.Prepare(`
-		INSERT INTO users
-		    (id, username, password, name, surname, age, sex, interests, city)
-		  VALUES 
-		    (?, ?, 'none', ?, ?, 51, 1, ?, ?)`) // ? = placeholder
-	if err != nil {
-		return err // proper error handling instead of panic in your app
-	}
-	defer func() { _ = stmtIns.Close() }() // Close the statement when we leave main() / the program terminates
-
-	id, err := user.Id().MarshalBinary()
-
-	if err != nil {
-		return err // proper error handling instead of panic in your app
-	}
-	interests, err := json.Marshal(user.Interests)
-
-	_, err = stmtIns.Exec(id, user.Username, user.Name, user.SurName, interests, user.City)
-	if err != nil {
-		return err // proper error handling instead of panic in your app
-	}
-	return nil
 }
