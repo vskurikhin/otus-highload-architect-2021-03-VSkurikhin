@@ -5,3 +5,8 @@ p {
     margin-inline-start: 0;
     margin-inline-end: 0;
 }
+
+my-p-label {
+    margin: 0 0 0.25em;
+    line-height: 1.4285em;
+}

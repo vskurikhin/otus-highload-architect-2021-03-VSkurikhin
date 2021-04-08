@@ -29,36 +29,21 @@ func (u *user) Create(user *model.User) error {
 }
 
 func (u *user) ReadListAsString() (string, error) {
-	stmtOut, err := u.db.Prepare(`
-		SELECT id, username, name, surname, age, sex, city FROM user
-	`)
+
+	users, err := u.readList()
 	if err != nil {
 		return "{}", err // правильная обработка ошибок вместо паники
 	}
-	defer func() { _ = stmtOut.Close() }()
+	var result []string
 
-	rows, err := stmtOut.Query()
-	if err != nil {
-		return "{}", err
+	for _, user := range users {
+		result = append(result, user.String())
 	}
-	defer func() { _ = rows.Close() }()
-
-	var users []string
-	for rows.Next() {
-		var id uuid.UUID
-		var u model.User
-
-		err = rows.Scan(&id, &u.Username, &u.Name, &u.SurName, &u.Age, &u.Sex, &u.City)
-		if err != nil {
-			return "{}", err
-		}
-		u.SetId(id)
-		users = append(users, u.String())
-	}
-	return "[" + strings.Join(users, ", ") + "]", nil
+	return "[" + strings.Join(result, ", ") + "]", nil
 }
 
 func (u *user) readList() ([]model.User, error) {
+
 	stmtOut, err := u.db.Prepare(`
 		SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests)
 		  FROM user u

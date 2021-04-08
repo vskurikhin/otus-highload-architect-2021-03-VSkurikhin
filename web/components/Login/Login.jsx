@@ -1,11 +1,12 @@
 import './Login.css';
 
-import React, {useState} from 'react';
 import PropTypes from 'prop-types';
+import React, {useState} from 'react';
+import {Input} from "semantic-ui-react";
 import {Link, useHistory} from "react-router-dom";
 
 async function loginUser(credentials) {
-    return fetch('http://localhost:6060/login', {
+    return fetch('/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -35,7 +36,9 @@ export default function Login({setToken}) {
 
     return (
         <div className="login-wrapper">
-            <h2>Login</h2><Link to='/signin' key='signin'><h2>Sign-in</h2></Link><h2>Dashboard</h2>
+            <h2><span style={{color: "#555555"}}>Login</span></h2>
+            <h2><Link to='/signin' key='signin'>Sign-in</Link></h2>
+            <h2>Dashboard</h2>
             <form onSubmit={handleSubmit}>
                 <div className="my-divTable">
                     <div className="my-divTableBody">
@@ -49,16 +52,21 @@ export default function Login({setToken}) {
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <p>Username</p>
-                                <input type="text" style={{width: "13.4em"}} onChange={e => setUserName(e.target.value)}/>
+                                <p className="my-p-label">Username:</p>
+                                <Input placeholder='Username...' onChange={e => setUserName(e.target.value)}/>
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <p>Password</p>
-                                <input type="password" style={{width: "13.4em"}} name="password" onChange={e => setPassword(e.target.value)}/>
+                                <p className="my-p-label">Password:</p>
+                                <Input
+                                    type="password"
+                                    name="password"
+                                    placeholder='password...'
+                                    onChange={e => setPassword(e.target.value)}
+                                />
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>

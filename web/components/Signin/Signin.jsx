@@ -1,11 +1,14 @@
 import './Signin.css';
 
-import React, {useState} from 'react';
 import PropTypes from 'prop-types';
+import React, {useState} from 'react';
+import {Dropdown, Input} from 'semantic-ui-react'
 import {Link, useHistory} from "react-router-dom";
 
+import {CITY_OPTIONS, SEX_OPTIONS} from "../../consts";
+
 async function signinUser(credentials) {
-    return fetch('http://localhost:6060/signin', {
+    return fetch('/signin', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -22,9 +25,9 @@ export default function Signin({setToken}) {
     const [password, setPassword] = useState();
     const [name, setName] = useState();
     const [surname, setSurname] = useState();
-    const [age, setAge] = useState();
-    const [sex, setSex] = useState();
-    const [city, setCity] = useState();
+    const [age, setAge] = useState("41");
+    const [sex, setSex] = useState("0");
+    const [city, setCity] = useState("Москва");
     const [interests, setInterests] = useState();
 
     const handleSubmit = async e => {
@@ -45,9 +48,26 @@ export default function Signin({setToken}) {
         }
     }
 
+    const onSexChange = (e, data) => {
+        console.log(data.value);
+        setSex(data.value)
+    }
+
+    const onCityChange = (e, data) => {
+        console.log(data.value);
+        setCity(data.value)
+    }
+
+    const onCitySearchChange = (e, data) => {
+        console.log(data.searchQuery);
+        setCity(data.searchQuery)
+    }
+
     return (
         <div className="signin-wrapper">
-            <Link to='/login' key='login'><h2>Login</h2></Link><h2>Sign-in</h2><h2>Dashboard</h2>
+            <h2><Link to='/login' key='login'>Login</Link></h2>
+            <h2><span style={{color: "#555555"}}>Sign-in</span></h2>
+            <h2>Dashboard</h2>
             <form onSubmit={handleSubmit}>
                 <div className="my-divTable">
                     <div className="my-divTableBody">
@@ -61,64 +81,84 @@ export default function Signin({setToken}) {
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <p>Username</p>
-                                <input type="text" onChange={e => setUserName(e.target.value)}/>
+                                <p className="my-p-label">Username:</p>
+                                <Input placeholder='Username...' onChange={e => setUserName(e.target.value)}/>
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <p>Password</p>
-                                <input type="password" name="password" onChange={e => setPassword(e.target.value)}/>
+                                <p className="my-p-label">Password:</p>
+                                <Input type="password" name="password" placeholder='password...' onChange={e => setPassword(e.target.value)}/>
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <p>Firstname</p>
-                                <input type="text" name="name" onChange={e => setName(e.target.value)}/>
+                                <p className="my-p-label">Firstname:</p>
+                                <Input type="text" name="name" placeholder='Name...' onChange={e => setName(e.target.value)}/>
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <p>Surname</p>
-                                <input type="text" name="surname" onChange={e => setSurname(e.target.value)}/>
+                                <p className="my-p-label">Surname:</p>
+                                <Input type="text" name="surname" placeholder='Surname...' onChange={e => setSurname(e.target.value)}/>
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <p>Age</p>
-                                <input type="text" name="age" onChange={e => setAge(e.target.value)}/>
+                                <p className="my-p-label">Age:</p>
+                                <Input type="text" name="surname" value={age} onChange={e => setAge(e.target.value)}/>
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <p>Sex</p>
-                                <input type="text" name="sex" onChange={e => setSex(e.target.value)}/>
+                                <p className="my-p-label">Sex:</p>
+                                <Dropdown
+                                    defaultValue={sex}
+                                    item
+                                    fluid
+                                    selection
+                                    onChange={onSexChange}
+                                    options={SEX_OPTIONS}
+                                />
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <p>City</p>
-                                <input type="text" name="city" onChange={e => setCity(e.target.value)}/>
+                                <p className="my-p-label">City</p>
+                                <Dropdown
+                                    defaultValue={city}
+                                    fluid
+                                    search
+                                    selection
+                                    onChange={onCityChange}
+                                    onSearchChange={onCitySearchChange}
+                                    options={CITY_OPTIONS}
+                                />
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <p>Interests</p>
-                                <textarea rows="10" cols="42" name="interests" onChange={e => setInterests(e.target.value)}/>
+                                <p className="my-p-label">Interests</p>
+                                <textarea
+                                    rows="5"
+                                    cols="48"
+                                    name="interests"
+                                    onChange={e => setInterests(e.target.value)}
+                                />
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
