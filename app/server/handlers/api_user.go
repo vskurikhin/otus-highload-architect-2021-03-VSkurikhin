@@ -58,8 +58,8 @@ func (h *Handlers) Signin(ctx *sa.RequestCtx) error {
 	}
 	age, _ := strconv.ParseInt(signIn.Age, 10, 32)
 	sex, _ := strconv.ParseInt(signIn.Age, 10, 1)
-	interests := strings.Split(signIn.Interests, "\n")
-	user := model.Create(id, signIn.Username, &signIn.Name, &signIn.Surname, int(age), int(sex), interests, &signIn.City)
+	ins := strings.Split(signIn.Interests, "\n")
+	user := model.Create(id, signIn.Username, &signIn.Name, &signIn.Surname, int(age), int(sex), ins, &signIn.City)
 	if logger.DebugEnabled() {
 		logger.Debugf("got: %s", user.String())
 	}
@@ -71,6 +71,9 @@ func (h *Handlers) Signin(ctx *sa.RequestCtx) error {
 		}
 		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
 	}
+	_ = h.Server.DAO.Interest.CreateInterests(ins)
+	interests, _ := h.Server.DAO.Interest.GetExistsInterests(ins)
+	_ = h.Server.DAO.UserHasInterests.LinkInterests(user, interests)
 	token := h.generateToken(ctx, id)
 
 	return ctx.HTTPResponse(token.String())

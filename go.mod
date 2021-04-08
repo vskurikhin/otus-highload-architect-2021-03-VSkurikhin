@@ -6,6 +6,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
 	github.com/google/uuid v1.2.0 // indirect
+	github.com/jmoiron/sqlx v1.3.1 // indirect
 	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/kelseyhightower/envconfig v1.4.0 // indirect
 	github.com/savsgio/atreugo/v11 v11.6.4
