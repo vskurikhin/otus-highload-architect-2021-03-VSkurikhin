@@ -1,8 +1,8 @@
-package message
+package domain
 
 import (
 	"encoding/json"
-	"log"
+	"github.com/savsgio/go-logger/v2"
 )
 
 type Token struct {
@@ -17,7 +17,7 @@ func (t *Token) Marshal() []byte {
 
 	token, err := json.Marshal(*t)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 		return nil
 	}
 	return token

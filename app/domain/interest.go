@@ -1,14 +1,41 @@
-package dao
+package domain
 
 import (
+	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/savsgio/go-logger/v2"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/model"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/set"
 	"strings"
 )
 
-func (i *interest) Create(interest *model.Interest) error {
+type Interest struct {
+	id        uuid.UUID
+	Interests string
+}
+
+func (i *Interest) Id() uuid.UUID {
+	return i.id
+}
+
+func (i *Interest) SetId(id uuid.UUID) {
+	i.id = id
+}
+
+func (i *Interest) String() string {
+	return string(i.Marshal())
+}
+
+func (i *Interest) Marshal() []byte {
+
+	interest, err := json.Marshal(*i)
+	if err != nil {
+		logger.Error(err)
+		return nil
+	}
+	return interest
+}
+
+func (i *interest) Create(interest *Interest) error {
 	// Подготовить оператор для вставки данных
 	stmtIns, err := i.db.Prepare("INSERT INTO interest (id, interests) VALUES (?, ?)") // ? = заполнитель
 	if err != nil {
@@ -37,7 +64,7 @@ func (i *interest) CreateInterests(interests []string) error {
 	return nil
 }
 
-func (i *interest) GetExistsInterests(interests []string) ([]model.Interest, error) {
+func (i *interest) GetExistsInterests(interests []string) ([]Interest, error) {
 
 	stmtOut, err := i.db.Prepare(`
 		SELECT id, interests FROM interest WHERE JSON_CONTAINS(?, JSON_ARRAY(interests));
@@ -48,7 +75,6 @@ func (i *interest) GetExistsInterests(interests []string) ([]model.Interest, err
 	defer func() { _ = stmtOut.Close() }()
 
 	ar := `["` + strings.Join(interests, `", "`) + `"]`
-	logger.Debugf("%s", ar)
 	rows, err := stmtOut.Query(ar)
 	if err != nil {
 		logger.Error(err)
@@ -56,20 +82,17 @@ func (i *interest) GetExistsInterests(interests []string) ([]model.Interest, err
 	}
 	defer func() { _ = rows.Close() }()
 
-	var ids []model.Interest
+	var ids []Interest
 	for rows.Next() {
 
-		var id uuid.UUID
-		var interest model.Interest
-		err = rows.Scan(&id, &interest.Interests)
-		interest.SetId(id)
+		var interest Interest
+		err = rows.Scan(&interest.id, &interest.Interests)
 
 		if err != nil {
 			continue
 		}
 		ids = append(ids, interest)
 	}
-
 	return ids, nil
 }
 
@@ -83,11 +106,11 @@ func (i *interest) createInterests(interests []string) error {
 		if logger.DebugEnabled() {
 			logger.Debugf("interest: %v", interest)
 		}
-		newInterest := model.Interest{Interests: interest}
-		newInterest.SetId(uuid.New())
+		newInterest := Interest{id: uuid.New(), Interests: interest}
 		err := i.Create(&newInterest)
+
 		if err != nil {
-			logger.Errorf("Create interest with error: %v", err)
+			return err
 		}
 	}
 	return nil
@@ -106,7 +129,6 @@ func (i *interest) extractNewInterests(interests []string) ([]string, error) {
 	if logger.DebugEnabled() {
 		logger.Debugf("result: %v", result)
 	}
-
 	return result, nil
 }
 
@@ -121,10 +143,8 @@ func (i *interest) getExistsInterestLabels(interests []string) ([]string, error)
 	defer func() { _ = stmtOut.Close() }()
 
 	ar := `["` + strings.Join(interests, `", "`) + `"]`
-	logger.Debugf("%s", ar)
 	rows, err := stmtOut.Query(ar)
 	if err != nil {
-		logger.Error(err)
 		return nil, err
 	}
 	defer func() { _ = rows.Close() }()
@@ -139,6 +159,5 @@ func (i *interest) getExistsInterestLabels(interests []string) ([]string, error)
 		}
 		is = append(is, i)
 	}
-
 	return is, nil
 }
