@@ -52,13 +52,16 @@ func main() {
 	s.POST("/login", h.Login)
 
 	// Зарегистрировать маршрут для списка пользователей.
-	s.GET("/user", h.List)
+	s.GET("/users/all", h.List)
+
+	// Зарегистрировать маршрут для списка пользователей.
+	s.GET("/user/{id}", h.User)
 
 	// Зарегистрировать маршрут для создания пользователя.
 	s.POST("/user", h.Create)
 
 	// Зарегистрировать маршрут для Sign-in пользователя.
-	s.POST("/signin", h.Signin)
+	s.POST("/signin", h.SignIn)
 
 	// Run
 	if err := s.ListenAndServe(); err != nil {

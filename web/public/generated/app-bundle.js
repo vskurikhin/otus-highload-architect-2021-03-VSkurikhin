@@ -94190,21 +94190,25 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 __webpack_require__(/*! ./App.css */ "./web/App.css");
 
-var _Dashboard = __webpack_require__(/*! ./components/Dashboard/Dashboard */ "./web/components/Dashboard/Dashboard.jsx");
+var _UserList = __webpack_require__(/*! ./components/UserList/UserList */ "./web/components/UserList/UserList.jsx");
 
-var _Dashboard2 = _interopRequireDefault(_Dashboard);
+var _UserList2 = _interopRequireDefault(_UserList);
 
 var _Login = __webpack_require__(/*! ./components/Login/Login */ "./web/components/Login/Login.jsx");
 
 var _Login2 = _interopRequireDefault(_Login);
 
-var _Preferences = __webpack_require__(/*! ./components/Preferences/Preferences */ "./web/components/Preferences/Preferences.jsx");
+var _UserForm = __webpack_require__(/*! ./components/UserForm/UserForm */ "./web/components/UserForm/UserForm.jsx");
 
-var _Preferences2 = _interopRequireDefault(_Preferences);
+var _UserForm2 = _interopRequireDefault(_UserForm);
 
 var _Signin = __webpack_require__(/*! ./components/Signin/Signin */ "./web/components/Signin/Signin.jsx");
 
 var _Signin2 = _interopRequireDefault(_Signin);
+
+var _AppMenu = __webpack_require__(/*! ./components/Menu/AppMenu */ "./web/components/Menu/AppMenu.jsx");
+
+var _AppMenu2 = _interopRequireDefault(_AppMenu);
 
 var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
@@ -94214,26 +94218,23 @@ var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_module
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function main(setToken) {
+var main = function main(setToken) {
     return _react2.default.createElement(
         'div',
         { className: 'wrapper' },
         _react2.default.createElement(
             _reactRouterDom.BrowserRouter,
             null,
+            _react2.default.createElement(_AppMenu2.default, { disabledUserList: false }),
             _react2.default.createElement(
                 _reactRouterDom.Switch,
                 null,
                 _react2.default.createElement(
                     _reactRouterDom.Route,
-                    { path: '/dashboard' },
-                    _react2.default.createElement(_Dashboard2.default, null)
+                    { path: '/userlist' },
+                    _react2.default.createElement(_UserList2.default, null)
                 ),
-                _react2.default.createElement(
-                    _reactRouterDom.Route,
-                    { path: '/preferences' },
-                    _react2.default.createElement(_Preferences2.default, null)
-                ),
+                _react2.default.createElement(_reactRouterDom.Route, { path: '/userform/:id', component: _UserForm2.default }),
                 _react2.default.createElement(
                     _reactRouterDom.Route,
                     { path: '/signin' },
@@ -94244,19 +94245,20 @@ function main(setToken) {
                     { path: '/login' },
                     _react2.default.createElement(_Login2.default, { setToken: setToken })
                 ),
-                _react2.default.createElement(_reactRouterDom.Redirect, { from: '/', to: '/dashboard' })
+                _react2.default.createElement(_reactRouterDom.Redirect, { from: '/', to: '/userlist' })
             )
         )
     );
-}
+};
 
-function login(setToken) {
+var login = function login(setToken) {
     return _react2.default.createElement(
         'div',
         { className: 'wrapper' },
         _react2.default.createElement(
             _reactRouterDom.BrowserRouter,
             null,
+            _react2.default.createElement(_AppMenu2.default, { disabledUserList: true }),
             _react2.default.createElement(
                 _reactRouterDom.Switch,
                 null,
@@ -94274,7 +94276,7 @@ function login(setToken) {
             )
         )
     );
-}
+};
 
 function App() {
     var _useState = (0, _react.useState)(),
@@ -94282,103 +94284,13 @@ function App() {
         token = _useState2[0],
         setToken = _useState2[1];
 
-    if (!token) {
-        return login(setToken);
+    if (token) {
+        return main(setToken);
     }
-    return main(setToken);
+    return login(setToken);
 }
 
 exports.default = App;
-
-/***/ }),
-
-/***/ "./web/components/Dashboard/Dashboard.jsx":
-/*!************************************************!*\
-  !*** ./web/components/Dashboard/Dashboard.jsx ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = Dashboard;
-
-var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
-
-var _TableOfUsers = __webpack_require__(/*! ../TableOfUsers/TableOfUsers */ "./web/components/TableOfUsers/TableOfUsers.jsx");
-
-var _TableOfUsers2 = _interopRequireDefault(_TableOfUsers);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function Dashboard() {
-    return _react2.default.createElement(
-        "div",
-        { className: "login-wrapper" },
-        _react2.default.createElement(
-            "h2",
-            null,
-            _react2.default.createElement(
-                _reactRouterDom.Link,
-                { to: "/login", key: "login" },
-                "Login"
-            )
-        ),
-        _react2.default.createElement(
-            "h2",
-            null,
-            _react2.default.createElement(
-                _reactRouterDom.Link,
-                { to: "/signin", key: "signin" },
-                "Sign-in"
-            )
-        ),
-        _react2.default.createElement(
-            "h2",
-            null,
-            _react2.default.createElement(
-                "span",
-                { style: { color: "#555555" } },
-                "Dashboard"
-            )
-        ),
-        _react2.default.createElement(
-            "div",
-            { className: "my-divTable" },
-            _react2.default.createElement(
-                "div",
-                { className: "my-divTableBody" },
-                _react2.default.createElement(
-                    "div",
-                    { className: "my-divTableRow" },
-                    _react2.default.createElement(
-                        "div",
-                        { className: "my-divTableCellLeft" },
-                        "\xA0"
-                    ),
-                    _react2.default.createElement(
-                        "div",
-                        { className: "my-divTableCell" },
-                        _react2.default.createElement(_TableOfUsers2.default, null)
-                    ),
-                    _react2.default.createElement(
-                        "div",
-                        { className: "my-divTableCellRight" },
-                        "\xA0"
-                    )
-                )
-            )
-        )
-    );
-}
 
 /***/ }),
 
@@ -94506,7 +94418,7 @@ function Login(_ref2) {
 
                             setToken(token);
                             if (token) {
-                                history.push('/dashboard');
+                                history.push('/userlist');
                             }
 
                         case 6:
@@ -94525,29 +94437,6 @@ function Login(_ref2) {
     return _react2.default.createElement(
         'div',
         { className: 'login-wrapper' },
-        _react2.default.createElement(
-            'h2',
-            null,
-            _react2.default.createElement(
-                'span',
-                { style: { color: "#555555" } },
-                'Login'
-            )
-        ),
-        _react2.default.createElement(
-            'h2',
-            null,
-            _react2.default.createElement(
-                _reactRouterDom.Link,
-                { to: '/signin', key: 'signin' },
-                'Sign-in'
-            )
-        ),
-        _react2.default.createElement(
-            'h2',
-            null,
-            'Dashboard'
-        ),
         _react2.default.createElement(
             'form',
             { onSubmit: handleSubmit },
@@ -94672,10 +94561,10 @@ Login.propTypes = {
 
 /***/ }),
 
-/***/ "./web/components/Preferences/Preferences.jsx":
-/*!****************************************************!*\
-  !*** ./web/components/Preferences/Preferences.jsx ***!
-  \****************************************************/
+/***/ "./web/components/Menu/AppMenu.jsx":
+/*!*****************************************!*\
+  !*** ./web/components/Menu/AppMenu.jsx ***!
+  \*****************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -94685,7 +94574,8 @@ Login.propTypes = {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.default = Preferences;
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
@@ -94693,33 +94583,63 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 
+var _semanticUiReact = __webpack_require__(/*! semantic-ui-react */ "./node_modules/semantic-ui-react/dist/es/index.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function Preferences() {
+function AppMenu(props) {
+    var _useState = (0, _react.useState)(),
+        _useState2 = _slicedToArray(_useState, 2),
+        activeItem = _useState2[0],
+        setActiveItem = _useState2[1];
+
+    var history = (0, _reactRouterDom.useHistory)();
+    var handleItemClick = function handleItemClick(e, _ref) {
+        var name = _ref.name;
+
+        setActiveItem(name);
+        history.push(name);
+    };
+
     return _react2.default.createElement(
         "div",
-        { className: "login-wrapper" },
+        { className: "wrapper" },
         _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: "/dashboard", key: "dashboard" },
+            _semanticUiReact.Menu,
+            null,
             _react2.default.createElement(
-                "h2",
-                null,
-                "Dashboard"
+                _semanticUiReact.Menu.Item,
+                {
+                    name: "/login",
+                    active: activeItem === '/login',
+                    onClick: handleItemClick
+                },
+                "Login"
+            ),
+            _react2.default.createElement(
+                _semanticUiReact.Menu.Item,
+                {
+                    name: "/signin",
+                    active: activeItem === '/signin',
+                    onClick: handleItemClick
+                },
+                "Sign-in"
+            ),
+            _react2.default.createElement(
+                _semanticUiReact.Menu.Item,
+                {
+                    disabled: props.disabledUserList,
+                    name: "/userlist",
+                    active: activeItem === '/userlist',
+                    onClick: handleItemClick
+                },
+                "User list"
             )
-        ),
-        _react2.default.createElement(
-            "h2",
-            null,
-            "Preferences"
-        ),
-        _react2.default.createElement(
-            "h1",
-            null,
-            "Preferences"
         )
     );
 }
+
+exports.default = AppMenu;
 
 /***/ }),
 
@@ -94885,7 +94805,7 @@ function Signin(_ref2) {
 
                             setToken(token);
                             if (token) {
-                                history.push('/dashboard');
+                                history.push('/userlist');
                             }
 
                         case 6:
@@ -94919,29 +94839,6 @@ function Signin(_ref2) {
     return _react2.default.createElement(
         'div',
         { className: 'signin-wrapper' },
-        _react2.default.createElement(
-            'h2',
-            null,
-            _react2.default.createElement(
-                _reactRouterDom.Link,
-                { to: '/login', key: 'login' },
-                'Login'
-            )
-        ),
-        _react2.default.createElement(
-            'h2',
-            null,
-            _react2.default.createElement(
-                'span',
-                { style: { color: "#555555" } },
-                'Sign-in'
-            )
-        ),
-        _react2.default.createElement(
-            'h2',
-            null,
-            'Dashboard'
-        ),
         _react2.default.createElement(
             'form',
             { onSubmit: handleSubmit },
@@ -95255,9 +95152,14 @@ var _react2 = _interopRequireDefault(_react);
 
 var _semanticUiReact = __webpack_require__(/*! semantic-ui-react */ "./node_modules/semantic-ui-react/dist/es/index.js");
 
+var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var TableOfUsers = function TableOfUsers() {
+var TableOfUsers = function TableOfUsers(props) {
+
+    var history = (0, _reactRouterDom.useHistory)();
+
     var _useState = (0, _react.useState)(null),
         _useState2 = _slicedToArray(_useState, 2),
         error = _useState2[0],
@@ -95275,6 +95177,12 @@ var TableOfUsers = function TableOfUsers() {
 
     var getResult = function getResult(result) {
         setIsLoaded(true);
+        if (result.code && result.message) {
+            throw {
+                code: result.code,
+                message: result.message
+            };
+        }
         setItems(result);
     };
 
@@ -95284,7 +95192,7 @@ var TableOfUsers = function TableOfUsers() {
     };
 
     var getItems = function getItems() {
-        fetch("/user").then(function (res) {
+        fetch("/users/all").then(function (res) {
             return res.json();
         }).then(getResult, getError);
     };
@@ -95298,6 +95206,7 @@ var TableOfUsers = function TableOfUsers() {
 
         if (parentElement) {
             console.log(parentElement.id);
+            history.push('/userform/' + parentElement.id);
         }
     };
 
@@ -95315,89 +95224,540 @@ var TableOfUsers = function TableOfUsers() {
             '\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430...'
         );
     } else {
-        return _react2.default.createElement(
-            _semanticUiReact.Table,
-            { celled: true, selectable: true },
-            _react2.default.createElement(
-                _semanticUiReact.Table.Header,
-                null,
+        try {
+            return _react2.default.createElement(
+                _semanticUiReact.Table,
+                { celled: true, selectable: true },
                 _react2.default.createElement(
-                    _semanticUiReact.Table.Row,
+                    _semanticUiReact.Table.Header,
                     null,
                     _react2.default.createElement(
-                        _semanticUiReact.Table.HeaderCell,
-                        null,
-                        'FirstName'
-                    ),
-                    _react2.default.createElement(
-                        _semanticUiReact.Table.HeaderCell,
-                        null,
-                        'SurName'
-                    ),
-                    _react2.default.createElement(
-                        _semanticUiReact.Table.HeaderCell,
-                        null,
-                        'Age'
-                    ),
-                    _react2.default.createElement(
-                        _semanticUiReact.Table.HeaderCell,
-                        null,
-                        'Sex'
-                    ),
-                    _react2.default.createElement(
-                        _semanticUiReact.Table.HeaderCell,
-                        null,
-                        'City'
-                    )
-                )
-            ),
-            _react2.default.createElement(
-                _semanticUiReact.Table.Body,
-                null,
-                items.map(function (_ref) {
-                    var Id = _ref.Id,
-                        Name = _ref.Name,
-                        SurName = _ref.SurName,
-                        Age = _ref.Age,
-                        Sex = _ref.Sex,
-                        Interests = _ref.Interests,
-                        City = _ref.City;
-                    return _react2.default.createElement(
                         _semanticUiReact.Table.Row,
-                        { key: Id, id: Id },
+                        null,
                         _react2.default.createElement(
-                            _semanticUiReact.Table.Cell,
-                            { onClick: handleClick },
-                            Name
+                            _semanticUiReact.Table.HeaderCell,
+                            null,
+                            'FirstName'
                         ),
                         _react2.default.createElement(
-                            _semanticUiReact.Table.Cell,
-                            { onClick: handleClick },
-                            SurName
+                            _semanticUiReact.Table.HeaderCell,
+                            null,
+                            'SurName'
                         ),
                         _react2.default.createElement(
-                            _semanticUiReact.Table.Cell,
-                            { onClick: handleClick },
-                            Age
-                        ),
-                        _react2.default.createElement(
-                            _semanticUiReact.Table.Cell,
-                            { onClick: handleClick },
-                            Sex === 0 ? "Male" : "Female"
-                        ),
-                        _react2.default.createElement(
-                            _semanticUiReact.Table.Cell,
-                            { onClick: handleClick },
-                            City
+                            _semanticUiReact.Table.HeaderCell,
+                            null,
+                            'City'
                         )
-                    );
-                })
-            )
-        );
+                    )
+                ),
+                _react2.default.createElement(
+                    _semanticUiReact.Table.Body,
+                    null,
+                    items.map(function (_ref) {
+                        var Id = _ref.Id,
+                            Name = _ref.Name,
+                            SurName = _ref.SurName,
+                            Age = _ref.Age,
+                            Sex = _ref.Sex,
+                            Interests = _ref.Interests,
+                            City = _ref.City;
+                        return _react2.default.createElement(
+                            _semanticUiReact.Table.Row,
+                            { key: Id, id: Id },
+                            _react2.default.createElement(
+                                _semanticUiReact.Table.Cell,
+                                { onClick: handleClick },
+                                Name
+                            ),
+                            _react2.default.createElement(
+                                _semanticUiReact.Table.Cell,
+                                { onClick: handleClick },
+                                SurName
+                            ),
+                            _react2.default.createElement(
+                                _semanticUiReact.Table.Cell,
+                                { onClick: handleClick },
+                                City
+                            )
+                        );
+                    })
+                )
+            );
+        } catch (e) {
+            console.debug(e);
+            history.push('/login');
+            return _react2.default.createElement('div', null);
+        }
     }
 };
 
 exports.default = TableOfUsers;
+
+/***/ }),
+
+/***/ "./web/components/UserDefails/UserDefails.jsx":
+/*!****************************************************!*\
+  !*** ./web/components/UserDefails/UserDefails.jsx ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _semanticUiReact = __webpack_require__(/*! semantic-ui-react */ "./node_modules/semantic-ui-react/dist/es/index.js");
+
+var _consts = __webpack_require__(/*! ../../consts */ "./web/consts.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var UserDefails = function UserDefails(props) {
+    var _useState = (0, _react.useState)(null),
+        _useState2 = _slicedToArray(_useState, 2),
+        error = _useState2[0],
+        setError = _useState2[1];
+
+    var _useState3 = (0, _react.useState)(false),
+        _useState4 = _slicedToArray(_useState3, 2),
+        isLoaded = _useState4[0],
+        setIsLoaded = _useState4[1];
+
+    var _useState5 = (0, _react.useState)({}),
+        _useState6 = _slicedToArray(_useState5, 2),
+        item = _useState6[0],
+        setItem = _useState6[1];
+
+    var getResult = function getResult(result) {
+        setIsLoaded(true);
+        if (result.code && result.message) {
+            throw {
+                code: result.code,
+                message: result.message
+            };
+        }
+        setItem(result);
+    };
+
+    var getError = function getError(error) {
+        setIsLoaded(true);
+        setError(error);
+    };
+
+    var getItem = function getItem() {
+        fetch("/user/" + props.id).then(function (res) {
+            return res.json();
+        }).then(getResult, getError);
+    };
+
+    (0, _react.useEffect)(getItem, []);
+
+    var handleClick = function handleClick(e) {
+        e.preventDefault();
+        var target = e.target;
+        var parentElement = target.parentElement;
+
+        if (parentElement) {
+            console.log(parentElement.id);
+        }
+    };
+
+    console.log(item);
+
+    if (error) {
+        return _react2.default.createElement(
+            "div",
+            null,
+            "\u041E\u0448\u0438\u0431\u043A\u0430: ",
+            error.message
+        );
+    } else if (!isLoaded) {
+        return _react2.default.createElement(
+            "div",
+            null,
+            "\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430..."
+        );
+    } else {
+        try {
+            return _react2.default.createElement(
+                "div",
+                { className: "my-divTableBody" },
+                _react2.default.createElement(
+                    "div",
+                    { className: "my-divTableRow" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellLeft" },
+                        "\xA0"
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCell" },
+                        _react2.default.createElement(
+                            "h1",
+                            null,
+                            "For register Sign in please"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellRight" },
+                        "\xA0"
+                    )
+                ),
+                _react2.default.createElement(
+                    "div",
+                    { className: "my-divTableRow" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellLeft" },
+                        "\xA0"
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCell" },
+                        _react2.default.createElement(
+                            "p",
+                            { className: "my-p-label" },
+                            "Username:"
+                        ),
+                        _react2.default.createElement(_semanticUiReact.Input, { value: item.Username, disabled: true })
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellRight" },
+                        "\xA0"
+                    )
+                ),
+                _react2.default.createElement(
+                    "div",
+                    { className: "my-divTableRow" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellLeft" },
+                        "\xA0"
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCell" },
+                        _react2.default.createElement(
+                            "p",
+                            { className: "my-p-label" },
+                            "Firstname:"
+                        ),
+                        _react2.default.createElement(_semanticUiReact.Input, { value: item.Name, disabled: true })
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellRight" },
+                        "\xA0"
+                    )
+                ),
+                _react2.default.createElement(
+                    "div",
+                    { className: "my-divTableRow" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellLeft" },
+                        "\xA0"
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCell" },
+                        _react2.default.createElement(
+                            "p",
+                            { className: "my-p-label" },
+                            "Surname:"
+                        ),
+                        _react2.default.createElement(_semanticUiReact.Input, { value: item.SurName, disabled: true })
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellRight" },
+                        "\xA0"
+                    )
+                ),
+                _react2.default.createElement(
+                    "div",
+                    { className: "my-divTableRow" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellLeft" },
+                        "\xA0"
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCell" },
+                        _react2.default.createElement(
+                            "p",
+                            { className: "my-p-label" },
+                            "Age:"
+                        ),
+                        _react2.default.createElement(_semanticUiReact.Input, { value: item.Age, disabled: true })
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellRight" },
+                        "\xA0"
+                    )
+                ),
+                _react2.default.createElement(
+                    "div",
+                    { className: "my-divTableRow" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellLeft" },
+                        "\xA0"
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCell" },
+                        _react2.default.createElement(
+                            "p",
+                            { className: "my-p-label" },
+                            "Sex:"
+                        ),
+                        _react2.default.createElement(_semanticUiReact.Dropdown, {
+                            disabled: true,
+                            defaultValue: item.Sex,
+                            value: item.Sex,
+                            item: true,
+                            fluid: true,
+                            selection: true,
+                            options: _consts.SEX_OPTIONS
+                        })
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellRight" },
+                        "\xA0"
+                    )
+                ),
+                _react2.default.createElement(
+                    "div",
+                    { className: "my-divTableRow" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellLeft" },
+                        "\xA0"
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCell" },
+                        _react2.default.createElement(
+                            "p",
+                            { className: "my-p-label" },
+                            "City"
+                        ),
+                        _react2.default.createElement(_semanticUiReact.Dropdown, {
+                            disabled: true,
+                            defaultValue: item.City,
+                            value: item.City,
+                            fluid: true,
+                            search: true,
+                            selection: true,
+                            options: _consts.CITY_OPTIONS
+                        })
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellRight" },
+                        "\xA0"
+                    )
+                )
+            );
+        } catch (e) {
+            console.debug(e);
+            history.push('/login');
+        }
+    }
+};
+
+exports.default = UserDefails;
+
+/***/ }),
+
+/***/ "./web/components/UserForm/UserForm.jsx":
+/*!**********************************************!*\
+  !*** ./web/components/UserForm/UserForm.jsx ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.UserForm = undefined;
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _TableOfUsers = __webpack_require__(/*! ../TableOfUsers/TableOfUsers */ "./web/components/TableOfUsers/TableOfUsers.jsx");
+
+var _TableOfUsers2 = _interopRequireDefault(_TableOfUsers);
+
+var _UserDefails = __webpack_require__(/*! ../UserDefails/UserDefails */ "./web/components/UserDefails/UserDefails.jsx");
+
+var _UserDefails2 = _interopRequireDefault(_UserDefails);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var UserForm = exports.UserForm = function UserForm(_ref) {
+    var match = _ref.match;
+
+
+    console.log(match);
+
+    return _react2.default.createElement(
+        "div",
+        { className: "login-wrapper" },
+        _react2.default.createElement(
+            "div",
+            { className: "my-divTable" },
+            _react2.default.createElement(
+                "div",
+                { className: "my-divTableBody" },
+                _react2.default.createElement(
+                    "div",
+                    { className: "my-divTableRow" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellLeft" },
+                        "\xA0"
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCell" },
+                        _react2.default.createElement(
+                            "h1",
+                            null,
+                            "User form"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellRight" },
+                        "\xA0"
+                    )
+                )
+            ),
+            _react2.default.createElement(_UserDefails2.default, { id: match.params.id })
+        )
+    );
+};
+
+exports.default = UserForm;
+
+/***/ }),
+
+/***/ "./web/components/UserList/UserList.jsx":
+/*!**********************************************!*\
+  !*** ./web/components/UserList/UserList.jsx ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.UserList = undefined;
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _TableOfUsers = __webpack_require__(/*! ../TableOfUsers/TableOfUsers */ "./web/components/TableOfUsers/TableOfUsers.jsx");
+
+var _TableOfUsers2 = _interopRequireDefault(_TableOfUsers);
+
+var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var UserList = exports.UserList = function UserList(props) {
+
+    var history = (0, _reactRouterDom.useHistory)();
+
+    try {
+        return _react2.default.createElement(
+            "div",
+            { className: "login-wrapper" },
+            _react2.default.createElement(
+                "div",
+                { className: "my-divTable" },
+                _react2.default.createElement(
+                    "div",
+                    { className: "my-divTableBody" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableRow" },
+                        _react2.default.createElement(
+                            "div",
+                            { className: "my-divTableCellLeft" },
+                            "\xA0"
+                        ),
+                        _react2.default.createElement(
+                            "div",
+                            { className: "my-divTableCell" },
+                            _react2.default.createElement(
+                                "h1",
+                                null,
+                                "User list"
+                            )
+                        ),
+                        _react2.default.createElement(
+                            "div",
+                            { className: "my-divTableCellRight" },
+                            "\xA0"
+                        )
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableRow" },
+                        _react2.default.createElement(
+                            "div",
+                            { className: "my-divTableCellLeft" },
+                            "\xA0"
+                        ),
+                        _react2.default.createElement(
+                            "div",
+                            { className: "my-divTableCell" },
+                            _react2.default.createElement(_TableOfUsers2.default, props)
+                        ),
+                        _react2.default.createElement(
+                            "div",
+                            { className: "my-divTableCellRight" },
+                            "\xA0"
+                        )
+                    )
+                )
+            )
+        );
+    } catch (e) {
+        console.debug(e);
+        history.push('/login');
+        return _react2.default.createElement("div", null);
+    }
+};
+
+exports.default = UserList;
 
 /***/ }),
 

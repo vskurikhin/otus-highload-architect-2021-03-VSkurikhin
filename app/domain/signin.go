@@ -15,7 +15,7 @@ type Signin struct {
 
 func (s *Signin) String() string {
 	return fmt.Sprintf(
-		`Signin{Username: %s, Password: ***HIDEN***, Name: %s, Surname: %s, Age: %s, Sex: %s, Interests: %s}`,
+		`SignIn{Username: %s, Password: ***HIDEN***, Name: %s, Surname: %s, Age: %s, Sex: %s, Interests: %s}`,
 		s.Username, s.Name, s.Surname, s.Age, s.Sex, s.Interests,
 	)
 }

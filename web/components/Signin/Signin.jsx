@@ -3,7 +3,7 @@ import './Signin.css';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 import {Dropdown, Input} from 'semantic-ui-react'
-import {Link, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 
 import {CITY_OPTIONS, SEX_OPTIONS} from "../../consts";
 
@@ -44,7 +44,7 @@ export default function Signin({setToken}) {
         });
         setToken(token);
         if (token){
-            history.push('/dashboard');
+            history.push('/userlist');
         }
     }
 
@@ -65,9 +65,6 @@ export default function Signin({setToken}) {
 
     return (
         <div className="signin-wrapper">
-            <h2><Link to='/login' key='login'>Login</Link></h2>
-            <h2><span style={{color: "#555555"}}>Sign-in</span></h2>
-            <h2>Dashboard</h2>
             <form onSubmit={handleSubmit}>
                 <div className="my-divTable">
                     <div className="my-divTableBody">

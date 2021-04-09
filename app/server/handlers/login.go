@@ -9,6 +9,7 @@ import (
 	"github.com/valyala/fasthttp"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/security"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -23,31 +24,7 @@ func (l *login) String() string {
 
 func (h *Handlers) Login(ctx *sa.RequestCtx) error {
 
-	var dto login
-	err := json.Unmarshal(ctx.PostBody(), &dto)
-
-	if err != nil {
-		logger.Error(err)
-		errorCase := domain.ApiMessage{
-			Code:    fasthttp.StatusPreconditionFailed,
-			Message: err.Error(),
-		}
-		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
-	}
-	login, err := h.Server.DAO.Login.Read(dto.Username)
-
-	if logger.DebugEnabled() {
-		logger.Debugf("got login: %s", dto.String())
-	}
-	if err != nil {
-		logger.Error(err)
-		errorCase := domain.ApiMessage{
-			Code:    fasthttp.StatusPreconditionFailed,
-			Message: err.Error(),
-		}
-		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
-	}
-	err = bcrypt.CompareHashAndPassword([]byte(login.Password()), []byte(dto.Password))
+	err := h.login(ctx)
 
 	if err == nil {
 		sessionId := uuid.New()
@@ -62,9 +39,32 @@ func (h *Handlers) Login(ctx *sa.RequestCtx) error {
 
 		return ctx.HTTPResponse(token.String())
 	}
-	logger.Errorf("bad password %v", err)
+	logger.Errorf("Bad password or error: %v", err)
 
 	return ctx.HTTPResponse("{}", fasthttp.StatusForbidden)
+}
+
+func (h *Handlers) login(ctx *sa.RequestCtx) error {
+
+	var dto login
+	err := json.Unmarshal(ctx.PostBody(), &dto)
+
+	if err != nil {
+		return err // правильная обработка ошибок вместо паники
+	}
+	err = security.CheckValue(dto.Username)
+	if err != nil {
+		return err
+	}
+
+	login, err := h.Server.DAO.Login.Read(dto.Username)
+
+	if err != nil {
+		return err
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(login.Password()), []byte(dto.Password))
+
+	return err
 }
 
 func (h *Handlers) generateToken(ctx *sa.RequestCtx, sessionId uuid.UUID) *domain.Token {
