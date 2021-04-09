@@ -116,6 +116,53 @@ func (u *user) Create(user *User) error {
 	return nil
 }
 
+func (u *user) Read(sid string) (string, error) {
+
+	id, err := uuid.Parse(sid)
+
+	if err != nil {
+		return "{}", err // правильная обработка ошибок вместо паники
+	}
+	user, err := u.read(id)
+
+	if err != nil {
+		return "{}", err
+	}
+
+	return user.String(), nil
+}
+
+func (u *user) read(id uuid.UUID) (*User, error) {
+
+	stmtOut, err := u.db.Prepare(`
+		SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests)
+		  FROM user u
+		  JOIN user_has_interests uhi ON u.id = uhi.user_id
+		  JOIN interest i ON i.id = uhi.interest_id
+		 WHERE u.id = ?
+         GROUP BY u.id, username, name, surname, age, sex, city
+	`)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }()
+
+	var user User
+	var interests string
+	idBytes, err := id.MarshalBinary()
+	err = stmtOut.QueryRow(idBytes).
+		Scan(&user.id, &user.Username, &user.Name, &user.SurName, &user.Age, &user.Sex, &user.City, &interests)
+	if err != nil {
+		return nil, err
+	}
+	err = json.Unmarshal([]byte(interests), &user.Interests)
+
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 func (u *user) ReadListAsString() (string, error) {
 
 	users, err := u.readList()

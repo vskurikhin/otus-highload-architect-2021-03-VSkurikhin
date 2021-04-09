@@ -3,7 +3,7 @@ import './Login.css';
 import PropTypes from 'prop-types';
 import React, {useState} from 'react';
 import {Input} from "semantic-ui-react";
-import {Link, useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 
 async function loginUser(credentials) {
     return fetch('/login', {
@@ -30,15 +30,12 @@ export default function Login({setToken}) {
         });
         setToken(token);
         if (token){
-            history.push('/dashboard');
+            history.push('/userlist');
         }
     }
 
     return (
         <div className="login-wrapper">
-            <h2><span style={{color: "#555555"}}>Login</span></h2>
-            <h2><Link to='/signin' key='signin'>Sign-in</Link></h2>
-            <h2>Dashboard</h2>
             <form onSubmit={handleSubmit}>
                 <div className="my-divTable">
                     <div className="my-divTableBody">

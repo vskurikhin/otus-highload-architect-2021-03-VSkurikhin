@@ -1,63 +1,62 @@
 import './App.css';
 
-import Dashboard from './components/Dashboard/Dashboard';
+import UserList from './components/UserList/UserList';
 import Login from "./components/Login/Login";
-import Preferences from './components/Preferences/Preferences';
+import UserForm from './components/UserForm/UserForm';
 import Signin from "./components/Signin/Signin";
+import AppMenu from "./components/Menu/AppMenu";
 
 import React, {useState} from 'react';
 import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom';
 
-function main(setToken) {
-    return (
-        <div className="wrapper">
-            <BrowserRouter>
-                <Switch>
-                    <Route path="/dashboard">
-                        <Dashboard/>
-                    </Route>
-                    <Route path="/preferences">
-                        <Preferences/>
-                    </Route>
-                    <Route path="/signin">
-                        <Signin setToken={setToken}/>
-                    </Route>
-                    <Route path="/login">
-                        <Login setToken={setToken}/>
-                    </Route>
-                    <Redirect from='/' to='/dashboard'/>
-                </Switch>
-            </BrowserRouter>
-        </div>
-    );
-}
+const main = setToken => (
+    <div className="wrapper">
+        <BrowserRouter>
+            <AppMenu disabledUserList={false}/>
+            <Switch>
+                <Route path="/userlist">
+                    <UserList/>
+                </Route>
+                <Route path="/userform/:id" component={UserForm}>
+                </Route>
+                <Route path="/signin">
+                    <Signin setToken={setToken}/>
+                </Route>
+                <Route path="/login">
+                    <Login setToken={setToken}/>
+                </Route>
+                <Redirect from='/' to='/userlist'/>
+            </Switch>
+        </BrowserRouter>
+    </div>
+);
 
-function login(setToken) {
-    return (
-        <div className="wrapper">
-            <BrowserRouter>
-                <Switch>
-                    <Route path="/signin">
-                        <Signin setToken={setToken}/>
-                    </Route>
-                    <Route path="/login">
-                        <Login setToken={setToken}/>
-                    </Route>
-                    <Redirect from='/' to='/login'/>
-                </Switch>
-            </BrowserRouter>
-        </div>
-    );
-}
+const login = setToken => (
+    <div className="wrapper">
+        <BrowserRouter>
+            <AppMenu disabledUserList={true}/>
+            <Switch>
+                <Route path="/signin">
+                    <Signin setToken={setToken}/>
+                </Route>
+                <Route path="/login">
+                    <Login setToken={setToken}/>
+                </Route>
+                <Redirect from='/' to='/login'/>
+            </Switch>
+        </BrowserRouter>
+    </div>
+);
 
 function App() {
 
     const [token, setToken] = useState();
 
-    if (!token) {
-        return login(setToken)
+    if (token) {
+        return main(setToken)
     }
-    return main(setToken)
+    return login(setToken)
+
 }
 
 export default App;

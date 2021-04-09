@@ -28,10 +28,13 @@ func (h *Handlers) List(ctx *sa.RequestCtx) error {
 	return ctx.HTTPResponse(u)
 }
 
-func (h *Handlers) Signin(ctx *sa.RequestCtx) error {
+func (h *Handlers) User(ctx *sa.RequestCtx) error {
 
-	var signIn domain.Signin
-	err := json.Unmarshal(ctx.PostBody(), &signIn)
+	id := fmt.Sprintf("%v", ctx.UserValue("id"))
+	if logger.DebugEnabled() {
+		logger.Debugf("got user id: %s", id)
+	}
+	u, err := h.Server.DAO.User.Read(id)
 
 	if err != nil {
 		logger.Error(err)
@@ -41,6 +44,39 @@ func (h *Handlers) Signin(ctx *sa.RequestCtx) error {
 		}
 		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
 	}
+	return ctx.HTTPResponse(u)
+}
+
+func (h *Handlers) SignIn(ctx *sa.RequestCtx) error {
+
+	token, err := h.signIn(ctx)
+
+	if err != nil {
+		logger.Error(err)
+		errorCase := domain.ApiMessage{
+			Code:    fasthttp.StatusPreconditionFailed,
+			Message: err.Error(),
+		}
+		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
+	}
+
+	return ctx.HTTPResponse(token.String())
+}
+
+func (h *Handlers) signIn(ctx *sa.RequestCtx) (*domain.Token, error) {
+
+	var signIn domain.Signin
+	err := json.Unmarshal(ctx.PostBody(), &signIn)
+
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	err = security.CheckSignIn(&signIn)
+
+	if err != nil {
+		return nil, err
+	}
+
 	if logger.DebugEnabled() {
 		logger.Debugf("got signIn: %s", signIn.String())
 	}
@@ -50,36 +86,36 @@ func (h *Handlers) Signin(ctx *sa.RequestCtx) error {
 	login.SetId(id)
 	login.SetPassword(password)
 	err = h.Server.DAO.Login.Create(&login)
+
 	if err != nil {
-		logger.Error(err)
-		errorCase := domain.ApiMessage{
-			Code:    fasthttp.StatusPreconditionFailed,
-			Message: err.Error(),
-		}
-		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
+		return nil, err
 	}
-	age, _ := strconv.ParseInt(signIn.Age, 10, 32)
-	sex, _ := strconv.ParseInt(signIn.Age, 10, 1)
+	age, err := strconv.ParseInt(signIn.Age, 10, 32)
+
+	if err != nil {
+		return nil, err
+	}
+	sex, err := strconv.ParseInt(signIn.Age, 10, 1)
+
+	if err != nil {
+		return nil, err
+	}
 	ins := strings.Split(signIn.Interests, "\n")
 	user := domain.Create(id, signIn.Username, &signIn.Name, &signIn.Surname, int(age), int(sex), ins, &signIn.City)
+
 	if logger.DebugEnabled() {
 		logger.Debugf("got user: %s", user.String())
 	}
 	err = h.Server.DAO.User.Create(user)
+
 	if err != nil {
-		logger.Error(err)
-		errorCase := domain.ApiMessage{
-			Code:    fasthttp.StatusPreconditionFailed,
-			Message: err.Error(),
-		}
-		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
+		return nil, err
 	}
 	_ = h.Server.DAO.Interest.CreateInterests(ins)
 	interests, _ := h.Server.DAO.Interest.GetExistsInterests(ins)
 	_ = h.Server.DAO.UserHasInterests.LinkInterests(user, interests)
-	token := h.generateToken(ctx, id)
 
-	return ctx.HTTPResponse(token.String())
+	return h.generateToken(ctx, id), nil
 }
 
 func (h *Handlers) Create(ctx *sa.RequestCtx) error {
