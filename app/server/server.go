@@ -7,16 +7,16 @@ import (
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/dao"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/jwt"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/security"
 	"log"
 	"os"
 )
 
 // Server определяет параметры для запуска HTTP-сервера.
 type Server struct {
-	DAO    *dao.DAO
-	JWT    *jwt.JWT
+	DAO    *domain.DAO
+	JWT    *security.JWT
 	Server *sa.Atreugo
 }
 
@@ -45,7 +45,7 @@ func New(cfg *config.Config) *Server {
 	go gracefulClose(db)
 	versionDB(db)
 
-	return &Server{DAO: dao.New(db), JWT: jwt.New(cfg), Server: sa.New(c)}
+	return &Server{DAO: domain.New(db), JWT: security.New(cfg), Server: sa.New(c)}
 }
 
 func (s *Server) UseBefore(fns sa.Middleware) *sa.Router {

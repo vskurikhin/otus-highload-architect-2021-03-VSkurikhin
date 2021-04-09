@@ -1,9 +1,9 @@
-package message
+package domain
 
 import (
 	"encoding/json"
+	"github.com/savsgio/go-logger/v2"
 	"github.com/valyala/fasthttp"
-	"log"
 )
 
 type ApiMessage struct {
@@ -29,7 +29,7 @@ func (a *ApiMessage) Marshal() []byte {
 
 	apiMessage, err := json.Marshal(*a)
 	if err != nil {
-		log.Println(err)
+		logger.Errorf("%v", err)
 		return nil
 	}
 	return apiMessage

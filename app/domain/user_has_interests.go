@@ -1,12 +1,10 @@
-package dao
+package domain
 
 import (
 	"github.com/google/uuid"
-	"github.com/savsgio/go-logger/v2"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/model"
 )
 
-func (u *userHasInterests) Link(user *model.User, interest *model.Interest) error {
+func (u *userHasInterests) Link(user *User, interest *Interest) error {
 	// Подготовить оператор для вставки данных
 	stmtIns, err := u.db.Prepare(`
 		INSERT INTO user_has_interests (id, user_id, interest_id) VALUES (?, ?, ?)
@@ -27,11 +25,11 @@ func (u *userHasInterests) Link(user *model.User, interest *model.Interest) erro
 	return nil
 }
 
-func (u *userHasInterests) LinkInterests(user *model.User, interests []model.Interest) error {
+func (u *userHasInterests) LinkInterests(user *User, interests []Interest) error {
 	for _, interest := range interests {
 		err := u.Link(user, &interest)
 		if err != nil {
-			logger.Errorf("Link user and interest with error: %v", err)
+			return err
 		}
 	}
 	return nil

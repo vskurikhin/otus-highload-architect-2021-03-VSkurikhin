@@ -1,8 +1,8 @@
 package security
 
 import (
+	"github.com/savsgio/go-logger/v2"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 )
 
 func HashAndSalt(pwd []byte) string {
@@ -14,7 +14,7 @@ func HashAndSalt(pwd []byte) string {
 	// than the MinCost (4)
 	hash, err := bcrypt.GenerateFromPassword(pwd, bcrypt.DefaultCost)
 	if err != nil {
-		log.Println(err)
+		logger.Error(err)
 	}
 	// GenerateFromPassword returns a byte slice so we need to
 	// convert the bytes to a string and return it

@@ -1,4 +1,4 @@
-package jwt
+package security
 
 import (
 	"github.com/google/uuid"
@@ -24,7 +24,10 @@ type Session struct {
 
 // GenerateToken создаёт токен.
 func (j *JWT) GenerateToken(sessionId uuid.UUID) (string, time.Time) {
-	logger.Debugf("Create new token for user %s", sessionId)
+
+	if logger.DebugEnabled() {
+		logger.Debugf("Create new session %s", sessionId)
+	}
 
 	expireAt := time.Now().Add(1 * time.Minute)
 
@@ -47,8 +50,10 @@ func (j *JWT) GenerateToken(sessionId uuid.UUID) (string, time.Time) {
 
 // ValidateToken проверяет токен.
 func (j *JWT) ValidateToken(requestToken string) (*jwt.Token, error) {
-	logger.Debug("Validating token...")
 
+	if logger.DebugEnabled() {
+		logger.Debug("Validating token...")
+	}
 	session := &Session{}
 	token, err := jwt.ParseWithClaims(requestToken, session, func(token *jwt.Token) (interface{}, error) {
 		return j.jwtSignKey, nil
