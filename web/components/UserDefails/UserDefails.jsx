@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Dropdown, Input, Table} from "semantic-ui-react";
 import {CITY_OPTIONS, SEX_OPTIONS} from "../../consts";
+import {useHistory} from "react-router-dom";
 
 const UserDefails = (props) => {
 
+    const history = useHistory();
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [item, setItem] = useState({});
@@ -122,6 +124,7 @@ const UserDefails = (props) => {
         } catch (e) {
             console.debug(e);
             history.push('/login');
+            return <div/>;
         }
     }
 }
