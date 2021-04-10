@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Dropdown, Input, Table} from "semantic-ui-react";
 import {CITY_OPTIONS, SEX_OPTIONS} from "../../consts";
+import {useHistory} from "react-router-dom";
 
 const UserDefails = (props) => {
 
+    const history = useHistory();
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [item, setItem] = useState({});
@@ -24,30 +26,24 @@ const UserDefails = (props) => {
         setError(error);
     }
 
-    const getItem = () => {
-        fetch("/user/" + props.id)
-            .then(res => res.json())
-            .then(getResult, getError);
-    }
+    const getItem = () => fetch("/user/" + props.id)
+        .then(res => res.json())
+        .then(getResult, getError)
+
 
     useEffect(getItem, [])
 
-    const handleClick = e => {
-        e.preventDefault();
-        const {target} = e
-        const {parentElement} = target
-        if (parentElement) {
-            console.log(parentElement.id)
-        }
-    };
-
-    console.log(item);
-
     if (error) {
         return <div>Ошибка: {error.message}</div>;
-    } else if (!isLoaded) {
+    } else if ( ! isLoaded) {
         return <div>Загрузка...</div>;
-    } else {
+    } else if (item && item !== '{}') {
+        let isArray = false;
+        if (typeof Array.isArray === 'undefined') {
+            Array.isArray = function (obj) {
+                isArray = Object.prototype.toString.call(obj) === '[object Array]';
+            }
+        }
         try {
             return (
                 <div className="my-divTableBody">
@@ -87,15 +83,7 @@ const UserDefails = (props) => {
                         <div className="my-divTableCellLeft">&nbsp;</div>
                         <div className="my-divTableCell">
                             <p className="my-p-label">Sex:</p>
-                            <Dropdown
-                                disabled={true}
-                                defaultValue={item.Sex}
-                                value={item.Sex}
-                                fluid
-                                search
-                                selection
-                                options={SEX_OPTIONS}
-                            />
+                            <Input value={item.Sex === 0 ? 'Male' : 'Female'} disabled={true}/>
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
@@ -115,11 +103,24 @@ const UserDefails = (props) => {
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
+                    {Array.isArray(item.Interests) || isArray ? (
+                        <div className="my-divTableRow">
+                            <div className="my-divTableCellLeft">&nbsp;</div>
+                            <div className="my-divTableCell">
+                                <p className="my-p-label">Interests:</p>
+                                {item.Interests.map((interest) => (
+                                    <Input value={interest} disabled={true}/>
+                                ))}
+                            </div>
+                            <div className="my-divTableCellRight">&nbsp;</div>
+                        </div>
+                    ) : <div/>}
                 </div>
             );
         } catch (e) {
             console.debug(e);
             history.push('/login');
+            return <div/>;
         }
     }
 }

@@ -94618,6 +94618,9 @@ function AppMenu(props) {
         history.push(name);
     };
 
+    console.debug('history.location: ');
+    console.debug(history.location);
+
     return _react2.default.createElement(
         "div",
         { className: "wrapper" },
@@ -94839,18 +94842,15 @@ function Signin(_ref2) {
     }();
 
     var onSexChange = function onSexChange(e, data) {
-        console.log(data.value);
-        setSex(data.value);
+        return setSex(data.value);
     };
 
     var onCityChange = function onCityChange(e, data) {
-        console.log(data.value);
-        setCity(data.value);
+        return setCity(data.value);
     };
 
     var onCitySearchChange = function onCitySearchChange(e, data) {
-        console.log(data.searchQuery);
-        setCity(data.searchQuery);
+        return setCity(data.searchQuery);
     };
 
     return _react2.default.createElement(
@@ -95195,6 +95195,7 @@ var TableOfUsers = function TableOfUsers(props) {
     var getResult = function getResult(result) {
         setIsLoaded(true);
         if (result.code && result.message) {
+            console.error(result.code + ' : ' + result.message);
             throw {
                 code: result.code,
                 message: result.message
@@ -95222,7 +95223,6 @@ var TableOfUsers = function TableOfUsers(props) {
         var parentElement = target.parentElement;
 
         if (parentElement) {
-            console.log(parentElement.id);
             history.push('/userform/' + parentElement.id);
         }
     };
@@ -95337,9 +95337,14 @@ var _semanticUiReact = __webpack_require__(/*! semantic-ui-react */ "./node_modu
 
 var _consts = __webpack_require__(/*! ../../consts */ "./web/consts.js");
 
+var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var UserDefails = function UserDefails(props) {
+
+    var history = (0, _reactRouterDom.useHistory)();
+
     var _useState = (0, _react.useState)(null),
         _useState2 = _slicedToArray(_useState, 2),
         error = _useState2[0],
@@ -95372,24 +95377,12 @@ var UserDefails = function UserDefails(props) {
     };
 
     var getItem = function getItem() {
-        fetch("/user/" + props.id).then(function (res) {
+        return fetch("/user/" + props.id).then(function (res) {
             return res.json();
         }).then(getResult, getError);
     };
 
     (0, _react.useEffect)(getItem, []);
-
-    var handleClick = function handleClick(e) {
-        e.preventDefault();
-        var target = e.target;
-        var parentElement = target.parentElement;
-
-        if (parentElement) {
-            console.log(parentElement.id);
-        }
-    };
-
-    console.log(item);
 
     if (error) {
         return _react2.default.createElement(
@@ -95404,7 +95397,13 @@ var UserDefails = function UserDefails(props) {
             null,
             "\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430..."
         );
-    } else {
+    } else if (item && item !== '{}') {
+        var isArray = false;
+        if (typeof Array.isArray === 'undefined') {
+            Array.isArray = function (obj) {
+                isArray = Object.prototype.toString.call(obj) === '[object Array]';
+            };
+        }
         try {
             return _react2.default.createElement(
                 "div",
@@ -95521,15 +95520,7 @@ var UserDefails = function UserDefails(props) {
                             { className: "my-p-label" },
                             "Sex:"
                         ),
-                        _react2.default.createElement(_semanticUiReact.Dropdown, {
-                            disabled: true,
-                            defaultValue: item.Sex,
-                            value: item.Sex,
-                            fluid: true,
-                            search: true,
-                            selection: true,
-                            options: _consts.SEX_OPTIONS
-                        })
+                        _react2.default.createElement(_semanticUiReact.Input, { value: item.Sex === 0 ? 'Male' : 'Female', disabled: true })
                     ),
                     _react2.default.createElement(
                         "div",
@@ -95568,11 +95559,38 @@ var UserDefails = function UserDefails(props) {
                         { className: "my-divTableCellRight" },
                         "\xA0"
                     )
-                )
+                ),
+                Array.isArray(item.Interests) || isArray ? _react2.default.createElement(
+                    "div",
+                    { className: "my-divTableRow" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellLeft" },
+                        "\xA0"
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCell" },
+                        _react2.default.createElement(
+                            "p",
+                            { className: "my-p-label" },
+                            "Interests:"
+                        ),
+                        item.Interests.map(function (interest) {
+                            return _react2.default.createElement(_semanticUiReact.Input, { value: interest, disabled: true });
+                        })
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellRight" },
+                        "\xA0"
+                    )
+                ) : _react2.default.createElement("div", null)
             );
         } catch (e) {
             console.debug(e);
             history.push('/login');
+            return _react2.default.createElement("div", null);
         }
     }
 };
@@ -95612,10 +95630,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var UserForm = exports.UserForm = function UserForm(_ref) {
     var match = _ref.match;
-
-
-    console.log(match);
-
     return _react2.default.createElement(
         "div",
         { className: "login-wrapper" },

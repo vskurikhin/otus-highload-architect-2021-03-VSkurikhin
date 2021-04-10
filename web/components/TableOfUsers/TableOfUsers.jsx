@@ -12,6 +12,7 @@ const TableOfUsers = (props) => {
     const getResult = result => {
         setIsLoaded(true);
         if (result.code && result.message) {
+            console.error(result.code + ' : ' + result.message)
             throw {
                 code: result.code,
                 message: result.message
@@ -38,14 +39,13 @@ const TableOfUsers = (props) => {
         const {target} = e
         const {parentElement} = target
         if (parentElement) {
-            console.log(parentElement.id)
             history.push('/userform/' + parentElement.id);
         }
     };
 
     if (error) {
         return <div>Ошибка: {error.message}</div>;
-    } else if (!isLoaded) {
+    } else if ( ! isLoaded) {
         return <div>Загрузка...</div>;
     } else {
         try {

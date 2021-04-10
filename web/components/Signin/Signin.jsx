@@ -48,20 +48,11 @@ export default function Signin({setToken}) {
         }
     }
 
-    const onSexChange = (e, data) => {
-        console.log(data.value);
-        setSex(data.value)
-    }
+    const onSexChange = (e, data) => setSex(data.value)
 
-    const onCityChange = (e, data) => {
-        console.log(data.value);
-        setCity(data.value)
-    }
+    const onCityChange = (e, data) => setCity(data.value)
 
-    const onCitySearchChange = (e, data) => {
-        console.log(data.searchQuery);
-        setCity(data.searchQuery)
-    }
+    const onCitySearchChange = (e, data) => setCity(data.searchQuery)
 
     return (
         <div className="signin-wrapper">
