@@ -30,7 +30,7 @@ type (
 	}
 	// Server предоставляет конфигурацию сервера.
 	Server struct {
-		Host       string `envconfig:"SERVER_HOST" default:"localhost:6060"`
+		Host       string `envconfig:"SERVER_HOST" default:"0.0.0.0:5000"`
 		JWTSignKey string `envconfig:"JWT_SIGN_KEY" default:"TestForFastHTTPWithJWT"`
 	}
 )
