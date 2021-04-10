@@ -95521,15 +95521,7 @@ var UserDefails = function UserDefails(props) {
                             { className: "my-p-label" },
                             "Sex:"
                         ),
-                        _react2.default.createElement(_semanticUiReact.Dropdown, {
-                            disabled: true,
-                            defaultValue: item.Sex,
-                            value: item.Sex,
-                            fluid: true,
-                            search: true,
-                            selection: true,
-                            options: _consts.SEX_OPTIONS
-                        })
+                        _react2.default.createElement(_semanticUiReact.Input, { value: item.Sex === 0 ? 'Male' : 'Female', disabled: true })
                     ),
                     _react2.default.createElement(
                         "div",
@@ -95561,6 +95553,32 @@ var UserDefails = function UserDefails(props) {
                             search: true,
                             selection: true,
                             options: _consts.CITY_OPTIONS
+                        })
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellRight" },
+                        "\xA0"
+                    )
+                ),
+                _react2.default.createElement(
+                    "div",
+                    { className: "my-divTableRow" },
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCellLeft" },
+                        "\xA0"
+                    ),
+                    _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableCell" },
+                        _react2.default.createElement(
+                            "p",
+                            { className: "my-p-label" },
+                            "Interests:"
+                        ),
+                        item.Interests.map(function (interest) {
+                            return _react2.default.createElement(_semanticUiReact.Input, { value: interest, disabled: true });
                         })
                     ),
                     _react2.default.createElement(

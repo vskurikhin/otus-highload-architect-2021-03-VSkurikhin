@@ -87,15 +87,7 @@ const UserDefails = (props) => {
                         <div className="my-divTableCellLeft">&nbsp;</div>
                         <div className="my-divTableCell">
                             <p className="my-p-label">Sex:</p>
-                            <Dropdown
-                                disabled={true}
-                                defaultValue={item.Sex}
-                                value={item.Sex}
-                                fluid
-                                search
-                                selection
-                                options={SEX_OPTIONS}
-                            />
+                            <Input value={item.Sex === 0 ? 'Male' : 'Female'} disabled={true}/>
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
@@ -112,6 +104,16 @@ const UserDefails = (props) => {
                                 selection
                                 options={CITY_OPTIONS}
                             />
+                        </div>
+                        <div className="my-divTableCellRight">&nbsp;</div>
+                    </div>
+                    <div className="my-divTableRow">
+                        <div className="my-divTableCellLeft">&nbsp;</div>
+                        <div className="my-divTableCell">
+                            <p className="my-p-label">Interests:</p>
+                            {item.Interests.map((interest) => (
+                                <Input value={interest} disabled={true}/>
+                            ))}
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
