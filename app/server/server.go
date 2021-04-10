@@ -39,7 +39,7 @@ func gracefulClose(db *sql.DB) {
 func New(cfg *config.Config) *Server {
 
 	c := sa.Config{
-		Addr: cfg.Server.Host,
+		Addr: cfg.Server.Host + `:` + cfg.Server.Port,
 	}
 	db := openDB(cfg)
 	go gracefulClose(db)
