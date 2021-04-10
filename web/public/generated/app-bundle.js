@@ -95566,7 +95566,7 @@ var UserDefails = function UserDefails(props) {
                         "\xA0"
                     )
                 ),
-                _react2.default.createElement(
+                item && item !== '{}' && Array.isArray(item.Interests) ? _react2.default.createElement(
                     "div",
                     { className: "my-divTableRow" },
                     _react2.default.createElement(
@@ -95591,7 +95591,7 @@ var UserDefails = function UserDefails(props) {
                         { className: "my-divTableCellRight" },
                         "\xA0"
                     )
-                )
+                ) : _react2.default.createElement("div", null)
             );
         } catch (e) {
             console.debug(e);

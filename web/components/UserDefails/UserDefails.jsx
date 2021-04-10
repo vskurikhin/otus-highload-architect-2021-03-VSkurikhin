@@ -109,16 +109,18 @@ const UserDefails = (props) => {
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
-                    <div className="my-divTableRow">
-                        <div className="my-divTableCellLeft">&nbsp;</div>
-                        <div className="my-divTableCell">
-                            <p className="my-p-label">Interests:</p>
-                            {item.Interests.map((interest) => (
-                                <Input value={interest} disabled={true}/>
-                            ))}
+                    {item && item !== '{}' && Array.isArray(item.Interests) ? (
+                        <div className="my-divTableRow">
+                            <div className="my-divTableCellLeft">&nbsp;</div>
+                            <div className="my-divTableCell">
+                                <p className="my-p-label">Interests:</p>
+                                {item.Interests.map((interest) => (
+                                    <Input value={interest} disabled={true}/>
+                                ))}
+                            </div>
+                            <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
-                        <div className="my-divTableCellRight">&nbsp;</div>
-                    </div>
+                    ) : <div/>}
                 </div>
             );
         } catch (e) {
