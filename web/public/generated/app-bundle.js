@@ -94618,6 +94618,9 @@ function AppMenu(props) {
         history.push(name);
     };
 
+    console.debug('history.location: ');
+    console.debug(history.location);
+
     return _react2.default.createElement(
         "div",
         { className: "wrapper" },
@@ -95192,6 +95195,7 @@ var TableOfUsers = function TableOfUsers(props) {
     var getResult = function getResult(result) {
         setIsLoaded(true);
         if (result.code && result.message) {
+            console.error(result.code + ' : ' + result.message);
             throw {
                 code: result.code,
                 message: result.message

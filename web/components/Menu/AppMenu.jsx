@@ -11,6 +11,9 @@ function AppMenu(props) {
         history.push(name);
     }
 
+    console.debug('history.location: ')
+    console.debug(history.location)
+
     return (
         <div className="wrapper">
             <Menu>

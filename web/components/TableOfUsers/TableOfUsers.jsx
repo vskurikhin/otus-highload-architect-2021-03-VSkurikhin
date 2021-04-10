@@ -12,6 +12,7 @@ const TableOfUsers = (props) => {
     const getResult = result => {
         setIsLoaded(true);
         if (result.code && result.message) {
+            console.error(result.code + ' : ' + result.message)
             throw {
                 code: result.code,
                 message: result.message
