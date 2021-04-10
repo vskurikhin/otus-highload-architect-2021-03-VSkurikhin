@@ -8,8 +8,17 @@ import (
 type (
 	// Config обеспечивает конфигурацию системы.
 	Config struct {
-		Server  Server
-		Logging Logging
+		DataBase DataBase
+		Server   Server
+		Logging  Logging
+	}
+	// DataBase обеспечивает конфигурацию подключения к БД.
+	DataBase struct {
+		Host     string `envconfig:"DB_HOST" default:"localhost"`
+		Port     int    `envconfig:"DB_PORT" default:"3306"`
+		DBName   string `envconfig:"DB_NAME" default:"hl"`
+		Username string `envconfig:"DB_USERNAME" default:"hl"`
+		Password string `envconfig:"DB_PASSWORD" default:"password"`
 	}
 	// Logging предоставляет конфигурацию журналирования.
 	Logging struct {
@@ -21,15 +30,17 @@ type (
 	}
 	// Server предоставляет конфигурацию сервера.
 	Server struct {
-		Host string `envconfig:"SERVER_HOST" default:"localhost:6060"`
+		Host       string `envconfig:"SERVER_HOST" default:"0.0.0.0"`
+		Port       string `envconfig:"PORT" default:"8080"`
+		JWTSignKey string `envconfig:"JWT_SIGN_KEY" default:"TestForFastHTTPWithJWT"`
 	}
 )
 
 // Environ возвращает настройки из окружения.
-func Environ() (Config, error) {
+func Environ() (*Config, error) {
 	cfg := Config{}
 	err := envconfig.Process("", &cfg)
-	return cfg, err
+	return &cfg, err
 }
 
 // String возвращает конфигурацию в строковом формате.
