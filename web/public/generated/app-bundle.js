@@ -95337,9 +95337,14 @@ var _semanticUiReact = __webpack_require__(/*! semantic-ui-react */ "./node_modu
 
 var _consts = __webpack_require__(/*! ../../consts */ "./web/consts.js");
 
+var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var UserDefails = function UserDefails(props) {
+
+    var history = (0, _reactRouterDom.useHistory)();
+
     var _useState = (0, _react.useState)(null),
         _useState2 = _slicedToArray(_useState, 2),
         error = _useState2[0],
@@ -95591,6 +95596,7 @@ var UserDefails = function UserDefails(props) {
         } catch (e) {
             console.debug(e);
             history.push('/login');
+            return _react2.default.createElement("div", null);
         }
     }
 };
