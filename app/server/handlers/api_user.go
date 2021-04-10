@@ -90,12 +90,12 @@ func (h *Handlers) signIn(ctx *sa.RequestCtx) (*domain.Token, error) {
 	if err != nil {
 		return nil, err
 	}
-	age, err := strconv.ParseInt(signIn.Age, 10, 32)
+	age, err := strconv.ParseInt(signIn.Age, 10, 64)
 
 	if err != nil {
 		return nil, err
 	}
-	sex, err := strconv.ParseInt(signIn.Age, 10, 1)
+	sex, err := strconv.ParseInt(signIn.Sex, 10, 64)
 
 	if err != nil {
 		return nil, err

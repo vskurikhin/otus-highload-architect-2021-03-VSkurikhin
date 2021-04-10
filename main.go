@@ -18,7 +18,7 @@ func main() {
 
 	// Загрузка конфигурации
 	var envFile string
-	flag.StringVar(&envFile, "env-file", "../.env", "Read in a file of environment variables")
+	flag.StringVar(&envFile, "env-file", ".env", "Read in a file of environment variables")
 	flag.Parse()
 	err := godotenv.Load(envFile)
 
