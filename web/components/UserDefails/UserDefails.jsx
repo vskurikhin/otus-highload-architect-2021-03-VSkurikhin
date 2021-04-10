@@ -54,13 +54,6 @@ const UserDefails = (props) => {
                     <div className="my-divTableRow">
                         <div className="my-divTableCellLeft">&nbsp;</div>
                         <div className="my-divTableCell">
-                            <h1>For register Sign in please</h1>
-                        </div>
-                        <div className="my-divTableCellRight">&nbsp;</div>
-                    </div>
-                    <div className="my-divTableRow">
-                        <div className="my-divTableCellLeft">&nbsp;</div>
-                        <div className="my-divTableCell">
                             <p className="my-p-label">Username:</p>
                             <Input value={item.Username} disabled={true}/>
                         </div>
@@ -98,8 +91,8 @@ const UserDefails = (props) => {
                                 disabled={true}
                                 defaultValue={item.Sex}
                                 value={item.Sex}
-                                item
                                 fluid
+                                search
                                 selection
                                 options={SEX_OPTIONS}
                             />

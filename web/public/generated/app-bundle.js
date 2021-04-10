@@ -174,10 +174,12 @@ function _extends() {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _inheritsLoose; });
+/* harmony import */ var _setPrototypeOf_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./setPrototypeOf.js */ "./node_modules/@babel/runtime/helpers/esm/setPrototypeOf.js");
+
 function _inheritsLoose(subClass, superClass) {
   subClass.prototype = Object.create(superClass.prototype);
   subClass.prototype.constructor = subClass;
-  subClass.__proto__ = superClass;
+  Object(_setPrototypeOf_js__WEBPACK_IMPORTED_MODULE_0__["default"])(subClass, superClass);
 }
 
 /***/ }),
@@ -205,6 +207,27 @@ function _objectWithoutPropertiesLoose(source, excluded) {
   }
 
   return target;
+}
+
+/***/ }),
+
+/***/ "./node_modules/@babel/runtime/helpers/esm/setPrototypeOf.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/@babel/runtime/helpers/esm/setPrototypeOf.js ***!
+  \*******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return _setPrototypeOf; });
+function _setPrototypeOf(o, p) {
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
+    o.__proto__ = p;
+    return o;
+  };
+
+  return _setPrototypeOf(o, p);
 }
 
 /***/ }),
@@ -6655,7 +6678,7 @@ module.exports = {
 
 var userAgent = __webpack_require__(/*! ../internals/engine-user-agent */ "./node_modules/core-js/internals/engine-user-agent.js");
 
-module.exports = /(iphone|ipod|ipad).*applewebkit/i.test(userAgent);
+module.exports = /(?:iphone|ipod|ipad).*applewebkit/i.test(userAgent);
 
 
 /***/ }),
@@ -6852,7 +6875,6 @@ __webpack_require__(/*! ../modules/es.regexp.exec */ "./node_modules/core-js/mod
 var redefine = __webpack_require__(/*! ../internals/redefine */ "./node_modules/core-js/internals/redefine.js");
 var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
 var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
-var regexpExec = __webpack_require__(/*! ../internals/regexp-exec */ "./node_modules/core-js/internals/regexp-exec.js");
 var createNonEnumerableProperty = __webpack_require__(/*! ../internals/create-non-enumerable-property */ "./node_modules/core-js/internals/create-non-enumerable-property.js");
 
 var SPECIES = wellKnownSymbol('species');
@@ -6943,7 +6965,7 @@ module.exports = function (KEY, length, exec, sham) {
   ) {
     var nativeRegExpMethod = /./[SYMBOL];
     var methods = exec(SYMBOL, ''[KEY], function (nativeMethod, regexp, str, arg2, forceStringMethod) {
-      if (regexp.exec === regexpExec) {
+      if (regexp.exec === RegExp.prototype.exec) {
         if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
           // The native String method already delegates to @@method (this
           // polyfilled function), leasing to infinite recursion.
@@ -9099,9 +9121,6 @@ var stickyHelpers = __webpack_require__(/*! ./regexp-sticky-helpers */ "./node_m
 var shared = __webpack_require__(/*! ./shared */ "./node_modules/core-js/internals/shared.js");
 
 var nativeExec = RegExp.prototype.exec;
-// This always refers to the native implementation, because the
-// String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
-// which loads this file before patching the method.
 var nativeReplace = shared('native-string-replace', String.prototype.replace);
 
 var patchedExec = nativeExec;
@@ -9408,7 +9427,7 @@ var store = __webpack_require__(/*! ../internals/shared-store */ "./node_modules
 (module.exports = function (key, value) {
   return store[key] || (store[key] = value !== undefined ? value : {});
 })('versions', []).push({
-  version: '3.10.0',
+  version: '3.10.1',
   mode: IS_PURE ? 'pure' : 'global',
   copyright: '© 2021 Denis Pushkarev (zloirock.ru)'
 });
@@ -9510,7 +9529,7 @@ module.exports = {
 var userAgent = __webpack_require__(/*! ../internals/engine-user-agent */ "./node_modules/core-js/internals/engine-user-agent.js");
 
 // eslint-disable-next-line unicorn/no-unsafe-regex -- safe
-module.exports = /Version\/10\.\d+(\.\d+)?( Mobile\/\w+)? Safari\//.test(userAgent);
+module.exports = /Version\/10(?:\.\d+){1,2}(?: [\w./]+)?(?: Mobile\/\w+)? Safari\//.test(userAgent);
 
 
 /***/ }),
@@ -15813,14 +15832,12 @@ var advanceStringIndex = __webpack_require__(/*! ../internals/advance-string-ind
 var toLength = __webpack_require__(/*! ../internals/to-length */ "./node_modules/core-js/internals/to-length.js");
 var callRegExpExec = __webpack_require__(/*! ../internals/regexp-exec-abstract */ "./node_modules/core-js/internals/regexp-exec-abstract.js");
 var regexpExec = __webpack_require__(/*! ../internals/regexp-exec */ "./node_modules/core-js/internals/regexp-exec.js");
-var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
+var stickyHelpers = __webpack_require__(/*! ../internals/regexp-sticky-helpers */ "./node_modules/core-js/internals/regexp-sticky-helpers.js");
 
+var UNSUPPORTED_Y = stickyHelpers.UNSUPPORTED_Y;
 var arrayPush = [].push;
 var min = Math.min;
 var MAX_UINT32 = 0xFFFFFFFF;
-
-// babel-minify transpiles RegExp('x', 'y') -> /x/y and it causes SyntaxError
-var SUPPORTS_Y = !fails(function () { return !RegExp(MAX_UINT32, 'y'); });
 
 // @@split logic
 fixRegExpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCallNative) {
@@ -15904,11 +15921,11 @@ fixRegExpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCal
       var flags = (rx.ignoreCase ? 'i' : '') +
                   (rx.multiline ? 'm' : '') +
                   (rx.unicode ? 'u' : '') +
-                  (SUPPORTS_Y ? 'y' : 'g');
+                  (UNSUPPORTED_Y ? 'g' : 'y');
 
       // ^(? + rx + ) is needed, in combination with some S slicing, to
       // simulate the 'y' flag.
-      var splitter = new C(SUPPORTS_Y ? rx : '^(?:' + rx.source + ')', flags);
+      var splitter = new C(UNSUPPORTED_Y ? '^(?:' + rx.source + ')' : rx, flags);
       var lim = limit === undefined ? MAX_UINT32 : limit >>> 0;
       if (lim === 0) return [];
       if (S.length === 0) return callRegExpExec(splitter, S) === null ? [S] : [];
@@ -15916,12 +15933,12 @@ fixRegExpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCal
       var q = 0;
       var A = [];
       while (q < S.length) {
-        splitter.lastIndex = SUPPORTS_Y ? q : 0;
-        var z = callRegExpExec(splitter, SUPPORTS_Y ? S : S.slice(q));
+        splitter.lastIndex = UNSUPPORTED_Y ? 0 : q;
+        var z = callRegExpExec(splitter, UNSUPPORTED_Y ? S.slice(q) : S);
         var e;
         if (
           z === null ||
-          (e = min(toLength(splitter.lastIndex + (SUPPORTS_Y ? 0 : q)), S.length)) === p
+          (e = min(toLength(splitter.lastIndex + (UNSUPPORTED_Y ? q : 0)), S.length)) === p
         ) {
           q = advanceStringIndex(S, q, unicodeMatching);
         } else {
@@ -15938,7 +15955,7 @@ fixRegExpWellKnownSymbolLogic('split', 2, function (SPLIT, nativeSplit, maybeCal
       return A;
     }
   ];
-}, !SUPPORTS_Y);
+}, UNSUPPORTED_Y);
 
 
 /***/ }),
@@ -20935,6 +20952,20 @@ exports.typeOf = typeOf;
 if (false) {} else {
   module.exports = __webpack_require__(/*! ./cjs/react-is.development.js */ "./node_modules/hoist-non-react-statics/node_modules/react-is/cjs/react-is.development.js");
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/isarray/index.js":
+/*!***************************************!*\
+  !*** ./node_modules/isarray/index.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = Array.isArray || function (arr) {
+  return Object.prototype.toString.call(arr) == '[object Array]';
+};
 
 
 /***/ }),
@@ -34894,6 +34925,443 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 	return to;
 };
+
+
+/***/ }),
+
+/***/ "./node_modules/path-to-regexp/index.js":
+/*!**********************************************!*\
+  !*** ./node_modules/path-to-regexp/index.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isarray = __webpack_require__(/*! isarray */ "./node_modules/isarray/index.js")
+
+/**
+ * Expose `pathToRegexp`.
+ */
+module.exports = pathToRegexp
+module.exports.parse = parse
+module.exports.compile = compile
+module.exports.tokensToFunction = tokensToFunction
+module.exports.tokensToRegExp = tokensToRegExp
+
+/**
+ * The main path matching regexp utility.
+ *
+ * @type {RegExp}
+ */
+var PATH_REGEXP = new RegExp([
+  // Match escaped characters that would otherwise appear in future matches.
+  // This allows the user to escape special characters that won't transform.
+  '(\\\\.)',
+  // Match Express-style parameters and un-named parameters with a prefix
+  // and optional suffixes. Matches appear as:
+  //
+  // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?", undefined]
+  // "/route(\\d+)"  => [undefined, undefined, undefined, "\d+", undefined, undefined]
+  // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
+  '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?|(\\*))'
+].join('|'), 'g')
+
+/**
+ * Parse a string for the raw tokens.
+ *
+ * @param  {string}  str
+ * @param  {Object=} options
+ * @return {!Array}
+ */
+function parse (str, options) {
+  var tokens = []
+  var key = 0
+  var index = 0
+  var path = ''
+  var defaultDelimiter = options && options.delimiter || '/'
+  var res
+
+  while ((res = PATH_REGEXP.exec(str)) != null) {
+    var m = res[0]
+    var escaped = res[1]
+    var offset = res.index
+    path += str.slice(index, offset)
+    index = offset + m.length
+
+    // Ignore already escaped sequences.
+    if (escaped) {
+      path += escaped[1]
+      continue
+    }
+
+    var next = str[index]
+    var prefix = res[2]
+    var name = res[3]
+    var capture = res[4]
+    var group = res[5]
+    var modifier = res[6]
+    var asterisk = res[7]
+
+    // Push the current path onto the tokens.
+    if (path) {
+      tokens.push(path)
+      path = ''
+    }
+
+    var partial = prefix != null && next != null && next !== prefix
+    var repeat = modifier === '+' || modifier === '*'
+    var optional = modifier === '?' || modifier === '*'
+    var delimiter = res[2] || defaultDelimiter
+    var pattern = capture || group
+
+    tokens.push({
+      name: name || key++,
+      prefix: prefix || '',
+      delimiter: delimiter,
+      optional: optional,
+      repeat: repeat,
+      partial: partial,
+      asterisk: !!asterisk,
+      pattern: pattern ? escapeGroup(pattern) : (asterisk ? '.*' : '[^' + escapeString(delimiter) + ']+?')
+    })
+  }
+
+  // Match any characters still remaining.
+  if (index < str.length) {
+    path += str.substr(index)
+  }
+
+  // If the path exists, push it onto the end.
+  if (path) {
+    tokens.push(path)
+  }
+
+  return tokens
+}
+
+/**
+ * Compile a string to a template function for the path.
+ *
+ * @param  {string}             str
+ * @param  {Object=}            options
+ * @return {!function(Object=, Object=)}
+ */
+function compile (str, options) {
+  return tokensToFunction(parse(str, options), options)
+}
+
+/**
+ * Prettier encoding of URI path segments.
+ *
+ * @param  {string}
+ * @return {string}
+ */
+function encodeURIComponentPretty (str) {
+  return encodeURI(str).replace(/[\/?#]/g, function (c) {
+    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
+  })
+}
+
+/**
+ * Encode the asterisk parameter. Similar to `pretty`, but allows slashes.
+ *
+ * @param  {string}
+ * @return {string}
+ */
+function encodeAsterisk (str) {
+  return encodeURI(str).replace(/[?#]/g, function (c) {
+    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
+  })
+}
+
+/**
+ * Expose a method for transforming tokens into the path function.
+ */
+function tokensToFunction (tokens, options) {
+  // Compile all the tokens into regexps.
+  var matches = new Array(tokens.length)
+
+  // Compile all the patterns before compilation.
+  for (var i = 0; i < tokens.length; i++) {
+    if (typeof tokens[i] === 'object') {
+      matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$', flags(options))
+    }
+  }
+
+  return function (obj, opts) {
+    var path = ''
+    var data = obj || {}
+    var options = opts || {}
+    var encode = options.pretty ? encodeURIComponentPretty : encodeURIComponent
+
+    for (var i = 0; i < tokens.length; i++) {
+      var token = tokens[i]
+
+      if (typeof token === 'string') {
+        path += token
+
+        continue
+      }
+
+      var value = data[token.name]
+      var segment
+
+      if (value == null) {
+        if (token.optional) {
+          // Prepend partial segment prefixes.
+          if (token.partial) {
+            path += token.prefix
+          }
+
+          continue
+        } else {
+          throw new TypeError('Expected "' + token.name + '" to be defined')
+        }
+      }
+
+      if (isarray(value)) {
+        if (!token.repeat) {
+          throw new TypeError('Expected "' + token.name + '" to not repeat, but received `' + JSON.stringify(value) + '`')
+        }
+
+        if (value.length === 0) {
+          if (token.optional) {
+            continue
+          } else {
+            throw new TypeError('Expected "' + token.name + '" to not be empty')
+          }
+        }
+
+        for (var j = 0; j < value.length; j++) {
+          segment = encode(value[j])
+
+          if (!matches[i].test(segment)) {
+            throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received `' + JSON.stringify(segment) + '`')
+          }
+
+          path += (j === 0 ? token.prefix : token.delimiter) + segment
+        }
+
+        continue
+      }
+
+      segment = token.asterisk ? encodeAsterisk(value) : encode(value)
+
+      if (!matches[i].test(segment)) {
+        throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
+      }
+
+      path += token.prefix + segment
+    }
+
+    return path
+  }
+}
+
+/**
+ * Escape a regular expression string.
+ *
+ * @param  {string} str
+ * @return {string}
+ */
+function escapeString (str) {
+  return str.replace(/([.+*?=^!:${}()[\]|\/\\])/g, '\\$1')
+}
+
+/**
+ * Escape the capturing group by escaping special characters and meaning.
+ *
+ * @param  {string} group
+ * @return {string}
+ */
+function escapeGroup (group) {
+  return group.replace(/([=!:$\/()])/g, '\\$1')
+}
+
+/**
+ * Attach the keys as a property of the regexp.
+ *
+ * @param  {!RegExp} re
+ * @param  {Array}   keys
+ * @return {!RegExp}
+ */
+function attachKeys (re, keys) {
+  re.keys = keys
+  return re
+}
+
+/**
+ * Get the flags for a regexp from the options.
+ *
+ * @param  {Object} options
+ * @return {string}
+ */
+function flags (options) {
+  return options && options.sensitive ? '' : 'i'
+}
+
+/**
+ * Pull out keys from a regexp.
+ *
+ * @param  {!RegExp} path
+ * @param  {!Array}  keys
+ * @return {!RegExp}
+ */
+function regexpToRegexp (path, keys) {
+  // Use a negative lookahead to match only capturing groups.
+  var groups = path.source.match(/\((?!\?)/g)
+
+  if (groups) {
+    for (var i = 0; i < groups.length; i++) {
+      keys.push({
+        name: i,
+        prefix: null,
+        delimiter: null,
+        optional: false,
+        repeat: false,
+        partial: false,
+        asterisk: false,
+        pattern: null
+      })
+    }
+  }
+
+  return attachKeys(path, keys)
+}
+
+/**
+ * Transform an array into a regexp.
+ *
+ * @param  {!Array}  path
+ * @param  {Array}   keys
+ * @param  {!Object} options
+ * @return {!RegExp}
+ */
+function arrayToRegexp (path, keys, options) {
+  var parts = []
+
+  for (var i = 0; i < path.length; i++) {
+    parts.push(pathToRegexp(path[i], keys, options).source)
+  }
+
+  var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options))
+
+  return attachKeys(regexp, keys)
+}
+
+/**
+ * Create a path regexp from string input.
+ *
+ * @param  {string}  path
+ * @param  {!Array}  keys
+ * @param  {!Object} options
+ * @return {!RegExp}
+ */
+function stringToRegexp (path, keys, options) {
+  return tokensToRegExp(parse(path, options), keys, options)
+}
+
+/**
+ * Expose a function for taking tokens and returning a RegExp.
+ *
+ * @param  {!Array}          tokens
+ * @param  {(Array|Object)=} keys
+ * @param  {Object=}         options
+ * @return {!RegExp}
+ */
+function tokensToRegExp (tokens, keys, options) {
+  if (!isarray(keys)) {
+    options = /** @type {!Object} */ (keys || options)
+    keys = []
+  }
+
+  options = options || {}
+
+  var strict = options.strict
+  var end = options.end !== false
+  var route = ''
+
+  // Iterate over the tokens and create our regexp string.
+  for (var i = 0; i < tokens.length; i++) {
+    var token = tokens[i]
+
+    if (typeof token === 'string') {
+      route += escapeString(token)
+    } else {
+      var prefix = escapeString(token.prefix)
+      var capture = '(?:' + token.pattern + ')'
+
+      keys.push(token)
+
+      if (token.repeat) {
+        capture += '(?:' + prefix + capture + ')*'
+      }
+
+      if (token.optional) {
+        if (!token.partial) {
+          capture = '(?:' + prefix + '(' + capture + '))?'
+        } else {
+          capture = prefix + '(' + capture + ')?'
+        }
+      } else {
+        capture = prefix + '(' + capture + ')'
+      }
+
+      route += capture
+    }
+  }
+
+  var delimiter = escapeString(options.delimiter || '/')
+  var endsWithDelimiter = route.slice(-delimiter.length) === delimiter
+
+  // In non-strict mode we allow a slash at the end of match. If the path to
+  // match already ends with a slash, we remove it for consistency. The slash
+  // is valid at the end of a path match, not in the middle. This is important
+  // in non-ending mode, where "/test/" shouldn't match "/test//route".
+  if (!strict) {
+    route = (endsWithDelimiter ? route.slice(0, -delimiter.length) : route) + '(?:' + delimiter + '(?=$))?'
+  }
+
+  if (end) {
+    route += '$'
+  } else {
+    // In non-ending mode, we need the capturing groups to match as much as
+    // possible by using a positive lookahead to the end or next path segment.
+    route += strict && endsWithDelimiter ? '' : '(?=' + delimiter + '|$)'
+  }
+
+  return attachKeys(new RegExp('^' + route, flags(options)), keys)
+}
+
+/**
+ * Normalize the given path string, returning a regular expression.
+ *
+ * An empty array can be passed in for the keys, which will hold the
+ * placeholder key descriptions. For example, using `/user/:id`, `keys` will
+ * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
+ *
+ * @param  {(string|RegExp|Array)} path
+ * @param  {(Array|Object)=}       keys
+ * @param  {Object=}               options
+ * @return {!RegExp}
+ */
+function pathToRegexp (path, keys, options) {
+  if (!isarray(keys)) {
+    options = /** @type {!Object} */ (keys || options)
+    keys = []
+  }
+
+  options = options || {}
+
+  if (path instanceof RegExp) {
+    return regexpToRegexp(path, /** @type {!Array} */ (keys))
+  }
+
+  if (isarray(path)) {
+    return arrayToRegexp(/** @type {!Array} */ (path), /** @type {!Array} */ (keys), options)
+  }
+
+  return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
+}
 
 
 /***/ }),
@@ -63399,7 +63867,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var mini_create_react_context__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! mini-create-react-context */ "./node_modules/mini-create-react-context/dist/esm/index.js");
 /* harmony import */ var tiny_invariant__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! tiny-invariant */ "./node_modules/tiny-invariant/dist/tiny-invariant.esm.js");
 /* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
-/* harmony import */ var path_to_regexp__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! path-to-regexp */ "./node_modules/react-router/node_modules/path-to-regexp/index.js");
+/* harmony import */ var path_to_regexp__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! path-to-regexp */ "./node_modules/path-to-regexp/index.js");
 /* harmony import */ var path_to_regexp__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(path_to_regexp__WEBPACK_IMPORTED_MODULE_8__);
 /* harmony import */ var react_is__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-is */ "./node_modules/react-router/node_modules/react-is/index.js");
 /* harmony import */ var react_is__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_is__WEBPACK_IMPORTED_MODULE_9__);
@@ -64176,457 +64644,6 @@ if (true) {
 
 
 //# sourceMappingURL=react-router.js.map
-
-
-/***/ }),
-
-/***/ "./node_modules/react-router/node_modules/isarray/index.js":
-/*!*****************************************************************!*\
-  !*** ./node_modules/react-router/node_modules/isarray/index.js ***!
-  \*****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = Array.isArray || function (arr) {
-  return Object.prototype.toString.call(arr) == '[object Array]';
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/react-router/node_modules/path-to-regexp/index.js":
-/*!************************************************************************!*\
-  !*** ./node_modules/react-router/node_modules/path-to-regexp/index.js ***!
-  \************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isarray = __webpack_require__(/*! isarray */ "./node_modules/react-router/node_modules/isarray/index.js")
-
-/**
- * Expose `pathToRegexp`.
- */
-module.exports = pathToRegexp
-module.exports.parse = parse
-module.exports.compile = compile
-module.exports.tokensToFunction = tokensToFunction
-module.exports.tokensToRegExp = tokensToRegExp
-
-/**
- * The main path matching regexp utility.
- *
- * @type {RegExp}
- */
-var PATH_REGEXP = new RegExp([
-  // Match escaped characters that would otherwise appear in future matches.
-  // This allows the user to escape special characters that won't transform.
-  '(\\\\.)',
-  // Match Express-style parameters and un-named parameters with a prefix
-  // and optional suffixes. Matches appear as:
-  //
-  // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?", undefined]
-  // "/route(\\d+)"  => [undefined, undefined, undefined, "\d+", undefined, undefined]
-  // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
-  '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?|(\\*))'
-].join('|'), 'g')
-
-/**
- * Parse a string for the raw tokens.
- *
- * @param  {string}  str
- * @param  {Object=} options
- * @return {!Array}
- */
-function parse (str, options) {
-  var tokens = []
-  var key = 0
-  var index = 0
-  var path = ''
-  var defaultDelimiter = options && options.delimiter || '/'
-  var res
-
-  while ((res = PATH_REGEXP.exec(str)) != null) {
-    var m = res[0]
-    var escaped = res[1]
-    var offset = res.index
-    path += str.slice(index, offset)
-    index = offset + m.length
-
-    // Ignore already escaped sequences.
-    if (escaped) {
-      path += escaped[1]
-      continue
-    }
-
-    var next = str[index]
-    var prefix = res[2]
-    var name = res[3]
-    var capture = res[4]
-    var group = res[5]
-    var modifier = res[6]
-    var asterisk = res[7]
-
-    // Push the current path onto the tokens.
-    if (path) {
-      tokens.push(path)
-      path = ''
-    }
-
-    var partial = prefix != null && next != null && next !== prefix
-    var repeat = modifier === '+' || modifier === '*'
-    var optional = modifier === '?' || modifier === '*'
-    var delimiter = res[2] || defaultDelimiter
-    var pattern = capture || group
-
-    tokens.push({
-      name: name || key++,
-      prefix: prefix || '',
-      delimiter: delimiter,
-      optional: optional,
-      repeat: repeat,
-      partial: partial,
-      asterisk: !!asterisk,
-      pattern: pattern ? escapeGroup(pattern) : (asterisk ? '.*' : '[^' + escapeString(delimiter) + ']+?')
-    })
-  }
-
-  // Match any characters still remaining.
-  if (index < str.length) {
-    path += str.substr(index)
-  }
-
-  // If the path exists, push it onto the end.
-  if (path) {
-    tokens.push(path)
-  }
-
-  return tokens
-}
-
-/**
- * Compile a string to a template function for the path.
- *
- * @param  {string}             str
- * @param  {Object=}            options
- * @return {!function(Object=, Object=)}
- */
-function compile (str, options) {
-  return tokensToFunction(parse(str, options), options)
-}
-
-/**
- * Prettier encoding of URI path segments.
- *
- * @param  {string}
- * @return {string}
- */
-function encodeURIComponentPretty (str) {
-  return encodeURI(str).replace(/[\/?#]/g, function (c) {
-    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
-  })
-}
-
-/**
- * Encode the asterisk parameter. Similar to `pretty`, but allows slashes.
- *
- * @param  {string}
- * @return {string}
- */
-function encodeAsterisk (str) {
-  return encodeURI(str).replace(/[?#]/g, function (c) {
-    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
-  })
-}
-
-/**
- * Expose a method for transforming tokens into the path function.
- */
-function tokensToFunction (tokens, options) {
-  // Compile all the tokens into regexps.
-  var matches = new Array(tokens.length)
-
-  // Compile all the patterns before compilation.
-  for (var i = 0; i < tokens.length; i++) {
-    if (typeof tokens[i] === 'object') {
-      matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$', flags(options))
-    }
-  }
-
-  return function (obj, opts) {
-    var path = ''
-    var data = obj || {}
-    var options = opts || {}
-    var encode = options.pretty ? encodeURIComponentPretty : encodeURIComponent
-
-    for (var i = 0; i < tokens.length; i++) {
-      var token = tokens[i]
-
-      if (typeof token === 'string') {
-        path += token
-
-        continue
-      }
-
-      var value = data[token.name]
-      var segment
-
-      if (value == null) {
-        if (token.optional) {
-          // Prepend partial segment prefixes.
-          if (token.partial) {
-            path += token.prefix
-          }
-
-          continue
-        } else {
-          throw new TypeError('Expected "' + token.name + '" to be defined')
-        }
-      }
-
-      if (isarray(value)) {
-        if (!token.repeat) {
-          throw new TypeError('Expected "' + token.name + '" to not repeat, but received `' + JSON.stringify(value) + '`')
-        }
-
-        if (value.length === 0) {
-          if (token.optional) {
-            continue
-          } else {
-            throw new TypeError('Expected "' + token.name + '" to not be empty')
-          }
-        }
-
-        for (var j = 0; j < value.length; j++) {
-          segment = encode(value[j])
-
-          if (!matches[i].test(segment)) {
-            throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received `' + JSON.stringify(segment) + '`')
-          }
-
-          path += (j === 0 ? token.prefix : token.delimiter) + segment
-        }
-
-        continue
-      }
-
-      segment = token.asterisk ? encodeAsterisk(value) : encode(value)
-
-      if (!matches[i].test(segment)) {
-        throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
-      }
-
-      path += token.prefix + segment
-    }
-
-    return path
-  }
-}
-
-/**
- * Escape a regular expression string.
- *
- * @param  {string} str
- * @return {string}
- */
-function escapeString (str) {
-  return str.replace(/([.+*?=^!:${}()[\]|\/\\])/g, '\\$1')
-}
-
-/**
- * Escape the capturing group by escaping special characters and meaning.
- *
- * @param  {string} group
- * @return {string}
- */
-function escapeGroup (group) {
-  return group.replace(/([=!:$\/()])/g, '\\$1')
-}
-
-/**
- * Attach the keys as a property of the regexp.
- *
- * @param  {!RegExp} re
- * @param  {Array}   keys
- * @return {!RegExp}
- */
-function attachKeys (re, keys) {
-  re.keys = keys
-  return re
-}
-
-/**
- * Get the flags for a regexp from the options.
- *
- * @param  {Object} options
- * @return {string}
- */
-function flags (options) {
-  return options && options.sensitive ? '' : 'i'
-}
-
-/**
- * Pull out keys from a regexp.
- *
- * @param  {!RegExp} path
- * @param  {!Array}  keys
- * @return {!RegExp}
- */
-function regexpToRegexp (path, keys) {
-  // Use a negative lookahead to match only capturing groups.
-  var groups = path.source.match(/\((?!\?)/g)
-
-  if (groups) {
-    for (var i = 0; i < groups.length; i++) {
-      keys.push({
-        name: i,
-        prefix: null,
-        delimiter: null,
-        optional: false,
-        repeat: false,
-        partial: false,
-        asterisk: false,
-        pattern: null
-      })
-    }
-  }
-
-  return attachKeys(path, keys)
-}
-
-/**
- * Transform an array into a regexp.
- *
- * @param  {!Array}  path
- * @param  {Array}   keys
- * @param  {!Object} options
- * @return {!RegExp}
- */
-function arrayToRegexp (path, keys, options) {
-  var parts = []
-
-  for (var i = 0; i < path.length; i++) {
-    parts.push(pathToRegexp(path[i], keys, options).source)
-  }
-
-  var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options))
-
-  return attachKeys(regexp, keys)
-}
-
-/**
- * Create a path regexp from string input.
- *
- * @param  {string}  path
- * @param  {!Array}  keys
- * @param  {!Object} options
- * @return {!RegExp}
- */
-function stringToRegexp (path, keys, options) {
-  return tokensToRegExp(parse(path, options), keys, options)
-}
-
-/**
- * Expose a function for taking tokens and returning a RegExp.
- *
- * @param  {!Array}          tokens
- * @param  {(Array|Object)=} keys
- * @param  {Object=}         options
- * @return {!RegExp}
- */
-function tokensToRegExp (tokens, keys, options) {
-  if (!isarray(keys)) {
-    options = /** @type {!Object} */ (keys || options)
-    keys = []
-  }
-
-  options = options || {}
-
-  var strict = options.strict
-  var end = options.end !== false
-  var route = ''
-
-  // Iterate over the tokens and create our regexp string.
-  for (var i = 0; i < tokens.length; i++) {
-    var token = tokens[i]
-
-    if (typeof token === 'string') {
-      route += escapeString(token)
-    } else {
-      var prefix = escapeString(token.prefix)
-      var capture = '(?:' + token.pattern + ')'
-
-      keys.push(token)
-
-      if (token.repeat) {
-        capture += '(?:' + prefix + capture + ')*'
-      }
-
-      if (token.optional) {
-        if (!token.partial) {
-          capture = '(?:' + prefix + '(' + capture + '))?'
-        } else {
-          capture = prefix + '(' + capture + ')?'
-        }
-      } else {
-        capture = prefix + '(' + capture + ')'
-      }
-
-      route += capture
-    }
-  }
-
-  var delimiter = escapeString(options.delimiter || '/')
-  var endsWithDelimiter = route.slice(-delimiter.length) === delimiter
-
-  // In non-strict mode we allow a slash at the end of match. If the path to
-  // match already ends with a slash, we remove it for consistency. The slash
-  // is valid at the end of a path match, not in the middle. This is important
-  // in non-ending mode, where "/test/" shouldn't match "/test//route".
-  if (!strict) {
-    route = (endsWithDelimiter ? route.slice(0, -delimiter.length) : route) + '(?:' + delimiter + '(?=$))?'
-  }
-
-  if (end) {
-    route += '$'
-  } else {
-    // In non-ending mode, we need the capturing groups to match as much as
-    // possible by using a positive lookahead to the end or next path segment.
-    route += strict && endsWithDelimiter ? '' : '(?=' + delimiter + '|$)'
-  }
-
-  return attachKeys(new RegExp('^' + route, flags(options)), keys)
-}
-
-/**
- * Normalize the given path string, returning a regular expression.
- *
- * An empty array can be passed in for the keys, which will hold the
- * placeholder key descriptions. For example, using `/user/:id`, `keys` will
- * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
- *
- * @param  {(string|RegExp|Array)} path
- * @param  {(Array|Object)=}       keys
- * @param  {Object=}               options
- * @return {!RegExp}
- */
-function pathToRegexp (path, keys, options) {
-  if (!isarray(keys)) {
-    options = /** @type {!Object} */ (keys || options)
-    keys = []
-  }
-
-  options = options || {}
-
-  if (path instanceof RegExp) {
-    return regexpToRegexp(path, /** @type {!Array} */ (keys))
-  }
-
-  if (isarray(path)) {
-    return arrayToRegexp(/** @type {!Array} */ (path), /** @type {!Array} */ (keys), options)
-  }
-
-  return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
-}
 
 
 /***/ }),
@@ -95404,29 +95421,6 @@ var UserDefails = function UserDefails(props) {
                         "div",
                         { className: "my-divTableCell" },
                         _react2.default.createElement(
-                            "h1",
-                            null,
-                            "For register Sign in please"
-                        )
-                    ),
-                    _react2.default.createElement(
-                        "div",
-                        { className: "my-divTableCellRight" },
-                        "\xA0"
-                    )
-                ),
-                _react2.default.createElement(
-                    "div",
-                    { className: "my-divTableRow" },
-                    _react2.default.createElement(
-                        "div",
-                        { className: "my-divTableCellLeft" },
-                        "\xA0"
-                    ),
-                    _react2.default.createElement(
-                        "div",
-                        { className: "my-divTableCell" },
-                        _react2.default.createElement(
                             "p",
                             { className: "my-p-label" },
                             "Username:"
@@ -95531,8 +95525,8 @@ var UserDefails = function UserDefails(props) {
                             disabled: true,
                             defaultValue: item.Sex,
                             value: item.Sex,
-                            item: true,
                             fluid: true,
+                            search: true,
                             selection: true,
                             options: _consts.SEX_OPTIONS
                         })
@@ -95788,7 +95782,7 @@ var CITY_OPTIONS = exports.CITY_OPTIONS = [{ flag: 'af', key: 'Абу-Даби',
 // { flag: 'tp', key: 'Дили',                         value: 'Дили',                         text: 'Дили' },
 { flag: 'tz', key: 'Додома', value: 'Додома', text: 'Додома' }, { flag: 'qa', key: 'Доха', value: 'Доха', text: 'Доха' }, { flag: 'bj', key: 'Дублин', value: 'Дублин', text: 'Дублин' }, { flag: 'bj', key: 'Душанбе', value: 'Душанбе', text: 'Душанбе' }, { flag: 'bj', key: 'Ереван', value: 'Ереван', text: 'Ереван' }, { flag: 'bj', key: 'Загреб', value: 'Загреб', text: 'Загреб' }, { flag: 'bj', key: 'Иерусалим', value: 'Иерусалим', text: 'Иерусалим' }, { flag: 'bj', key: 'Исламабад', value: 'Исламабад', text: 'Исламабад' }, { flag: 'bj', key: 'Кабул', value: 'Кабул', text: 'Кабул' }, { flag: 'bj', key: 'Каир', value: 'Каир', text: 'Каир' }, { flag: 'bj', key: 'Кампала', value: 'Кампала', text: 'Кампала' }, { flag: 'bj', key: 'Канберра', value: 'Канберра', text: 'Канберра' }, { flag: 'bj', key: 'Каракас', value: 'Каракас', text: 'Каракас' }, { flag: 'bj', key: 'Кастри', value: 'Кастри', text: 'Кастри' }, { flag: 'bj', key: 'Катманду', value: 'Катманду', text: 'Катманду' }, { flag: 'bj', key: 'Кигали', value: 'Кигали', text: 'Кигали' }, { flag: 'bj', key: 'Киев', value: 'Киев', text: 'Киев' }, { flag: 'bj', key: 'Кингстаун', value: 'Кингстаун', text: 'Кингстаун' }, { flag: 'bj', key: 'Кингстон', value: 'Кингстон', text: 'Кингстон' }, { flag: 'bj', key: 'Киншаса', value: 'Киншаса', text: 'Киншаса' }, { flag: 'bj', key: 'Кито', value: 'Кито', text: 'Кито' }, { flag: 'bj', key: 'Кишинев', value: 'Кишинев', text: 'Кишинев' }, { flag: 'lk', key: 'Коломбо', value: 'Коломбо', text: 'Коломбо' }, { flag: 'gn', key: 'Конакри', value: 'Конакри', text: 'Конакри' }, { flag: 'dk', key: 'Копенгаген', value: 'Копенгаген', text: 'Копенгаген' }, { flag: 'my', key: 'Куала-Лумпур', value: 'Куала-Лумпур', text: 'Куала-Лумпур' }, { flag: 'ga', key: 'Либревиль', value: 'Либревиль', text: 'Либревиль' }, { flag: 'mw', key: 'Лилонгве', value: 'Лилонгве', text: 'Лилонгве' }, { flag: 'pe', key: 'Лима', value: 'Лима', text: 'Лима' }, { flag: 'pt', key: 'Лиссабон', value: 'Лиссабон', text: 'Лиссабон' }, { flag: 'tg', key: 'Ломе', value: 'Ломе', text: 'Ломе' }, { flag: 'uk', key: 'Лондон', value: 'Лондон', text: 'Лондон' }, { flag: 'ao', key: 'Луанда', value: 'Луанда', text: 'Луанда' }, { flag: 'zm', key: 'Лусака', value: 'Лусака', text: 'Лусака' }, { flag: 'si', key: 'Любляна', value: 'Любляна', text: 'Любляна' }, { flag: 'lu', key: 'Люксембург', value: 'Люксембург', text: 'Люксембург' }, { flag: 'mh', key: 'Маджуро', value: 'Маджуро', text: 'Маджуро' }, { flag: 'es', key: 'Мадрид', value: 'Мадрид', text: 'Мадрид' }, { flag: 'gq', key: 'Малабо', value: 'Малабо', text: 'Малабо' }, { flag: 'mv', key: 'Мале', value: 'Мале', text: 'Мале' }, { flag: 'ni', key: 'Манагуа', value: 'Манагуа', text: 'Манагуа' }, { flag: 'bh', key: 'Манама', value: 'Манама', text: 'Манама' }, { flag: 'ph', key: 'Манила', value: 'Манила', text: 'Манила' }, { flag: 'mz', key: 'Мапуту', value: 'Мапуту', text: 'Мапуту' }, { flag: 'ls', key: 'Масеру', value: 'Масеру', text: 'Масеру' }, { flag: 'om', key: 'Маскат', value: 'Маскат', text: 'Маскат' }, { flag: 'sz', key: 'Мбабане', value: 'Мбабане', text: 'Мбабане' }, { flag: 'pw', key: 'Мелекеок', value: 'Мелекеок', text: 'Мелекеок' }, { flag: 'mx', key: 'Мехико', value: 'Мехико', text: 'Мехико' }, { flag: 'by', key: 'Минск', value: 'Минск', text: 'Минск' }, { flag: 'so', key: 'Могадишо', value: 'Могадишо', text: 'Могадишо' }, { flag: 'mc', key: 'Монако', value: 'Монако', text: 'Монако' }, { flag: 'lr', key: 'Монровия', value: 'Монровия', text: 'Монровия' }, { flag: 'uy', key: 'Монтевидео', value: 'Монтевидео', text: 'Монтевидео' }, { flag: 'km', key: 'Морони', value: 'Морони', text: 'Морони' }, { flag: 'ru', key: 'Москва', value: 'Москва', text: 'Москва' }, { flag: 'mm', key: 'Найпьидо', value: 'Найпьидо', text: 'Найпьидо' }, { flag: 'ke', key: 'Найроби', value: 'Найроби', text: 'Найроби' }, { flag: 'bs', key: 'Нассау', value: 'Нассау', text: 'Нассау' }, { flag: 'td', key: 'Нджамена', value: 'Нджамена', text: 'Нджамена' }, { flag: 'ne', key: 'Ниамей', value: 'Ниамей', text: 'Ниамей' }, { flag: 'cy', key: 'Никосия', value: 'Никосия', text: 'Никосия' }, { flag: 'mr', key: 'Нуакшот', value: 'Нуакшот', text: 'Нуакшот' }, { flag: 'to', key: 'Нукуалофа', value: 'Нукуалофа', text: 'Нукуалофа' }, { flag: 'in', key: 'Нью-Дели', value: 'Нью-Дели', text: 'Нью-Дели' }, { flag: 'no', key: 'Осло', value: 'Осло', text: 'Осло' }, { flag: 'ca', key: 'Оттава', value: 'Оттава', text: 'Оттава' }, { flag: 'nr', key: 'официальной столицы не имеет', value: 'официальной столицы не имеет', text: 'официальной столицы не имеет' }, { flag: 'fm', key: 'Паликир', value: 'Паликир', text: 'Паликир' }, { flag: 'pa', key: 'Панама', value: 'Панама', text: 'Панама' }, { flag: 'sr', key: 'Парамарибо', value: 'Парамарибо', text: 'Парамарибо' }, { flag: 'fr', key: 'Париж', value: 'Париж', text: 'Париж' }, { flag: 'cn', key: 'Пекин', value: 'Пекин', text: 'Пекин' }, { flag: 'kh', key: 'Пномпень', value: 'Пномпень', text: 'Пномпень' },
 // { flag: 'yu', key: 'Подгорица',                    value: 'Подгорица',                    text: 'Подгорица' },
-{ flag: 'vu', key: 'Порт-Вила', value: 'Порт-Вила', text: 'Порт-Вила' }, { flag: 'mu', key: 'Порт-Луи', value: 'Порт-Луи', text: 'Порт-Луи' }, { flag: 'pg', key: 'Порт-Морсби', value: 'Порт-Морсби', text: 'Порт-Морсби' }, { flag: 'ht', key: 'Порт-о-Пренс', value: 'Порт-о-Пренс', text: 'Порт-о-Пренс' }, { flag: 'tt', key: 'Порт-оф-Спейн', value: 'Порт-оф-Спейн', text: 'Порт-оф-Спейн' }, { flag: 'bj', key: 'Порто-Ново', value: 'Порто-Ново', text: 'Порто-Ново' }, { flag: 'cz', key: 'Прага', value: 'Прага', text: 'Прага' }, { flag: 'cv', key: 'Прая', value: 'Прая', text: 'Прая' }, { flag: 'za', key: 'Претория', value: 'Претория', text: 'Претория' }, { flag: 'kp', key: 'Пхеньян', value: 'Пхеньян', text: 'Пхеньян' }, { flag: 'ma', key: 'Рабат', value: 'Рабат', text: 'Рабат' }, { flag: 'is', key: 'Рейкьявик', value: 'Рейкьявик', text: 'Рейкьявик' }, { flag: 'lv', key: 'Рига', value: 'Рига', text: 'Рига' }, { flag: 'it', key: 'Рим', value: 'Рим', text: 'Рим' }, { flag: 'dm', key: 'Розо', value: 'Розо', text: 'Розо' }, { flag: 'sm', key: 'Сан-Марино', value: 'Сан-Марино', text: 'Сан-Марино' }, { flag: 'sv', key: 'Сан-Сальвадор', value: 'Сан-Сальвадор', text: 'Сан-Сальвадор' }, { flag: 'st', key: 'Сан-Томе', value: 'Сан-Томе', text: 'Сан-Томе' }, { flag: 'cr', key: 'Сан-Хосе', value: 'Сан-Хосе', text: 'Сан-Хосе' }, { flag: 'ye', key: 'Сана', value: 'Сана', text: 'Сана' }, { flag: 'co', key: 'Санта-Фе-де-Богота', value: 'Санта-Фе-де-Богота', text: 'Санта-Фе-де-Богота' }, { flag: 'do', key: 'Санто-Доминго', value: 'Санто-Доминго', text: 'Санто-Доминго' }, { flag: 'cl', key: 'Сантьяго', value: 'Сантьяго', text: 'Сантьяго' }, { flag: 'ba', key: 'Сараево', value: 'Сараево', text: 'Сараево' }, { flag: 'ag', key: 'Сент-Джонс', value: 'Сент-Джонс', text: 'Сент-Джонс' }, { flag: 'gd', key: 'Сент-Джорджес', value: 'Сент-Джорджес', text: 'Сент-Джорджес' }, { flag: 'kr', key: 'Сеул', value: 'Сеул', text: 'Сеул' }, { flag: 'sg', key: 'Сингапур', value: 'Сингапур', text: 'Сингапур' }, { flag: 'mk', key: 'Скопье', value: 'Скопье', text: 'Скопье' }, { flag: 'bg', key: 'София', value: 'София', text: 'София' }, { flag: 'se', key: 'Стокгольм', value: 'Стокгольм', text: 'Стокгольм' }, { flag: 'fj', key: 'Сува', value: 'Сува', text: 'Сува' }, { flag: 'bo', key: 'Сукре', value: 'Сукре', text: 'Сукре' }, { flag: 'ee', key: 'Таллин', value: 'Таллин', text: 'Таллин' }, { flag: 'uz', key: 'Ташкент', value: 'Ташкент', text: 'Ташкент' }, { flag: 'ge', key: 'Тбилиси', value: 'Тбилиси', text: 'Тбилиси' }, { flag: 'ir', key: 'Тегеран', value: 'Тегеран', text: 'Тегеран' }, { flag: 'hn', key: 'Тегусигальпа', value: 'Тегусигальпа', text: 'Тегусигальпа' }, { flag: 'al', key: 'Тирана', value: 'Тирана', text: 'Тирана' }, { flag: 'jp', key: 'Токио', value: 'Токио', text: 'Токио' }, { flag: 'ly', key: 'Триполи', value: 'Триполи', text: 'Триполи' }, { flag: 'tn', key: 'Тунис', value: 'Тунис', text: 'Тунис' }, { flag: 'bt', key: 'Тхимпху', value: 'Тхимпху', text: 'Тхимпху' }, { flag: 'bf', key: 'Уагадугу', value: 'Уагадугу', text: 'Уагадугу' }, { flag: 'mn', key: 'Улан-Батор', value: 'Улан-Батор', text: 'Улан-Батор' }, { flag: 'sl', key: 'Фритаун', value: 'Фритаун', text: 'Фритаун' }, { flag: 'tv', key: 'Фунафути', value: 'Фунафути', text: 'Фунафути' }, { flag: 'vn', key: 'Ханой', value: 'Ханой', text: 'Ханой' }, { flag: 'zw', key: 'Хараре', value: 'Хараре', text: 'Хараре' }, { flag: 'zw', key: 'Хартум', value: 'Хартум', text: 'Хартум' }, { flag: 'fi', key: 'Хельсинки', value: 'Хельсинки', text: 'Хельсинки' }, { flag: 'sb', key: 'Хониара', value: 'Хониара', text: 'Хониара' }, { flag: 'kw', key: 'Эль-Кувейт', value: 'Эль-Кувейт', text: 'Эль-Кувейт' }, { flag: 'sa', key: 'Эр-Рияд', value: 'Эр-Рияд', text: 'Эр-Рияд' }, { flag: 'ki', key: 'Южная Тарава', value: 'Южная Тарава', text: 'Южная Тарава' }, { flag: 'ci', key: 'Ямусукро', value: 'Ямусукро', text: 'Ямусукро' }, { flag: 'cm', key: 'Яунде', value: 'Яунде', text: 'Яунде' }];
+{ flag: 'vu', key: 'Порт-Вила', value: 'Порт-Вила', text: 'Порт-Вила' }, { flag: 'mu', key: 'Порт-Луи', value: 'Порт-Луи', text: 'Порт-Луи' }, { flag: 'pg', key: 'Порт-Морсби', value: 'Порт-Морсби', text: 'Порт-Морсби' }, { flag: 'ht', key: 'Порт-о-Пренс', value: 'Порт-о-Пренс', text: 'Порт-о-Пренс' }, { flag: 'tt', key: 'Порт-оф-Спейн', value: 'Порт-оф-Спейн', text: 'Порт-оф-Спейн' }, { flag: 'bj', key: 'Порто-Ново', value: 'Порто-Ново', text: 'Порто-Ново' }, { flag: 'cz', key: 'Прага', value: 'Прага', text: 'Прага' }, { flag: 'cv', key: 'Прая', value: 'Прая', text: 'Прая' }, { flag: 'za', key: 'Претория', value: 'Претория', text: 'Претория' }, { flag: 'kp', key: 'Пхеньян', value: 'Пхеньян', text: 'Пхеньян' }, { flag: 'ma', key: 'Рабат', value: 'Рабат', text: 'Рабат' }, { flag: 'is', key: 'Рейкьявик', value: 'Рейкьявик', text: 'Рейкьявик' }, { flag: 'lv', key: 'Рига', value: 'Рига', text: 'Рига' }, { flag: 'it', key: 'Рим', value: 'Рим', text: 'Рим' }, { flag: 'dm', key: 'Розо', value: 'Розо', text: 'Розо' }, { flag: 'sm', key: 'Сан-Марино', value: 'Сан-Марино', text: 'Сан-Марино' }, { flag: 'sv', key: 'Сан-Сальвадор', value: 'Сан-Сальвадор', text: 'Сан-Сальвадор' }, { flag: 'st', key: 'Сан-Томе', value: 'Сан-Томе', text: 'Сан-Томе' }, { flag: 'cr', key: 'Сан-Хосе', value: 'Сан-Хосе', text: 'Сан-Хосе' }, { flag: 'ye', key: 'Сана', value: 'Сана', text: 'Сана' }, { flag: 'co', key: 'Санта-Фе-де-Богота', value: 'Санта-Фе-де-Богота', text: 'Санта-Фе-де-Богота' }, { flag: 'do', key: 'Санто-Доминго', value: 'Санто-Доминго', text: 'Санто-Доминго' }, { flag: 'cl', key: 'Сантьяго', value: 'Сантьяго', text: 'Сантьяго' }, { flag: 'ba', key: 'Сараево', value: 'Сараево', text: 'Сараево' }, { flag: 'ag', key: 'Сент-Джонс', value: 'Сент-Джонс', text: 'Сент-Джонс' }, { flag: 'gd', key: 'Сент-Джорджес', value: 'Сент-Джорджес', text: 'Сент-Джорджес' }, { flag: 'kr', key: 'Сеул', value: 'Сеул', text: 'Сеул' }, { flag: 'sg', key: 'Сингапур', value: 'Сингапур', text: 'Сингапур' }, { flag: 'mk', key: 'Скопье', value: 'Скопье', text: 'Скопье' }, { flag: 'bg', key: 'София', value: 'София', text: 'София' }, { flag: 'se', key: 'Стокгольм', value: 'Стокгольм', text: 'Стокгольм' }, { flag: 'fj', key: 'Сува', value: 'Сува', text: 'Сува' }, { flag: 'bo', key: 'Сукре', value: 'Сукре', text: 'Сукре' }, { flag: 'ee', key: 'Таллин', value: 'Таллин', text: 'Таллин' }, { flag: 'uz', key: 'Ташкент', value: 'Ташкент', text: 'Ташкент' }, { flag: 'ge', key: 'Тбилиси', value: 'Тбилиси', text: 'Тбилиси' }, { flag: 'ir', key: 'Тегеран', value: 'Тегеран', text: 'Тегеран' }, { flag: 'hn', key: 'Тегусигальпа', value: 'Тегусигальпа', text: 'Тегусигальпа' }, { flag: 'al', key: 'Тирана', value: 'Тирана', text: 'Тирана' }, { flag: 'jp', key: 'Токио', value: 'Токио', text: 'Токио' }, { flag: 'ly', key: 'Триполи', value: 'Триполи', text: 'Триполи' }, { flag: 'tn', key: 'Тунис', value: 'Тунис', text: 'Тунис' }, { flag: 'bt', key: 'Тхимпху', value: 'Тхимпху', text: 'Тхимпху' }, { flag: 'bf', key: 'Уагадугу', value: 'Уагадугу', text: 'Уагадугу' }, { flag: 'mn', key: 'Улан-Батор', value: 'Улан-Батор', text: 'Улан-Батор' }, { flag: 'sl', key: 'Фритаун', value: 'Фритаун', text: 'Фритаун' }, { flag: 'tv', key: 'Фунафути', value: 'Фунафути', text: 'Фунафути' }, { flag: 'vn', key: 'Ханой', value: 'Ханой', text: 'Ханой' }, { flag: 'zw', key: 'Хараре', value: 'Хараре', text: 'Хараре' }, { flag: 'zw', key: 'Хартум', value: 'Хартум', text: 'Хартум' }, { flag: 'fi', key: 'Хельсинки', value: 'Хельсинки', text: 'Хельсинки' }, { flag: 'sb', key: 'Хониара', value: 'Хониара', text: 'Хониара' }, { flag: 'kw', key: 'Эль-Кувейт', value: 'Эль-Кувейт', text: 'Эль-Кувейт' }, { flag: 'sa', key: 'Эр-Рияд', value: 'Эр-Рияд', text: 'Эр-Рияд' }, { flag: 'ki', key: 'Южная Тарава', value: 'Южная Тарава', text: 'Южная Тарава' }, { flag: 'ci', key: 'Ямусукро', value: 'Ямусукро', text: 'Ямусукро' }, { flag: 'cm', key: 'Яунде', value: 'Яунде', text: 'Яунде' }, { flag: 'us', key: 'Murray Hill', value: 'Murray Hill', text: 'Murray Hill' }];
 
 var COUNTRY_OPTIONS = exports.COUNTRY_OPTIONS = [//
 { flag: 'au', key: 'Австралия', value: 'Австралия', text: 'Австралия' }, { flag: 'at', key: 'Австрия', value: 'Австрия', text: 'Австрия' }, { flag: 'az', key: 'Азербайджан', value: 'Азербайджан', text: 'Азербайджан' }, { flag: 'al', key: 'Албания', value: 'Албания', text: 'Албания' }, { flag: 'dz', key: 'Алжир', value: 'Алжир', text: 'Алжир' }, { flag: 'ao', key: 'Ангола', value: 'Ангола', text: 'Ангола' }, { flag: 'ad', key: 'Андорра', value: 'Андорра', text: 'Андорра' }, { flag: 'ag', key: 'Антигуа и Барбуда', value: 'Антигуа и Барбуда', text: 'Антигуа и Барбуда' }, { flag: 'ar', key: 'Аргентина', value: 'Аргентина', text: 'Аргентина' }, { flag: 'am', key: 'Армения', value: 'Армения', text: 'Армения' }, { flag: 'af', key: 'Афганистан', value: 'Афганистан', text: 'Афганистан' }, { flag: 'bs', key: 'Багамы', value: 'Багамы', text: 'Багамы' }, { flag: 'bd', key: 'Бангладеш', value: 'Бангладеш', text: 'Бангладеш' }, { flag: 'bb', key: 'Барбадос', value: 'Барбадос', text: 'Барбадос' }, { flag: 'bh', key: 'Бахрейн', value: 'Бахрейн', text: 'Бахрейн' }, { flag: 'by', key: 'Беларусь', value: 'Беларусь', text: 'Беларусь' }, { flag: 'bz', key: 'Белиз', value: 'Белиз', text: 'Белиз' }, { flag: 'be', key: 'Бельгия', value: 'Бельгия', text: 'Бельгия' }, { flag: 'bj', key: 'Бенин', value: 'Бенин', text: 'Бенин' }, { flag: 'bg', key: 'Болгария', value: 'Болгария', text: 'Болгария' }, { flag: 'bo', key: 'Боливия', value: 'Боливия', text: 'Боливия' }, { flag: 'ba', key: 'Босния и Герцеговина', value: 'Босния и Герцеговина', text: 'Босния и Герцеговина' }, { flag: 'bw', key: 'Ботсвана', value: 'Ботсвана', text: 'Ботсвана' }, { flag: 'br', key: 'Бразилия', value: 'Бразилия', text: 'Бразилия' }, { flag: 'bn', key: 'Бруней', value: 'Бруней', text: 'Бруней' }, { flag: 'bf', key: 'Буркина Фасо', value: 'Буркина Фасо', text: 'Буркина Фасо' }, { flag: 'bi', key: 'Бурунди', value: 'Бурунди', text: 'Бурунди' }, { flag: 'bt', key: 'Бутан', value: 'Бутан', text: 'Бутан' }, { flag: 'vu', key: 'Вануату', value: 'Вануату', text: 'Вануату' }, { flag: 'va', key: 'Ватикан', value: 'Ватикан', text: 'Ватикан' }, { flag: 'uk', key: 'Великобритания', value: 'Великобритания', text: 'Великобритания' }, { flag: 'hu', key: 'Венгрия', value: 'Венгрия', text: 'Венгрия' }, { flag: 've', key: 'Венесуэла', value: 'Венесуэла', text: 'Венесуэла' }, { flag: 'tp', key: 'Восточный Тимор', value: 'Восточный Тимор', text: 'Восточный Тимор' }, { flag: 'vn', key: 'Вьетнам', value: 'Вьетнам', text: 'Вьетнам' }, { flag: 'ga', key: 'Габон', value: 'Габон', text: 'Габон' }, { flag: 'ht', key: 'Гаити', value: 'Гаити', text: 'Гаити' }, { flag: 'gy', key: 'Гайана', value: 'Гайана', text: 'Гайана' }, { flag: 'gm', key: 'Гамбия', value: 'Гамбия', text: 'Гамбия' }, { flag: 'gh', key: 'Гана', value: 'Гана', text: 'Гана' }, { flag: 'gt', key: 'Гватемала', value: 'Гватемала', text: 'Гватемала' }, { flag: 'gn', key: 'Гвинея', value: 'Гвинея', text: 'Гвинея' }, { flag: 'gw', key: 'Гвинея-Бисау', value: 'Гвинея-Бисау', text: 'Гвинея-Бисау' }, { flag: 'de', key: 'Германия', value: 'Германия', text: 'Германия' }, { flag: 'hn', key: 'Гондурас', value: 'Гондурас', text: 'Гондурас' }, { flag: 'gd', key: 'Гренада', value: 'Гренада', text: 'Гренада' }, { flag: 'gr', key: 'Греция', value: 'Греция', text: 'Греция' }, { flag: 'ge', key: 'Грузия', value: 'Грузия', text: 'Грузия' }, { flag: 'dk', key: 'Дания', value: 'Дания', text: 'Дания' }, { flag: 'dj', key: 'Джибути', value: 'Джибути', text: 'Джибути' }, { flag: 'dm', key: 'Доминика', value: 'Доминика', text: 'Доминика' }, { flag: 'do', key: 'Доминиканская Республика', value: 'Доминиканская Республика', text: 'Доминиканская Республика' }, { flag: 'eg', key: 'Египет', value: 'Египет', text: 'Египет' }, { flag: 'zm', key: 'Замбия', value: 'Замбия', text: 'Замбия' }, { flag: 'zw', key: 'Зимбабве', value: 'Зимбабве', text: 'Зимбабве' }, { flag: 'il', key: 'Израиль', value: 'Израиль', text: 'Израиль' }, { flag: 'in', key: 'Индия', value: 'Индия', text: 'Индия' }, { flag: 'id', key: 'Индонезия', value: 'Индонезия', text: 'Индонезия' }, { flag: 'jo', key: 'Иордания', value: 'Иордания', text: 'Иордания' }, { flag: 'iq', key: 'Ирак', value: 'Ирак', text: 'Ирак' }, { flag: 'ir', key: 'Иран', value: 'Иран', text: 'Иран' }, { flag: 'ie', key: 'Ирландия', value: 'Ирландия', text: 'Ирландия' }, { flag: 'is', key: 'Исландия', value: 'Исландия', text: 'Исландия' }, { flag: 'es', key: 'Испания', value: 'Испания', text: 'Испания' }, { flag: 'it', key: 'Италия', value: 'Италия', text: 'Италия' }, { flag: 'ye', key: 'Йемен', value: 'Йемен', text: 'Йемен' }, { flag: 'cv', key: 'Кабо-Верде', value: 'Кабо-Верде', text: 'Кабо-Верде' }, { flag: 'kz', key: 'Казахстан', value: 'Казахстан', text: 'Казахстан' }, { flag: 'kh', key: 'Камбоджа', value: 'Камбоджа', text: 'Камбоджа' }, { flag: 'cm', key: 'Камерун', value: 'Камерун', text: 'Камерун' }, { flag: 'ca', key: 'Канада', value: 'Канада', text: 'Канада' }, { flag: 'qa', key: 'Катар', value: 'Катар', text: 'Катар' }, { flag: 'ke', key: 'Кения', value: 'Кения', text: 'Кения' }, { flag: 'cy', key: 'Кипр', value: 'Кипр', text: 'Кипр' }, { flag: 'kg', key: 'Киргизия', value: 'Киргизия', text: 'Киргизия' }, { flag: 'ki', key: 'Кирибати', value: 'Кирибати', text: 'Кирибати' }, { flag: 'cn', key: 'Китай', value: 'Китай', text: 'Китай' }, { flag: 'co', key: 'Колумбия', value: 'Колумбия', text: 'Колумбия' }, { flag: 'km', key: 'Коморы', value: 'Коморы', text: 'Коморы' }, { flag: 'cd', key: 'Конго, демократическая республика', value: 'Конго, демократическая республика', text: 'Конго, демократическая республика' }, { flag: 'cg', key: 'Конго, республика', value: 'Конго, республика', text: 'Конго, республика' }, { flag: 'cr', key: 'Коста-Рика', value: 'Коста-Рика', text: 'Коста-Рика' }, { flag: 'ci', key: 'Кот-д’Ивуар', value: 'Кот-д’Ивуар', text: 'Кот-д’Ивуар' }, { flag: 'cu', key: 'Куба', value: 'Куба', text: 'Куба' }, { flag: 'kw', key: 'Кувейт', value: 'Кувейт', text: 'Кувейт' }, { flag: 'la', key: 'Лаос', value: 'Лаос', text: 'Лаос' }, { flag: 'lv', key: 'Латвия', value: 'Латвия', text: 'Латвия' }, { flag: 'ls', key: 'Лесото', value: 'Лесото', text: 'Лесото' }, { flag: 'lr', key: 'Либерия', value: 'Либерия', text: 'Либерия' }, { flag: 'lb', key: 'Ливан', value: 'Ливан', text: 'Ливан' }, { flag: 'ly', key: 'Ливия', value: 'Ливия', text: 'Ливия' }, { flag: 'lt', key: 'Литва', value: 'Литва', text: 'Литва' }, { flag: 'li', key: 'Лихтенштейн', value: 'Лихтенштейн', text: 'Лихтенштейн' }, { flag: 'lu', key: 'Люксембург', value: 'Люксембург', text: 'Люксембург' }, { flag: 'mu', key: 'Маврикий', value: 'Маврикий', text: 'Маврикий' }, { flag: 'mr', key: 'Мавритания', value: 'Мавритания', text: 'Мавритания' }, { flag: 'mg', key: 'Мадагаскар', value: 'Мадагаскар', text: 'Мадагаскар' }, { flag: 'mk', key: 'Македония', value: 'Македония', text: 'Македония' }, { flag: 'mw', key: 'Малави', value: 'Малави', text: 'Малави' }, { flag: 'my', key: 'Малайзия', value: 'Малайзия', text: 'Малайзия' }, { flag: 'ml', key: 'Мали', value: 'Мали', text: 'Мали' }, { flag: 'mv', key: 'Мальдивы', value: 'Мальдивы', text: 'Мальдивы' }, { flag: 'mt', key: 'Мальта', value: 'Мальта', text: 'Мальта' }, { flag: 'ma', key: 'Марокко', value: 'Марокко', text: 'Марокко' }, { flag: 'mh', key: 'Маршалловы Острова', value: 'Маршалловы Острова', text: 'Маршалловы Острова' }, { flag: 'mx', key: 'Мексика', value: 'Мексика', text: 'Мексика' }, { flag: 'mz', key: 'Мозамбик', value: 'Мозамбик', text: 'Мозамбик' }, { flag: 'md', key: 'Молдавия', value: 'Молдавия', text: 'Молдавия' }, { flag: 'mc', key: 'Монако', value: 'Монако', text: 'Монако' }, { flag: 'mn', key: 'Монголия', value: 'Монголия', text: 'Монголия' }, { flag: 'mm', key: 'Мьянма', value: 'Мьянма', text: 'Мьянма' }, { flag: 'na', key: 'Намибия', value: 'Намибия', text: 'Намибия' }, { flag: 'nr', key: 'Науру', value: 'Науру', text: 'Науру' }, { flag: 'np', key: 'Непал', value: 'Непал', text: 'Непал' }, { flag: 'ne', key: 'Нигер', value: 'Нигер', text: 'Нигер' }, { flag: 'ng', key: 'Нигерия', value: 'Нигерия', text: 'Нигерия' }, { flag: 'nl', key: 'Нидерланды', value: 'Нидерланды', text: 'Нидерланды' }, { flag: 'ni', key: 'Никарагуа', value: 'Никарагуа', text: 'Никарагуа' }, { flag: 'nz', key: 'Новая Зеландия', value: 'Новая Зеландия', text: 'Новая Зеландия' }, { flag: 'no', key: 'Норвегия', value: 'Норвегия', text: 'Норвегия' }, { flag: 'ae', key: 'Объединенные Арабские Эмираты', value: 'Объединенные Арабские Эмираты', text: 'Объединенные Арабские Эмираты' }, { flag: 'om', key: 'Оман', value: 'Оман', text: 'Оман' }, { flag: 'pk', key: 'Пакистан', value: 'Пакистан', text: 'Пакистан' }, { flag: 'pw', key: 'Палау', value: 'Палау', text: 'Палау' }, { flag: 'pa', key: 'Панама', value: 'Панама', text: 'Панама' }, { flag: 'pg', key: 'Папуа - Новая Гвинея', value: 'Папуа - Новая Гвинея', text: 'Папуа - Новая Гвинея' }, { flag: 'py', key: 'Парагвай', value: 'Парагвай', text: 'Парагвай' }, { flag: 'pe', key: 'Перу', value: 'Перу', text: 'Перу' }, { flag: 'pl', key: 'Польша', value: 'Польша', text: 'Польша' }, { flag: 'pt', key: 'Португалия', value: 'Португалия', text: 'Португалия' }, { flag: 'ru', key: 'Россия', value: 'Россия', text: 'Россия' }, { flag: 'rw', key: 'Руанда', value: 'Руанда', text: 'Руанда' }, { flag: 'ro', key: 'Румыния', value: 'Румыния', text: 'Румыния' }, { flag: 'sv', key: 'Сальвадор', value: 'Сальвадор', text: 'Сальвадор' }, { flag: 'ws', key: 'Самоа', value: 'Самоа', text: 'Самоа' }, { flag: 'sm', key: 'Сан-Марино', value: 'Сан-Марино', text: 'Сан-Марино' }, { flag: 'st', key: 'Сан-Томе и Принсипи', value: 'Сан-Томе и Принсипи', text: 'Сан-Томе и Принсипи' }, { flag: 'sa', key: 'Саудовская Аравия', value: 'Саудовская Аравия', text: 'Саудовская Аравия' }, { flag: 'sz', key: 'Свазиленд', value: 'Свазиленд', text: 'Свазиленд' }, { flag: 'kp', key: 'Северная Корея', value: 'Северная Корея', text: 'Северная Корея' }, { flag: 'sc', key: 'Сейшелы', value: 'Сейшелы', text: 'Сейшелы' }, { flag: 'sn', key: 'Сенегал', value: 'Сенегал', text: 'Сенегал' }, { flag: 'vc', key: 'Сент-Винсент и Гренадины', value: 'Сент-Винсент и Гренадины', text: 'Сент-Винсент и Гренадины' }, { flag: 'kn', key: 'Сент-Китс и Невис', value: 'Сент-Китс и Невис', text: 'Сент-Китс и Невис' }, { flag: 'lc', key: 'Сент-Люсия', value: 'Сент-Люсия', text: 'Сент-Люсия' }, { flag: 'cs', key: 'Сербия', value: 'Сербия', text: 'Сербия' }, { flag: 'sg', key: 'Сингапур', value: 'Сингапур', text: 'Сингапур' }, { flag: 'sy', key: 'Сирия', value: 'Сирия', text: 'Сирия' }, { flag: 'sk', key: 'Словакия', value: 'Словакия', text: 'Словакия' }, { flag: 'si', key: 'Словения', value: 'Словения', text: 'Словения' }, { flag: 'us', key: 'Соединенные Штаты Америки', value: 'Соединенные Штаты Америки', text: 'Соединенные Штаты Америки' }, { flag: 'sb', key: 'Соломоновы Острова', value: 'Соломоновы Острова', text: 'Соломоновы Острова' }, { flag: 'so', key: 'Сомали', value: 'Сомали', text: 'Сомали' }, { flag: 'zw', key: 'Судан', value: 'Судан', text: 'Судан' }, { flag: 'sr', key: 'Суринам', value: 'Суринам', text: 'Суринам' }, { flag: 'sl', key: 'Сьерра-Леоне', value: 'Сьерра-Леоне', text: 'Сьерра-Леоне' }, { flag: 'tj', key: 'Таджикистан', value: 'Таджикистан', text: 'Таджикистан' }, { flag: 'th', key: 'Таиланд', value: 'Таиланд', text: 'Таиланд' }, { flag: 'tz', key: 'Танзания', value: 'Танзания', text: 'Танзания' }, { flag: 'tg', key: 'Того', value: 'Того', text: 'Того' }, { flag: 'to', key: 'Тонга', value: 'Тонга', text: 'Тонга' }, { flag: 'tt', key: 'Тринидад и Тобаго', value: 'Тринидад и Тобаго', text: 'Тринидад и Тобаго' }, { flag: 'tv', key: 'Тувалу', value: 'Тувалу', text: 'Тувалу' }, { flag: 'tn', key: 'Тунис', value: 'Тунис', text: 'Тунис' }, { flag: 'tm', key: 'Туркмения', value: 'Туркмения', text: 'Туркмения' }, { flag: 'tr', key: 'Турция', value: 'Турция', text: 'Турция' }, { flag: 'ug', key: 'Уганда', value: 'Уганда', text: 'Уганда' }, { flag: 'uz', key: 'Узбекистан', value: 'Узбекистан', text: 'Узбекистан' }, { flag: 'ua', key: 'Украина', value: 'Украина', text: 'Украина' }, { flag: 'uy', key: 'Уругвай', value: 'Уругвай', text: 'Уругвай' }, { flag: 'fm', key: 'Федеративные штаты Микронезии', value: 'Федеративные штаты Микронезии', text: 'Федеративные штаты Микронезии' }, { flag: 'fj', key: 'Фиджи', value: 'Фиджи', text: 'Фиджи' }, { flag: 'ph', key: 'Филиппины', value: 'Филиппины', text: 'Филиппины' }, { flag: 'fi', key: 'Финляндия', value: 'Финляндия', text: 'Финляндия' }, { flag: 'fr', key: 'Франция', value: 'Франция', text: 'Франция' }, { flag: 'ht', key: 'Хорватия', value: 'Хорватия', text: 'Хорватия' }, { flag: 'cf', key: 'Центрально-Африканская Республика', value: 'Центрально-Африканская Республика', text: 'Центрально-Африканская Республика' }, { flag: 'td', key: 'Чад', value: 'Чад', text: 'Чад' }, { flag: 'yu', key: 'Черногория', value: 'Черногория', text: 'Черногория' }, { flag: 'cz', key: 'Чехия', value: 'Чехия', text: 'Чехия' }, { flag: 'cl', key: 'Чили', value: 'Чили', text: 'Чили' }, { flag: 'ch', key: 'Швейцария', value: 'Швейцария', text: 'Швейцария' }, { flag: 'se', key: 'Швеция', value: 'Швеция', text: 'Швеция' }, { flag: 'lk', key: 'Шри-Ланка', value: 'Шри-Ланка', text: 'Шри-Ланка' }, { flag: 'ec', key: 'Эквадор', value: 'Эквадор', text: 'Эквадор' }, { flag: 'gq', key: 'Экваториальная Гвинея', value: 'Экваториальная Гвинея', text: 'Экваториальная Гвинея' }, { flag: 'er', key: 'Эритрея', value: 'Эритрея', text: 'Эритрея' }, { flag: 'ee', key: 'Эстония', value: 'Эстония', text: 'Эстония' }, { flag: 'et', key: 'Эфиопия', value: 'Эфиопия', text: 'Эфиопия' }, { flag: 'kr', key: 'Южная Корея', value: 'Южная Корея', text: 'Южная Корея' }, { flag: 'za', key: 'Южно-Африканская Республика', value: 'Южно-Африканская Республика', text: 'Южно-Африканская Республика' }, { flag: 'jm', key: 'Ямайка', value: 'Ямайка', text: 'Ямайка' }, { flag: 'jp', key: 'Япония', value: 'Япония', text: 'Япония' }];

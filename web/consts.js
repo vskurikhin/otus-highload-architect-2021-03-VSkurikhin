@@ -204,7 +204,8 @@ export const CITY_OPTIONS = [
     { flag: 'sa', key: 'Эр-Рияд',                      value: 'Эр-Рияд',                      text: 'Эр-Рияд' },
     { flag: 'ki', key: 'Южная Тарава',                 value: 'Южная Тарава',                 text: 'Южная Тарава' },
     { flag: 'ci', key: 'Ямусукро',                     value: 'Ямусукро',                     text: 'Ямусукро' },
-    { flag: 'cm', key: 'Яунде',                        value: 'Яунде',                        text: 'Яунде' }
+    { flag: 'cm', key: 'Яунде',                        value: 'Яунде',                        text: 'Яунде' },
+    { flag: 'us', key: 'Murray Hill',                  value: 'Murray Hill',                  text: 'Murray Hill' },
 ]
 
 export const COUNTRY_OPTIONS = [                                                                               //
