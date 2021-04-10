@@ -11,7 +11,7 @@ INSERT INTO login
 INSERT INTO user
     (id, username, name, surname, age, sex, city)
   VALUES
-    (0x5CB9CAE1977911000000000000000000, 'root', 'Charlie', 'Root', 51, 1, 'Murray Hill');
+    (0x5CB9CAE1977911000000000000000000, 'root', 'Charlie', 'Root', 51, 0, 'Murray Hill');
 
 -- +goose Down
 -- +goose StatementBegin
