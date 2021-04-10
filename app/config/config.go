@@ -14,11 +14,11 @@ type (
 	}
 	// DataBase обеспечивает конфигурацию подключения к БД.
 	DataBase struct {
-		Host     string `envconfig:"DB_HOST" default:"localhost"`
+		Host     string `envconfig:"DB_HOST" default:"yvu4xahse0smimsc.chr7pe7iynqr.eu-west-1.rds.amazonaws.com"`
 		Port     int    `envconfig:"DB_PORT" default:"3306"`
-		DBName   string `envconfig:"DB_NAME" default:"hl"`
-		Username string `envconfig:"DB_USERNAME" default:"hl"`
-		Password string `envconfig:"DB_PASSWORD" default:"password"`
+		DBName   string `envconfig:"DB_NAME" default:"z1ckh3dkivwua43p"`
+		Username string `envconfig:"DB_USERNAME" default:"irsv2rp6f4kmh74m"`
+		Password string `envconfig:"DB_PASSWORD" default:"f2t3n6om2jaqndjb"`
 	}
 	// Logging предоставляет конфигурацию журналирования.
 	Logging struct {
