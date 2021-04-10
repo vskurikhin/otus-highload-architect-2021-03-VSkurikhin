@@ -94839,18 +94839,15 @@ function Signin(_ref2) {
     }();
 
     var onSexChange = function onSexChange(e, data) {
-        console.log(data.value);
-        setSex(data.value);
+        return setSex(data.value);
     };
 
     var onCityChange = function onCityChange(e, data) {
-        console.log(data.value);
-        setCity(data.value);
+        return setCity(data.value);
     };
 
     var onCitySearchChange = function onCitySearchChange(e, data) {
-        console.log(data.searchQuery);
-        setCity(data.searchQuery);
+        return setCity(data.searchQuery);
     };
 
     return _react2.default.createElement(
@@ -95222,7 +95219,6 @@ var TableOfUsers = function TableOfUsers(props) {
         var parentElement = target.parentElement;
 
         if (parentElement) {
-            console.log(parentElement.id);
             history.push('/userform/' + parentElement.id);
         }
     };
@@ -95377,24 +95373,12 @@ var UserDefails = function UserDefails(props) {
     };
 
     var getItem = function getItem() {
-        fetch("/user/" + props.id).then(function (res) {
+        return fetch("/user/" + props.id).then(function (res) {
             return res.json();
         }).then(getResult, getError);
     };
 
     (0, _react.useEffect)(getItem, []);
-
-    var handleClick = function handleClick(e) {
-        e.preventDefault();
-        var target = e.target;
-        var parentElement = target.parentElement;
-
-        if (parentElement) {
-            console.log(parentElement.id);
-        }
-    };
-
-    console.log(item);
 
     if (error) {
         return _react2.default.createElement(
@@ -95409,7 +95393,13 @@ var UserDefails = function UserDefails(props) {
             null,
             "\u0417\u0430\u0433\u0440\u0443\u0437\u043A\u0430..."
         );
-    } else {
+    } else if (item && item !== '{}') {
+        var isArray = false;
+        if (typeof Array.isArray === 'undefined') {
+            Array.isArray = function (obj) {
+                isArray = Object.prototype.toString.call(obj) === '[object Array]';
+            };
+        }
         try {
             return _react2.default.createElement(
                 "div",
@@ -95566,7 +95556,7 @@ var UserDefails = function UserDefails(props) {
                         "\xA0"
                     )
                 ),
-                item && item !== '{}' && Array.isArray(item.Interests) ? _react2.default.createElement(
+                Array.isArray(item.Interests) || isArray ? _react2.default.createElement(
                     "div",
                     { className: "my-divTableRow" },
                     _react2.default.createElement(
@@ -95636,10 +95626,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var UserForm = exports.UserForm = function UserForm(_ref) {
     var match = _ref.match;
-
-
-    console.log(match);
-
     return _react2.default.createElement(
         "div",
         { className: "login-wrapper" },

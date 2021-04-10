@@ -26,30 +26,24 @@ const UserDefails = (props) => {
         setError(error);
     }
 
-    const getItem = () => {
-        fetch("/user/" + props.id)
-            .then(res => res.json())
-            .then(getResult, getError);
-    }
+    const getItem = () => fetch("/user/" + props.id)
+        .then(res => res.json())
+        .then(getResult, getError)
+
 
     useEffect(getItem, [])
 
-    const handleClick = e => {
-        e.preventDefault();
-        const {target} = e
-        const {parentElement} = target
-        if (parentElement) {
-            console.log(parentElement.id)
-        }
-    };
-
-    console.log(item);
-
     if (error) {
         return <div>Ошибка: {error.message}</div>;
-    } else if (!isLoaded) {
+    } else if ( ! isLoaded) {
         return <div>Загрузка...</div>;
-    } else {
+    } else if (item && item !== '{}') {
+        let isArray = false;
+        if (typeof Array.isArray === 'undefined') {
+            Array.isArray = function (obj) {
+                isArray = Object.prototype.toString.call(obj) === '[object Array]';
+            }
+        }
         try {
             return (
                 <div className="my-divTableBody">
@@ -109,7 +103,7 @@ const UserDefails = (props) => {
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
-                    {item && item !== '{}' && Array.isArray(item.Interests) ? (
+                    {Array.isArray(item.Interests) || isArray ? (
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
