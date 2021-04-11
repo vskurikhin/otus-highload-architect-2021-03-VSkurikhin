@@ -1,37 +1,35 @@
-import './Signin.css';
 
-import PropTypes from 'prop-types';
-import React, {useState} from 'react';
+import './Signin.css'
+
+import PropTypes from 'prop-types'
+import React, {useState} from 'react'
 import {Dropdown, Input} from 'semantic-ui-react'
-import {useHistory} from "react-router-dom";
+import {useHistory} from "react-router-dom"
 
-import {CITY_OPTIONS, SEX_OPTIONS} from "../../consts";
+import {CITY_OPTIONS, SEX_OPTIONS} from "../../consts"
+import {POST} from "../../lib/consts";
 
 async function signinUser(credentials) {
     return fetch('/signin', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    })
-        .then(data => data.json())
+        body: JSON.stringify(credentials),
+        ...POST
+    }).then(data => data.json())
 }
 
 export default function Signin({setToken}) {
 
-    const history = useHistory();
-    const [username, setUserName] = useState();
-    const [password, setPassword] = useState();
-    const [name, setName] = useState();
-    const [surname, setSurname] = useState();
-    const [age, setAge] = useState("41");
-    const [sex, setSex] = useState("0");
-    const [city, setCity] = useState("Москва");
-    const [interests, setInterests] = useState();
+    const history = useHistory()
+    const [username, setUserName] = useState()
+    const [password, setPassword] = useState()
+    const [name, setName] = useState()
+    const [surname, setSurname] = useState()
+    const [age, setAge] = useState("41")
+    const [sex, setSex] = useState("0")
+    const [city, setCity] = useState("Москва")
+    const [interests, setInterests] = useState()
 
     const handleSubmit = async e => {
-        e.preventDefault();
+        e.preventDefault()
         const token = await signinUser({
             username,
             password,
@@ -41,10 +39,10 @@ export default function Signin({setToken}) {
             sex,
             city,
             interests
-        });
-        setToken(token);
+        })
+        setToken(token)
         if (token){
-            history.push('/userlist');
+            history.push('/userlist')
         }
     }
 

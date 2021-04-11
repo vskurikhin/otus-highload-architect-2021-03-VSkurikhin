@@ -1,49 +1,64 @@
-import React, {useEffect, useState} from "react";
-import {Dropdown, Input, Table} from "semantic-ui-react";
-import {CITY_OPTIONS, SEX_OPTIONS} from "../../consts";
-import {useHistory} from "react-router-dom";
+import React, {useEffect, useState} from "react"
+import {Dropdown, Input} from "semantic-ui-react"
+import {useHistory} from "react-router-dom"
 
-const UserDetails = (props) => {
+import {CITY_OPTIONS} from "../../consts"
+import UserInterests from "../UserInterests/UserInterests";
 
-    const history = useHistory();
-    const [error, setError] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [item, setItem] = useState({});
+const UserDetails = props => {
+
+    const history = useHistory()
+    const [error, setError] = useState(null)
+    const [isLoaded, setIsLoaded] = useState(false)
+    const [username, setUsername] = useState(null)
+    const [name, setName] = useState("")
+    const [surName, setSurName] = useState("")
+    const [age, setAge] = useState(0)
+    const [sex, setSex] = useState(0)
+    const [city, setCity] = useState("Murray Hill")
+    const [interests, setInterests] = useState([])
+
+    const setItem = result => {
+        const {Username, Name, SurName, Age, Sex, City, Interests} = result
+        setUsername(Username)
+        setName(Name)
+        setSurName(SurName)
+        setAge(Age)
+        setSex(Sex)
+        setCity(City)
+        setInterests(Interests)
+        setIsLoaded(true)
+    }
 
     const getResult = result => {
-        setIsLoaded(true);
+        setIsLoaded(true)
         if (result.code && result.message) {
             throw {
                 code: result.code,
                 message: result.message
             }
         }
-        setItem(result);
+        setItem(result)
     }
 
     const getError = error => {
-        setIsLoaded(true);
-        setError(error);
+        setIsLoaded(true)
+        setError(error)
     }
 
-    const getItem = () => fetch("/user/" + props.id)
-        .then(res => res.json())
-        .then(getResult, getError)
-
+    const getItem = async () => {
+        await fetch("/user/" + props.id)
+            .then(res => res.json())
+            .then(getResult, getError)
+    }
 
     useEffect(getItem, [])
 
     if (error) {
-        return <div>Ошибка: {error.message}</div>;
+        return <div>Ошибка: {error.message}</div>
     } else if (!isLoaded) {
-        return <div>Загрузка...</div>;
-    } else if (item && item !== '{}') {
-        let isArray = false;
-        if (typeof Array.isArray === 'undefined') {
-            Array.isArray = function (obj) {
-                isArray = Object.prototype.toString.call(obj) === '[object Array]';
-            }
-        }
+        return <div>Загрузка...</div>
+    } else if (username) {
         try {
             return (
                 <div className="my-divTableBody">
@@ -51,7 +66,7 @@ const UserDetails = (props) => {
                         <div className="my-divTableCellLeft">&nbsp;</div>
                         <div className="my-divTableCell">
                             <p className="my-p-label">Username:</p>
-                            <Input value={item.Username} disabled={true}/>
+                            <Input value={username} disabled={true}/>
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
@@ -59,7 +74,7 @@ const UserDetails = (props) => {
                         <div className="my-divTableCellLeft">&nbsp;</div>
                         <div className="my-divTableCell">
                             <p className="my-p-label">Firstname:</p>
-                            <Input value={item.Name} disabled={true}/>
+                            <Input value={name} disabled={true}/>
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
@@ -67,7 +82,7 @@ const UserDetails = (props) => {
                         <div className="my-divTableCellLeft">&nbsp;</div>
                         <div className="my-divTableCell">
                             <p className="my-p-label">Surname:</p>
-                            <Input value={item.SurName} disabled={true}/>
+                            <Input value={surName} disabled={true}/>
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
@@ -75,7 +90,7 @@ const UserDetails = (props) => {
                         <div className="my-divTableCellLeft">&nbsp;</div>
                         <div className="my-divTableCell">
                             <p className="my-p-label">Age:</p>
-                            <Input value={item.Age} disabled={true}/>
+                            <Input value={age} disabled={true}/>
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
@@ -83,7 +98,7 @@ const UserDetails = (props) => {
                         <div className="my-divTableCellLeft">&nbsp;</div>
                         <div className="my-divTableCell">
                             <p className="my-p-label">Sex:</p>
-                            <Input value={item.Sex === 0 ? 'Male' : 'Female'} disabled={true}/>
+                            <Input value={sex === 0 ? 'Male' : 'Female'} disabled={true}/>
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
@@ -93,8 +108,7 @@ const UserDetails = (props) => {
                             <p className="my-p-label">City</p>
                             <Dropdown
                                 disabled={true}
-                                defaultValue={item.City}
-                                value={item.City}
+                                value={city}
                                 fluid
                                 search
                                 selection
@@ -110,22 +124,16 @@ const UserDetails = (props) => {
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
-                    {Array.isArray(item.Interests) || isArray ? item.Interests.map((interest) => (
-                        <div className="my-divTableRow">
-                            <div className="my-divTableCellLeft">&nbsp;</div>
-                            <div className="my-divTableCell">
-                                <Input value={interest} disabled={true}/>
-                            </div>
-                            <div className="my-divTableCellRight">&nbsp;</div>
-                        </div>
-                    )) : <div/>}
-                </div>);
+                    <UserInterests interests={interests} {...props} />
+                </div>)
         } catch (e) {
-            console.debug(e);
-            history.push('/login');
-            return <div/>;
+            console.debug(e)
+            history.push('/login')
+            return <div/>
         }
+    } else {
+        return <div/>
     }
 }
 
-export default UserDetails;
+export default UserDetails

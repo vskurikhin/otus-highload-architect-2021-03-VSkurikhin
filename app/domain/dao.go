@@ -1,11 +1,14 @@
 package domain
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type (
 	DAO struct {
 		Interest         *interest
 		Login            *login
+		Session          *session
 		User             *user
 		UserHasInterests *userHasInterests
 	}
@@ -13,6 +16,9 @@ type (
 		db *sql.DB
 	}
 	login struct {
+		db *sql.DB
+	}
+	session struct {
 		db *sql.DB
 	}
 	user struct {
@@ -27,6 +33,7 @@ func New(db *sql.DB) *DAO {
 	return &DAO{
 		Interest:         &interest{db: db},
 		Login:            &login{db: db},
+		Session:          &session{db: db},
 		User:             &user{db: db},
 		UserHasInterests: &userHasInterests{db: db},
 	}

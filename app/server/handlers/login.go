@@ -24,19 +24,33 @@ func (l *login) String() string {
 
 func (h *Handlers) Login(ctx *sa.RequestCtx) error {
 
-	err := h.login(ctx)
+	login, err := h.login(ctx)
 
 	if err == nil {
 		sessionId := uuid.New()
 		jwtCookie := ctx.Request.Header.Cookie(config.ACCESS_TOKEN_COOKIE)
 
 		if len(jwtCookie) == 0 {
-			token := h.generateToken(ctx, sessionId)
 
+			token := h.generateToken(ctx, sessionId)
+			err = h.Server.DAO.Session.UpdateOrCreate(login, sessionId)
+
+			if err != nil {
+				logger.Errorf("Bad password or error: %v", err)
+
+				return ctx.HTTPResponse("{}", fasthttp.StatusForbidden)
+			}
+			if logger.DebugEnabled() {
+				logger.Debugf("jwt for session %s created", sessionId)
+			}
 			return ctx.HTTPResponse(token.String())
 		}
 		token := domain.Token{Token: string(jwtCookie)}
+		err = h.Server.DAO.Session.UpdateOrCreate(login, sessionId)
 
+		if logger.DebugEnabled() {
+			logger.Debugf("jwt for session %s updated", sessionId)
+		}
 		return ctx.HTTPResponse(token.String())
 	}
 	logger.Errorf("Bad password or error: %v", err)
@@ -44,27 +58,27 @@ func (h *Handlers) Login(ctx *sa.RequestCtx) error {
 	return ctx.HTTPResponse("{}", fasthttp.StatusForbidden)
 }
 
-func (h *Handlers) login(ctx *sa.RequestCtx) error {
+func (h *Handlers) login(ctx *sa.RequestCtx) (*domain.Login, error) {
 
 	var dto login
 	err := json.Unmarshal(ctx.PostBody(), &dto)
 
 	if err != nil {
-		return err // правильная обработка ошибок вместо паники
+		return nil, err // правильная обработка ошибок вместо паники
 	}
 	err = security.CheckValue(dto.Username)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	login, err := h.Server.DAO.Login.Read(dto.Username)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(login.Password()), []byte(dto.Password))
 
-	return err
+	return login, nil
 }
 
 func (h *Handlers) generateToken(ctx *sa.RequestCtx, sessionId uuid.UUID) *domain.Token {

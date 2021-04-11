@@ -1,6 +1,7 @@
 package security
 
 import (
+	"errors"
 	"github.com/google/uuid"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
 	"time"
@@ -26,9 +27,8 @@ type Session struct {
 func (j *JWT) GenerateToken(sessionId uuid.UUID) (string, time.Time) {
 
 	if logger.DebugEnabled() {
-		logger.Debugf("Create new session %s", sessionId)
+		logger.Debugf("UpdateOrCreate new session %s", sessionId)
 	}
-
 	expireAt := time.Now().Add(20 * time.Minute)
 
 	// Вставить информацию о сессии пользователя в `token`
@@ -46,6 +46,25 @@ func (j *JWT) GenerateToken(sessionId uuid.UUID) (string, time.Time) {
 	}
 
 	return tokenString, expireAt
+}
+
+// SessionIdFromToken получить из токена id-сессии.
+func (j *JWT) SessionIdFromToken(sToken string) (*string, error) {
+
+	token, err := jwt.ParseWithClaims(sToken, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return j.jwtSignKey, nil
+	})
+
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	if claims, ok := token.Claims.(*jwt.StandardClaims); ok && token.Valid {
+		if logger.DebugEnabled() {
+			logger.Debugf("%v %v", claims.Id, claims.ExpiresAt)
+		}
+		return &claims.Id, nil
+	}
+	return nil, errors.New("")
 }
 
 // ValidateToken проверяет токен.
