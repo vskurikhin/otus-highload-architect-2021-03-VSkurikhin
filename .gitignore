@@ -73,5 +73,8 @@ out/
 ### VS Code ###
 .vscode/
 
+# node
+web/public/generated/*
+
 ### otus-highload-architect-2021-03-VSkurikhin
 otus-highload-architect-2021-03-VSkurikhin*

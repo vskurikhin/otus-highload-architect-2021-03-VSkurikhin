@@ -1,18 +1,20 @@
-import React, {useState} from "react";
-import {useHistory} from "react-router-dom";
-import {Menu} from "semantic-ui-react";
+
+import React, {useState} from "react"
+import {Menu} from "semantic-ui-react"
+import {compose} from "redux";
+import {connect} from "react-redux";
+import {useHistory, withRouter} from "react-router-dom"
+
+import {getProfileFetch, logoutUser} from "../../redux/currentUser";
 
 function AppMenu(props) {
 
-    const [activeItem, setActiveItem] = useState();
-    const history = useHistory();
+    const [activeItem, setActiveItem] = useState()
+    const history = useHistory()
     const handleItemClick = (e, { name }) => {
-        setActiveItem(name);
-        history.push(name);
+        setActiveItem(name)
+        history.push(name)
     }
-
-    console.debug('history.location: ')
-    console.debug(history.location)
 
     return (
         <div className="wrapper">
@@ -38,7 +40,19 @@ function AppMenu(props) {
                 </Menu.Item>
             </Menu>
         </div>
-    );
+    )
 }
 
-export default AppMenu;
+const mapStateToProps = state => ({
+    user: state.currentUser
+})
+
+const mapDispatchToProps = dispatch => ({
+    getProfile: () => dispatch(getProfileFetch()),
+    logoutUser: () => dispatch(logoutUser())
+})
+
+export default compose(
+    withRouter,
+    connect(mapStateToProps, mapDispatchToProps)
+)(AppMenu)

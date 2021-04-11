@@ -1,13 +1,14 @@
-import './App.css';
 
-import UserList from './components/UserList/UserList';
-import Login from "./components/Login/Login";
-import UserForm from './components/UserForm/UserForm';
-import Signin from "./components/Signin/Signin";
-import AppMenu from "./components/Menu/AppMenu";
+import './App.css'
 
-import React, {useState} from 'react';
-import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom';
+import AppMenu from "./components/Menu/AppMenu"
+import Login from "./components/Login/Login"
+import Signin from "./components/Signin/Signin"
+import UserForm from './components/UserForm/UserForm'
+import UserList from './components/UserList/UserList'
+
+import React, {useState} from 'react'
+import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom'
 
 const main = setToken => (
     <div className="wrapper">
@@ -29,7 +30,7 @@ const main = setToken => (
             </Switch>
         </BrowserRouter>
     </div>
-);
+)
 
 const login = setToken => (
     <div className="wrapper">
@@ -46,7 +47,7 @@ const login = setToken => (
             </Switch>
         </BrowserRouter>
     </div>
-);
+)
 
 function App() {
 
@@ -59,4 +60,4 @@ function App() {
 
 }
 
-export default App;
+export default App

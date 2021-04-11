@@ -1,36 +1,37 @@
-import './Login.css';
 
-import PropTypes from 'prop-types';
-import React, {useState} from 'react';
-import {Input} from "semantic-ui-react";
-import {useHistory} from "react-router-dom";
+import './Login.css'
+
+import PropTypes from 'prop-types'
+import React, {useState} from 'react'
+import {Input} from "semantic-ui-react"
+import {useHistory} from "react-router-dom"
+
+import deleteCookie from "../../lib/deleteCookie";
+import {POST} from "../../lib/consts";
 
 async function loginUser(credentials) {
     return fetch('/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(credentials)
-    })
-        .then(data => data.json())
+        body: JSON.stringify(credentials),
+        ...POST
+    }).then(data => data.json())
 }
 
 export default function Login({setToken}) {
 
-    const history = useHistory();
-    const [username, setUserName] = useState();
-    const [password, setPassword] = useState();
+    const history = useHistory()
+    const [username, setUserName] = useState()
+    const [password, setPassword] = useState()
 
     const handleSubmit = async e => {
         e.preventDefault();
+        deleteCookie("acs_jwt")
         const token = await loginUser({
             username,
             password
-        });
-        setToken(token);
+        })
+        setToken(token)
         if (token){
-            history.push('/userlist');
+            history.push('/userlist')
         }
     }
 
