@@ -1,6 +1,6 @@
 import React from 'react';
 import TableOfUsers from "../TableOfUsers/TableOfUsers";
-import UserDefails from "../UserDefails/UserDefails";
+import UserDetails from "../UserDefails/UserDetails";
 
 export const UserForm = ({match}) => (
     <div className="login-wrapper">
@@ -14,7 +14,7 @@ export const UserForm = ({match}) => (
                     <div className="my-divTableCellRight">&nbsp;</div>
                 </div>
             </div>
-            <UserDefails id={match.params.id}/>
+            <UserDetails id={match.params.id}/>
         </div>
     </div>
 );

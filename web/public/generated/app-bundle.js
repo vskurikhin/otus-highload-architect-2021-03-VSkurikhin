@@ -95313,9 +95313,9 @@ exports.default = TableOfUsers;
 
 /***/ }),
 
-/***/ "./web/components/UserDefails/UserDefails.jsx":
+/***/ "./web/components/UserDefails/UserDetails.jsx":
 /*!****************************************************!*\
-  !*** ./web/components/UserDefails/UserDefails.jsx ***!
+  !*** ./web/components/UserDefails/UserDetails.jsx ***!
   \****************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
@@ -95341,7 +95341,7 @@ var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_module
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var UserDefails = function UserDefails(props) {
+var UserDetails = function UserDetails(props) {
 
     var history = (0, _reactRouterDom.useHistory)();
 
@@ -95560,7 +95560,7 @@ var UserDefails = function UserDefails(props) {
                         "\xA0"
                     )
                 ),
-                Array.isArray(item.Interests) || isArray ? _react2.default.createElement(
+                _react2.default.createElement(
                     "div",
                     { className: "my-divTableRow" },
                     _react2.default.createElement(
@@ -95575,17 +95575,35 @@ var UserDefails = function UserDefails(props) {
                             "p",
                             { className: "my-p-label" },
                             "Interests:"
-                        ),
-                        item.Interests.map(function (interest) {
-                            return _react2.default.createElement(_semanticUiReact.Input, { value: interest, disabled: true });
-                        })
+                        )
                     ),
                     _react2.default.createElement(
                         "div",
                         { className: "my-divTableCellRight" },
                         "\xA0"
                     )
-                ) : _react2.default.createElement("div", null)
+                ),
+                Array.isArray(item.Interests) || isArray ? item.Interests.map(function (interest) {
+                    return _react2.default.createElement(
+                        "div",
+                        { className: "my-divTableRow" },
+                        _react2.default.createElement(
+                            "div",
+                            { className: "my-divTableCellLeft" },
+                            "\xA0"
+                        ),
+                        _react2.default.createElement(
+                            "div",
+                            { className: "my-divTableCell" },
+                            _react2.default.createElement(_semanticUiReact.Input, { value: interest, disabled: true })
+                        ),
+                        _react2.default.createElement(
+                            "div",
+                            { className: "my-divTableCellRight" },
+                            "\xA0"
+                        )
+                    );
+                }) : _react2.default.createElement("div", null)
             );
         } catch (e) {
             console.debug(e);
@@ -95595,7 +95613,7 @@ var UserDefails = function UserDefails(props) {
     }
 };
 
-exports.default = UserDefails;
+exports.default = UserDetails;
 
 /***/ }),
 
@@ -95622,9 +95640,9 @@ var _TableOfUsers = __webpack_require__(/*! ../TableOfUsers/TableOfUsers */ "./w
 
 var _TableOfUsers2 = _interopRequireDefault(_TableOfUsers);
 
-var _UserDefails = __webpack_require__(/*! ../UserDefails/UserDefails */ "./web/components/UserDefails/UserDefails.jsx");
+var _UserDetails = __webpack_require__(/*! ../UserDefails/UserDetails */ "./web/components/UserDefails/UserDetails.jsx");
 
-var _UserDefails2 = _interopRequireDefault(_UserDefails);
+var _UserDetails2 = _interopRequireDefault(_UserDetails);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -95663,7 +95681,7 @@ var UserForm = exports.UserForm = function UserForm(_ref) {
                     )
                 )
             ),
-            _react2.default.createElement(_UserDefails2.default, { id: match.params.id })
+            _react2.default.createElement(_UserDetails2.default, { id: match.params.id })
         )
     );
 };
