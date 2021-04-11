@@ -26,14 +26,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Setup Node.js 13
       - uses: actions/setup-node@v1
-          with:
-            node-version: 13.x
+        with:
+          node-version: 13.x
       - uses: actions/setup-go@v2
         with:
           stable: 'false'
           go-version: '1.16.3' # The Go version to download (if necessary) and use.
       - run: go build -v -work -x
-      - name: npm install
-          run: npm install
-      - name: npm build
-          run: npm run dev
+      - run: npm install
+      - run: npm run dev
