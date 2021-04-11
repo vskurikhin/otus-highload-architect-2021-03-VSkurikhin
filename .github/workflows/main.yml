@@ -28,10 +28,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 13.x
+      - name: Setup GoLang 1
       - uses: actions/setup-go@v2
         with:
           stable: 'false'
           go-version: '1.16.3' # The Go version to download (if necessary) and use.
-      - run: go build -v -work -x
-      - run: npm install
-      - run: npm run dev
+      - name: Build
+      - run: go build -v -work -x && npm install && npm run dev
