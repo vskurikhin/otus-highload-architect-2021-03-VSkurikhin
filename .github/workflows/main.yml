@@ -36,6 +36,6 @@ jobs:
         with:
           node-version: 13.x
       - name: Install dependences for frontend
-      - run: npm install 
+        run: npm install 
       - name: Build frontend
-      - run: npm run dev
+        run: npm run dev
