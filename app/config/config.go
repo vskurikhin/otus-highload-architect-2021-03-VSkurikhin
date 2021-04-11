@@ -31,7 +31,7 @@ type (
 	// Server предоставляет конфигурацию сервера.
 	Server struct {
 		Host       string `envconfig:"SERVER_HOST" default:"0.0.0.0"`
-		Port       string `envconfig:"PORT" default:"5000"`
+		Port       string `envconfig:"PORT" default:"8080"`
 		JWTSignKey string `envconfig:"JWT_SIGN_KEY" default:"TestForFastHTTPWithJWT"`
 	}
 )
