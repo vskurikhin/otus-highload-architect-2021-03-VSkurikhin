@@ -1,10 +1,9 @@
-input {
-    margin: 0;
-    width: 26em;
+input{
+ margin: 0;
+ width: 26em
 }
-
-.ui.fluid.dropdown {
-    display: block;
-    width: 26em;
-    min-width: 0;
+.ui.fluid.dropdown{
+ display: block;
+ width: 26em;
+ min-width: 0
 }

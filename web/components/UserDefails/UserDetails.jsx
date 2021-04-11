@@ -3,7 +3,7 @@ import {Dropdown, Input, Table} from "semantic-ui-react";
 import {CITY_OPTIONS, SEX_OPTIONS} from "../../consts";
 import {useHistory} from "react-router-dom";
 
-const UserDefails = (props) => {
+const UserDetails = (props) => {
 
     const history = useHistory();
     const [error, setError] = useState(null);
@@ -35,7 +35,7 @@ const UserDefails = (props) => {
 
     if (error) {
         return <div>Ошибка: {error.message}</div>;
-    } else if ( ! isLoaded) {
+    } else if (!isLoaded) {
         return <div>Загрузка...</div>;
     } else if (item && item !== '{}') {
         let isArray = false;
@@ -103,20 +103,23 @@ const UserDefails = (props) => {
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
-                    {Array.isArray(item.Interests) || isArray ? (
+                    <div className="my-divTableRow">
+                        <div className="my-divTableCellLeft">&nbsp;</div>
+                        <div className="my-divTableCell">
+                            <p className="my-p-label">Interests:</p>
+                        </div>
+                        <div className="my-divTableCellRight">&nbsp;</div>
+                    </div>
+                    {Array.isArray(item.Interests) || isArray ? item.Interests.map((interest) => (
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <p className="my-p-label">Interests:</p>
-                                {item.Interests.map((interest) => (
-                                    <Input value={interest} disabled={true}/>
-                                ))}
+                                <Input value={interest} disabled={true}/>
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
-                    ) : <div/>}
-                </div>
-            );
+                    )) : <div/>}
+                </div>);
         } catch (e) {
             console.debug(e);
             history.push('/login');
@@ -125,4 +128,4 @@ const UserDefails = (props) => {
     }
 }
 
-export default UserDefails;
+export default UserDetails;
