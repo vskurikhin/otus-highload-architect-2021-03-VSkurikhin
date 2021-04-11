@@ -4,10 +4,10 @@
 
 ## TOC
 
-- [Домашние задания](homeworks.md)
-  1. [Заготовка для социальной сети](homeworks.md#заготовка-для-социальной-сети)
+- [Решение домашних заданий](solutions_of_homework.md)
+  1. [Заготовка для социальной сети](solutions_of_homework.md#заготовка-для-социальной-сети)
 
-### [Заготовка для социальной сети](homeworks.md#заготовка-для-социальной-сети)
+### [Заготовка для социальной сети](solutions_of_homework.md#заготовка-для-социальной-сети)
 
 Заготовка для социальной сети
 Цель:
@@ -46,10 +46,8 @@
 - [-] Индексы
 - [-] Кэширование
 
-Верстка не важна. Подойдет самая примитивная.
-
 - [x] Разместить приложение на любом хостинге. Например, heroku:\
-  [highload-architect](http://highload-architect.herokuapp.com)
+  [highload-architect](https://highload-architect.herokuapp.com)
 - [x] ДЗ принимается в виде исходного кода на github и демонстрации проекта на хостинге:\
   бранч [homework/1](https://github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/tree/homework/1) на [github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin](https://github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin)
 
