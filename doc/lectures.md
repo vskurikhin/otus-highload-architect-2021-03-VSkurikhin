@@ -373,7 +373,7 @@ t - минимальная степень
 t=1001 и 1млрд записей => 3 операции для любого ключа
 
 
-Основные команды из практики
+Основные команды из практики```
 explain(analyze, format json, verbose) select * from orders where id <100;
 set enable_seqscan=off;
 create index orders_hash_idx on orders using hash(hash);
@@ -385,6 +385,7 @@ select * from hash_page_stats(get_raw_page('orders_hash_idx', 1));
 select * from hash_page_items(get_raw_page('orders_hash_idx', 1));
 select * from pg_stat_user_indexes;
 SELECT pg_size_pretty(pg_isize('orders'));
+```
 
 #### Доп. материалы
 | Название |
