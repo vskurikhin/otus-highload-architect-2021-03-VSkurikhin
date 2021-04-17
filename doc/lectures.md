@@ -375,16 +375,16 @@ t=1001 и 1млрд записей => 3 операции для любого �
 
 Основные команды из практики
 ```
-explain(analyze, format json, verbose) select * from orders where id <100;
-set enable_seqscan=off;
-create index orders_hash_idx on orders using hash(hash);
-create extension pageinspect;
-select * from bt_metap('orders_pkey');
-select * from bt_page_stats('orders_pkey', 412);
-select * from bt_page_items('orders_pkey', 412);
-select * from hash_page_stats(get_raw_page('orders_hash_idx', 1));
-select * from hash_page_items(get_raw_page('orders_hash_idx', 1));
-select * from pg_stat_user_indexes;
+EXPLAIN(ANALYZE, FORMAT JSON, VERBOSE) SELECT * FROM orders WHERE id < 100;
+SET enable_seqscan=off;
+CREATE INDEX orders_hash_idx ON orders USING hash(hash);
+CREATE EXTENSION pageinspect;
+SELECT * FROM bt_metap('orders_pkey');
+SELECT * FROM bt_page_stats('orders_pkey', 412);
+SELECT * FROM bt_page_items('orders_pkey', 412);
+SELECT * FROM hash_page_stats(get_raw_page('orders_hash_idx', 1));
+SELECT * FROM hash_page_items(get_raw_page('orders_hash_idx', 1));
+SELECT * FROM pg_stat_user_indexes;
 SELECT pg_size_pretty(pg_isize('orders'));
 ```
 
