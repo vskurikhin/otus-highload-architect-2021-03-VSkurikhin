@@ -2,19 +2,17 @@
 
 # Лекции
 
-## TOC
+## [Лекции](lectures.md)
 
-- [Лекции](lectures.md)
-  1. [Проблемы высоких нагрузок](lectures.md#проблемы-высоких-нагрузок)
-     - [Особенности работы операционной системы • Модели веб-серверов](lectures.md#особенности-работы-операционной-системы-•-модели-веб-серверов)
-     - [Возможности языковых платформ](lectures.md#возможности-языковых-платформ)
-     - [Трехзвенная архитектура](lectures.md#трехзвенная-архитектура)
-     - [Полезные ссылки](lectures.md#полезные-ссылки)
-  2. [Нагрузочное тестирование](lectures.md#нагрузочное-тестирование)
-      - [НТ - события и цели НТ](lectures.md##нт---события-и-цели-нт)
-      - [Профиль НТ, основные этапы](lectures.md#профиль-нт-основные-этапы)
-      - [Работа в Jmeter](lectures.md#работа-в-jmeter)
-      - [Обратная связь (рефлексия)](lectures.md#обратная-связь-рефлексия)
+1. [Проблемы высоких нагрузок](lectures.md#проблемы-высоких-нагрузок)
+    - [Особенности работы операционной системы • Модели веб-серверов](lectures.md#особенности-работы-операционной-системы-•-модели-веб-серверов)
+    - [Возможности языковых платформ](lectures.md#возможности-языковых-платформ)
+    - [Трехзвенная архитектура](lectures.md#трехзвенная-архитектура)
+    - [Полезные ссылки](lectures.md#полезные-ссылки)
+2. [Нагрузочное тестирование](lectures.md#нагрузочное-тестирование)
+    - [НТ - события и цели НТ](lectures.md##нт---события-и-цели-нт)
+    - [Профиль НТ, основные этапы](lectures.md#профиль-нт-основные-этапы)
+    - [Работа в Jmeter](lectures.md#работа-в-jmeter)
 
 ### [Проблемы высоких нагрузок](https://otus.ru/lessons/highloadarchitect/?int_source=courses_catalog&int_term=programming)
 
@@ -252,4 +250,29 @@
 ** Не забываем про стресс-нагрузку в событиях / при открытии
 
 #### Работа в Jmeter
-#### Обратная связь (рефлексия)
+
+1. Java (jre)
+2. Скачать Jmeter
+3. Плагины:
+   - Jmeter plugin Manager
+   - Throughput Shaping Timer – управление интенсивностью нагрузки
+   - Dummy Sampler – удобный плагин для отладки
+   - Custom Thread Groups – управление количеством VU
+   - Random CSV Data Set – работа с пулами данных
+   - 3 Basic Graphs – оценка результатов тестов
+4. А так же:
+   - InfluxDB – хранение результатов тестов
+   - Grafana – визуализация результатов тестов
+
+1. User Interface Jmeter - Run, Clear, Plugin Manager, Errors, Function helper
+2. Script recording - HAR files
+3. Thread Group - SetUp TG, Number, Ramp-up, Loop Count and Duration
+4. HTTP request Sampler - Basic/Advanced settings
+5. Config Elements - CSV Data Set config, User defined variables, HTTP Cookie Manager, HTTP Header Manager
+6. Listeners - View Result tree, Aggregate report, Backend listner
+7. Controllers - Transaction controller, loop controller
+8. Timers - Constant throughput
+9. Variables and Properties
+10. Post Processors - RegEx ,JSON Path, Boundary Extractor, Xpath
+11. Console Run
+12. Base report
