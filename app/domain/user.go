@@ -118,18 +118,27 @@ func (u *user) Create(user *User) error {
 
 func (u *user) Read(sid string) (string, error) {
 
-	id, err := uuid.Parse(sid)
-
-	if err != nil {
-		return "{}", err // правильная обработка ошибок вместо паники
-	}
-	user, err := u.read(id)
+	user, err := u.ReadUser(sid)
 
 	if err != nil {
 		return "{}", err
 	}
-
 	return user.String(), nil
+}
+
+func (u *user) ReadUser(sid string) (*User, error) {
+
+	id, err := uuid.Parse(sid)
+
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	user, err := u.read(id)
+
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 func (u *user) read(id uuid.UUID) (*User, error) {
