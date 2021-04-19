@@ -10,6 +10,7 @@ type (
 		Login            *login
 		Session          *session
 		User             *user
+		UserHasFriends   *userHasFriends
 		UserHasInterests *userHasInterests
 	}
 	interest struct {
@@ -24,6 +25,9 @@ type (
 	user struct {
 		db *sql.DB
 	}
+	userHasFriends struct {
+		db *sql.DB
+	}
 	userHasInterests struct {
 		db *sql.DB
 	}
@@ -35,6 +39,7 @@ func New(db *sql.DB) *DAO {
 		Login:            &login{db: db},
 		Session:          &session{db: db},
 		User:             &user{db: db},
+		UserHasFriends:   &userHasFriends{db: db},
 		UserHasInterests: &userHasInterests{db: db},
 	}
 }
