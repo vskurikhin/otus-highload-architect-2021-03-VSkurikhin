@@ -21,7 +21,7 @@ export const UserInterests = props => {
                 <div className="my-divTableRow" key={interest}>
                     <div className="my-divTableCellLeft">&nbsp;</div>
                     <div className="my-divTableCell">
-                        <Input value={interest} disabled={true}/>
+                        <Input value={interest} disabled={props.disabled}/>
                     </div>
                     <div className="my-divTableCellRight">&nbsp;</div>
                 </div>

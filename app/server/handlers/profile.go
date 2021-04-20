@@ -23,11 +23,10 @@ func (h *Handlers) Profile(ctx *sa.RequestCtx) error {
 		}
 		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusForbidden)
 	}
-
-	return ctx.HTTPResponse(*user)
+	return ctx.HTTPResponse(user.String())
 }
 
-func (h *Handlers) profile(ctx *sa.RequestCtx) (*string, error) {
+func (h *Handlers) profile(ctx *sa.RequestCtx) (*domain.Profile, error) {
 
 	jwtCookie := ctx.Request.Header.Cookie(config.ACCESS_TOKEN_COOKIE)
 
@@ -47,13 +46,10 @@ func (h *Handlers) profile(ctx *sa.RequestCtx) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
-	username, err := h.Server.DAO.Session.UsernameBySessionId(sessionId)
+	profile, err := h.Server.DAO.Session.ProfileBySessionId(sessionId)
 
 	if err != nil {
 		return nil, err
 	}
-	p := domain.Profile{Username: *username}
-	profile := p.String()
-
-	return &profile, nil
+	return profile, nil
 }

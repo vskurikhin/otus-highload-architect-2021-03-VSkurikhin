@@ -16,9 +16,19 @@ type User struct {
 	Sex       int
 	Interests []string
 	City      *string
+	Friend    bool
 }
 
-func Create(id uuid.UUID, username string, name *string, surname *string, age int, sex int, inters []string, city *string,
+func Create(
+	id uuid.UUID,
+	username string,
+	name *string,
+	surname *string,
+	age int,
+	sex int,
+	interests []string,
+	city *string,
+	friend bool,
 ) *User {
 	return &User{
 		id:        id,
@@ -27,24 +37,9 @@ func Create(id uuid.UUID, username string, name *string, surname *string, age in
 		SurName:   surname,
 		Age:       age,
 		Sex:       sex,
-		Interests: inters,
+		Interests: interests,
 		City:      city,
-	}
-}
-
-func NewUser(username string) *User {
-	return &User{id: uuid.New(), Username: username}
-}
-
-func Setup(username string, name *string, surname *string, age int, sex int, inters []string, city *string) *User {
-	return &User{
-		Username:  username,
-		Name:      name,
-		SurName:   surname,
-		Age:       age,
-		Sex:       sex,
-		Interests: inters,
-		City:      city,
+		Friend:    friend,
 	}
 }
 
@@ -78,6 +73,7 @@ func (u *User) Marshal() []byte {
 		Sex       int
 		Interests []string
 		City      *string
+		Friend    bool
 	}{
 		Id:        u.id,
 		Username:  u.Username,
@@ -87,6 +83,7 @@ func (u *User) Marshal() []byte {
 		Sex:       u.Sex,
 		Interests: u.Interests,
 		City:      u.City,
+		Friend:    u.Friend,
 	})
 	if err != nil {
 		logger.Errorf("%v", err)
@@ -116,16 +113,6 @@ func (u *user) Create(user *User) error {
 	return nil
 }
 
-func (u *user) Read(sid string) (string, error) {
-
-	user, err := u.ReadUser(sid)
-
-	if err != nil {
-		return "{}", err
-	}
-	return user.String(), nil
-}
-
 func (u *user) ReadUser(sid string) (*User, error) {
 
 	id, err := uuid.Parse(sid)
@@ -133,7 +120,7 @@ func (u *user) ReadUser(sid string) (*User, error) {
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
-	user, err := u.read(id)
+	user, err := u.readUser(id)
 
 	if err != nil {
 		return nil, err
@@ -141,12 +128,12 @@ func (u *user) ReadUser(sid string) (*User, error) {
 	return user, nil
 }
 
-func (u *user) read(id uuid.UUID) (*User, error) {
+func (u *user) readUser(id uuid.UUID) (*User, error) {
 
 	stmtOut, err := u.db.Prepare(`
 		SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests)
 		  FROM user u
-		  JOIN user_has_interests uhi ON u.id = uhi.user_id
+		  JOIN user_has_interests uhi ON uhi.user_id = u.id
 		  JOIN interest i ON i.id = uhi.interest_id
 		 WHERE u.id = ?
          GROUP BY u.id, username, name, surname, age, sex, city
@@ -174,7 +161,7 @@ func (u *user) read(id uuid.UUID) (*User, error) {
 
 func (u *user) ReadListAsString() (string, error) {
 
-	users, err := u.readList()
+	users, err := u.readUserList()
 	if err != nil {
 		return "{}", err // правильная обработка ошибок вместо паники
 	}
@@ -186,7 +173,7 @@ func (u *user) ReadListAsString() (string, error) {
 	return "[" + strings.Join(result, ", ") + "]", nil
 }
 
-func (u *user) readList() ([]User, error) {
+func (u *user) readUserList() ([]User, error) {
 
 	stmtOut, err := u.db.Prepare(`
 		SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests)
@@ -201,6 +188,7 @@ func (u *user) readList() ([]User, error) {
 	defer func() { _ = stmtOut.Close() }()
 
 	rows, err := stmtOut.Query()
+
 	if err != nil {
 		return nil, err
 	}
@@ -213,10 +201,12 @@ func (u *user) readList() ([]User, error) {
 		var interests string
 
 		err = rows.Scan(&user.id, &user.Username, &user.Name, &user.SurName, &user.Age, &user.Sex, &user.City, &interests)
+
 		if err != nil {
 			return nil, err
 		}
 		err = json.Unmarshal([]byte(interests), &user.Interests)
+
 		if err != nil {
 			return nil, err
 		}

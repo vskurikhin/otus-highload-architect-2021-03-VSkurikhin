@@ -2,10 +2,12 @@ package domain
 
 import (
 	"encoding/json"
+	"github.com/google/uuid"
 	"github.com/savsgio/go-logger/v2"
 )
 
 type Profile struct {
+	Id       uuid.UUID
 	Username string
 }
 

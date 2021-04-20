@@ -20,10 +20,10 @@ export const getProfileFetch = () => {
                 deleteCookie("acs_jwt")
                 throwResultCode(result)
             }
-            const {Username} = result
+            const {Id, Username} = result
             if (Username) {
                 window.sessionStorage.setItem("username", Username)
-                dispatch(loginUser(Username))
+                dispatch(loginUser({Id, Username}))
             }
         }
         const getError = error => {
@@ -35,9 +35,9 @@ export const getProfileFetch = () => {
     }
 }
 
-export const loginUser = Username => ({
+export const loginUser = ({Id, Username}) => ({
     type: 'LOGIN_USER',
-    payload: Username
+    payload: {Id, Username}
 })
 
 export const logoutUser = () => ({
