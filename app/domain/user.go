@@ -133,8 +133,8 @@ func (u *user) readUser(id uuid.UUID) (*User, error) {
 	stmtOut, err := u.db.Prepare(`
 		SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests)
 		  FROM user u
-		  JOIN user_has_interests uhi ON uhi.user_id = u.id
-		  JOIN interest i ON i.id = uhi.interest_id
+		  LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
+		  LEFT JOIN interest i ON i.id = uhi.interest_id
 		 WHERE u.id = ?
          GROUP BY u.id, username, name, surname, age, sex, city
 	`)
@@ -178,8 +178,8 @@ func (u *user) readUserList() ([]User, error) {
 	stmtOut, err := u.db.Prepare(`
 		SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests)
 		  FROM user u
-		  JOIN user_has_interests uhi ON u.id = uhi.user_id
-		  JOIN interest i ON i.id = uhi.interest_id
+		  LEFT JOIN user_has_interests uhi ON u.id = uhi.user_id
+		  LEFT JOIN interest i ON i.id = uhi.interest_id
 		 GROUP BY u.id, username, name, surname, age, sex, city
 	`)
 	if err != nil {
