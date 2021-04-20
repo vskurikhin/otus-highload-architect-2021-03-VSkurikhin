@@ -34,7 +34,7 @@ func (h *Handlers) User(ctx *sa.RequestCtx) error {
 	if logger.DebugEnabled() {
 		logger.Debugf("got user id: %s", id)
 	}
-	u, err := h.Server.DAO.User.Read(id)
+	u, err := h.user(ctx)
 
 	if err != nil {
 		logger.Error(err)
@@ -44,7 +44,28 @@ func (h *Handlers) User(ctx *sa.RequestCtx) error {
 		}
 		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
 	}
-	return ctx.HTTPResponse(u)
+	return ctx.HTTPResponse(u.String())
+}
+
+func (h *Handlers) user(ctx *sa.RequestCtx) (*domain.User, error) {
+
+	id := fmt.Sprintf("%v", ctx.UserValue("id"))
+
+	if logger.DebugEnabled() {
+		logger.Debugf("got user id: %s", id)
+	}
+	u, err := h.Server.DAO.User.ReadUser(id)
+
+	if err != nil {
+		return nil, err
+	}
+	p, _ := h.profile(ctx)
+
+	if p != nil {
+		f, _ := h.Server.DAO.UserHasFriends.IsFriendship(p.Id, u.Id())
+		u.Friend = f
+	}
+	return u, nil
 }
 
 func (h *Handlers) SignIn(ctx *sa.RequestCtx) error {
@@ -65,24 +86,24 @@ func (h *Handlers) SignIn(ctx *sa.RequestCtx) error {
 
 func (h *Handlers) signIn(ctx *sa.RequestCtx) (*domain.Token, error) {
 
-	var signIn domain.Signin
-	err := json.Unmarshal(ctx.PostBody(), &signIn)
+	var s domain.Signin
+	err := json.Unmarshal(ctx.PostBody(), &s)
 
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
-	err = security.CheckSignIn(&signIn)
+	err = security.CheckSignIn(&s)
 
 	if err != nil {
 		return nil, err
 	}
 
 	if logger.DebugEnabled() {
-		logger.Debugf("got signIn: %s", signIn.String())
+		logger.Debugf("got s: %s", s.String())
 	}
 	id := uuid.New()
-	password := security.HashAndSalt([]byte(signIn.Password))
-	login := domain.Login{Username: signIn.Username}
+	password := security.HashAndSalt([]byte(s.Password))
+	login := domain.Login{Username: s.Username}
 	login.SetId(id)
 	login.SetPassword(password)
 	err = h.Server.DAO.Login.Create(&login)
@@ -90,18 +111,18 @@ func (h *Handlers) signIn(ctx *sa.RequestCtx) (*domain.Token, error) {
 	if err != nil {
 		return nil, err
 	}
-	age, err := strconv.ParseInt(signIn.Age, 10, 64)
+	age, err := strconv.ParseInt(s.Age, 10, 64)
 
 	if err != nil {
 		return nil, err
 	}
-	sex, err := strconv.ParseInt(signIn.Sex, 10, 64)
+	sex, err := strconv.ParseInt(s.Sex, 10, 64)
 
 	if err != nil {
 		return nil, err
 	}
-	ins := strings.Split(signIn.Interests, "\n")
-	user := domain.Create(id, signIn.Username, &signIn.Name, &signIn.Surname, int(age), int(sex), ins, &signIn.City)
+	ins := strings.Split(s.Interests, "\n")
+	user := domain.Create(id, s.Username, &s.Name, &s.Surname, int(age), int(sex), ins, &s.City, true)
 
 	if logger.DebugEnabled() {
 		logger.Debugf("got user: %s", user.String())
@@ -198,7 +219,7 @@ func (h *Handlers) friend(ctx *sa.RequestCtx) (*domain.Friend, error) {
 		return nil, err
 	}
 
-	err = h.Server.DAO.UserHasFriends.Link(u, f)
+	err = h.Server.DAO.UserHasFriends.LinkToFriend(u, f)
 
 	return &friend, nil
 }

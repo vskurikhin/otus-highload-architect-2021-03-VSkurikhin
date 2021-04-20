@@ -2,24 +2,51 @@ import React, {useEffect, useState} from "react"
 import {Dropdown, Input} from "semantic-ui-react"
 import {useHistory} from "react-router-dom"
 
-import {CITY_OPTIONS} from "../../consts"
+import PropTypes, {string} from "prop-types";
 import UserInterests from "../UserInterests/UserInterests";
+import {CITY_OPTIONS, SEX_OPTIONS} from "../../consts"
+import {POST} from "../../lib/consts";
+
+async function save(value) {
+    return fetch('/save', {
+        body: JSON.stringify(value),
+        ...POST
+    }).then(data => data.json())
+}
 
 const UserDetails = props => {
 
     const history = useHistory()
     const [error, setError] = useState(null)
     const [isLoaded, setIsLoaded] = useState(false)
+    const [id, setId] = useState(null)
     const [username, setUsername] = useState(null)
     const [name, setName] = useState("")
     const [surName, setSurName] = useState("")
     const [age, setAge] = useState(0)
-    const [sex, setSex] = useState(0)
+    const [sex, setSex] = useState("0")
     const [city, setCity] = useState("Murray Hill")
     const [interests, setInterests] = useState([])
 
+    const handleSave = async e => {
+        e.preventDefault()
+        await save({
+            Id: id,
+            Username: username,
+            Name: name,
+            SurName: surName,
+            Age: age,
+            Sex: sex,
+            City: city,
+            Interests: interests
+        })
+    }
+
     const setItem = result => {
-        const {Username, Name, SurName, Age, Sex, City, Interests} = result
+        const {Id, Username, Name, SurName, Age, Sex, City, Interests} = result
+        console.debug("Sex")
+        console.debug(Sex)
+        setId(Id)
         setUsername(Username)
         setName(Name)
         setSurName(SurName)
@@ -52,6 +79,37 @@ const UserDetails = props => {
             .then(getResult, getError)
     }
 
+    const saveForm = () => (
+        <div className="my-divTableRow">
+            <div className="my-divTableCellLeft">&nbsp;</div>
+            <div className="my-divTableCell">
+                <button type="button" onClick={handleSave}>Save</button>
+            </div>
+            <div className="my-divTableCellRight">&nbsp;</div>
+        </div>
+    )
+
+    const onSexChange = (e, data) => setSex(data.value)
+
+    const onCityChange = (e, data) => setCity(data.value)
+
+    const onCitySearchChange = (e, data) => setCity(data.searchQuery)
+
+    const dropdownSex = () => (
+        <Dropdown
+            defaultValue={sex}
+            item
+            fluid
+            selection
+            onChange={onSexChange}
+            options={SEX_OPTIONS}
+        />
+    )
+
+    const inputDisabledSex = (disabled) => (
+        <Input value={sex === "0" ? 'Male' : 'Female'} disabled={true}/>
+    )
+
     useEffect(getItem, [])
 
     if (error) {
@@ -59,6 +117,8 @@ const UserDetails = props => {
     } else if (!isLoaded) {
         return <div>Загрузка...</div>
     } else if (username) {
+        const disabled = username !== props.user.currentUser.Username
+        props.setIsFriend(id !== props.user.currentUser.Id)
         try {
             return (
                 <div className="my-divTableBody">
@@ -74,7 +134,7 @@ const UserDetails = props => {
                         <div className="my-divTableCellLeft">&nbsp;</div>
                         <div className="my-divTableCell">
                             <p className="my-p-label">Firstname:</p>
-                            <Input value={name} disabled={true}/>
+                            <Input value={name} disabled={disabled} onChange={e => setName(e.target.value)}/>
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
@@ -82,7 +142,7 @@ const UserDetails = props => {
                         <div className="my-divTableCellLeft">&nbsp;</div>
                         <div className="my-divTableCell">
                             <p className="my-p-label">Surname:</p>
-                            <Input value={surName} disabled={true}/>
+                            <Input value={surName} disabled={disabled} onChange={e => setSurName(e.target.value)}/>
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
@@ -90,7 +150,7 @@ const UserDetails = props => {
                         <div className="my-divTableCellLeft">&nbsp;</div>
                         <div className="my-divTableCell">
                             <p className="my-p-label">Age:</p>
-                            <Input value={age} disabled={true}/>
+                            <Input value={age} disabled={disabled} onChange={e => setAge(e.target.value)}/>
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
@@ -98,7 +158,7 @@ const UserDetails = props => {
                         <div className="my-divTableCellLeft">&nbsp;</div>
                         <div className="my-divTableCell">
                             <p className="my-p-label">Sex:</p>
-                            <Input value={sex === 0 ? 'Male' : 'Female'} disabled={true}/>
+                            {disabled ? inputDisabledSex() : dropdownSex() }
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
@@ -107,11 +167,13 @@ const UserDetails = props => {
                         <div className="my-divTableCell">
                             <p className="my-p-label">City</p>
                             <Dropdown
-                                disabled={true}
+                                disabled={disabled}
                                 value={city}
                                 fluid
                                 search
                                 selection
+                                onChange={disabled ? null : onCityChange}
+                                onSearchChange={disabled ? null : onCitySearchChange}
                                 options={CITY_OPTIONS}
                             />
                         </div>
@@ -124,8 +186,10 @@ const UserDetails = props => {
                         </div>
                         <div className="my-divTableCellRight">&nbsp;</div>
                     </div>
-                    <UserInterests interests={interests} {...props} />
-                </div>)
+                    <UserInterests disabled={disabled} interests={interests} {...props} />
+                    { ! disabled ? saveForm() : <div/>}
+                </div>
+            )
         } catch (e) {
             console.debug(e)
             history.push('/login')
@@ -137,3 +201,8 @@ const UserDetails = props => {
 }
 
 export default UserDetails
+
+
+UserDetails.propTypes = {
+    setIsFriend: PropTypes.func.isRequired
+}

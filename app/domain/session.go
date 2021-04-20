@@ -161,3 +161,33 @@ func (s *session) UsernameBySessionId(sessionId uuid.UUID) (*string, error) {
 
 	return &username, nil
 }
+
+func (s *session) ProfileBySessionId(sessionId uuid.UUID) (*Profile, error) {
+
+	stmtOut, err := s.db.Prepare(`
+ 		SELECT l.id, l.username
+		  FROM ` + "`session`" + ` s
+		  JOIN login l ON s.id = l.id
+		 WHERE session_id = ?
+ 	`)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }() // Закрывается оператор, когда выйдете из функции
+
+	var loginId uuid.UUID
+	var username string
+	id, err := sessionId.MarshalBinary()
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	err = stmtOut.QueryRow(id).Scan(&loginId, &username)
+
+	if err != nil {
+		return nil, err
+	}
+
+	profile := Profile{Id: loginId, Username: username}
+
+	return &profile, nil
+}
