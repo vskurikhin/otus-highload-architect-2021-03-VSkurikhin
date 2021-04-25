@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/google/uuid"
 	sa "github.com/savsgio/atreugo/v11"
@@ -96,6 +97,11 @@ func (h *Handlers) signIn(ctx *sa.RequestCtx) (*domain.Token, error) {
 
 	if err != nil {
 		return nil, err
+	}
+	l, err := h.Server.DAO.Login.Read(s.Username)
+
+	if l != nil {
+		return nil, errors.New(" User with Username: " + s.Username + " already exists ")
 	}
 
 	if logger.DebugEnabled() {
