@@ -40,10 +40,10 @@ func CheckNumericValue(name, value string) error {
 }
 
 func CheckLines(name, line string) error {
-	if lines.MatchString(line) {
+	if "" == line || lines.MatchString(line) {
 		return nil
 	}
-	return errors.New(" Error for the field " + line + " in a value: `" + line +
+	return errors.New(" Error for the field " + name + " in a value: `" + line +
 		"`. For value allowed only characters (A-Z a-z А-Я а-я)," +
 		" the space and numbers")
 }
