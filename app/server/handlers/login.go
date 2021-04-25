@@ -66,7 +66,7 @@ func (h *Handlers) login(ctx *sa.RequestCtx) (*domain.Login, error) {
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
-	err = security.CheckValue(dto.Username)
+	err = security.CheckValue("Username", dto.Username)
 	if err != nil {
 		return nil, err
 	}

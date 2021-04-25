@@ -1,19 +1,22 @@
-
 import './Signin.css'
 
 import PropTypes from 'prop-types'
 import React, {useState} from 'react'
-import {Dropdown, Input} from 'semantic-ui-react'
+import {Dropdown, Input, Modal} from 'semantic-ui-react'
 import {useHistory} from "react-router-dom"
 
 import {CITY_OPTIONS, SEX_OPTIONS} from "../../consts"
 import {POST} from "../../lib/consts";
 
 async function signinUser(credentials) {
-    return fetch('/signin', {
-        body: JSON.stringify(credentials),
-        ...POST
-    }).then(data => data.json())
+    try {
+        return fetch('/signin', {
+            body: JSON.stringify(credentials),
+            ...POST
+        }).then(data => data.json())
+    } catch (error) {
+        return {Code: 0, Message: error};
+    }
 }
 
 export default function Signin({setToken}) {
@@ -30,6 +33,7 @@ export default function Signin({setToken}) {
 
     const handleSubmit = async e => {
         e.preventDefault()
+
         const token = await signinUser({
             username,
             password,
@@ -40,9 +44,17 @@ export default function Signin({setToken}) {
             city,
             interests
         })
-        setToken(token)
-        if (token){
-            history.push('/userlist')
+        console.log('token')
+        console.log(token)
+        if (token) {
+            if (token.Code && token.Message) {
+                console.log('token')
+                console.log(token)
+                history.push('/error/' + token.Message)
+            } else {
+                setToken(token)
+                history.push('/userlist')
+            }
         }
     }
 
@@ -76,7 +88,8 @@ export default function Signin({setToken}) {
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
                                 <p className="my-p-label">Password:</p>
-                                <Input type="password" name="password" placeholder='password...' onChange={e => setPassword(e.target.value)}/>
+                                <Input type="password" name="password" placeholder='password...'
+                                       onChange={e => setPassword(e.target.value)}/>
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
@@ -84,7 +97,8 @@ export default function Signin({setToken}) {
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
                                 <p className="my-p-label">Firstname:</p>
-                                <Input type="text" name="name" placeholder='Name...' onChange={e => setName(e.target.value)}/>
+                                <Input type="text" name="name" placeholder='Name...'
+                                       onChange={e => setName(e.target.value)}/>
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
@@ -92,7 +106,8 @@ export default function Signin({setToken}) {
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
                                 <p className="my-p-label">Surname:</p>
-                                <Input type="text" name="surname" placeholder='Surname...' onChange={e => setSurname(e.target.value)}/>
+                                <Input type="text" name="surname" placeholder='Surname...'
+                                       onChange={e => setSurname(e.target.value)}/>
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
@@ -151,7 +166,10 @@ export default function Signin({setToken}) {
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <button type="submit">Submit</button>
+                                <button
+                                    type="submit"
+                                >Submit
+                                </button>
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
