@@ -2,6 +2,7 @@
 import './App.css'
 
 import AppMenu from "./components/Menu/AppMenu"
+import Error from "./components/Error/Error";
 import Login from "./components/Login/Login"
 import Signin from "./components/Signin/Signin"
 import UserForm from './components/UserForm/UserForm'
@@ -18,14 +19,14 @@ const main = setToken => (
                 <Route path="/userlist">
                     <UserList/>
                 </Route>
-                <Route path="/userform/:id" component={UserForm}>
-                </Route>
+                <Route path="/userform/:id" component={UserForm} />
                 <Route path="/signin">
                     <Signin setToken={setToken}/>
                 </Route>
                 <Route path="/login">
                     <Login setToken={setToken}/>
                 </Route>
+                <Route path="/error/:msg" component={Error} />
                 <Redirect from='/' to='/userlist'/>
             </Switch>
         </BrowserRouter>
@@ -43,6 +44,7 @@ const login = setToken => (
                 <Route path="/login">
                     <Login setToken={setToken}/>
                 </Route>
+                <Route path="/error/:msg" component={Error} />
                 <Redirect from='/' to='/login'/>
             </Switch>
         </BrowserRouter>

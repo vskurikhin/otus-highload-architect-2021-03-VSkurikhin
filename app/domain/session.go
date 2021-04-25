@@ -35,7 +35,9 @@ func (s *Session) Marshal() []byte {
 }
 
 func (s *session) UpdateOrCreate(login *Login, sessionId uuid.UUID) error {
+
 	stmtOut, err := s.db.Prepare("SELECT id FROM `session` WHERE id = ?")
+
 	if err != nil {
 		return err // правильная обработка ошибок вместо паники
 	}
@@ -54,6 +56,7 @@ func (s *session) UpdateOrCreate(login *Login, sessionId uuid.UUID) error {
 func (s *session) create(login *Login, sessionId uuid.UUID) error {
 	// Подготовить оператор для вставки данных
 	stmtIns, err := s.db.Prepare("INSERT INTO `session` (id, session_id) VALUES (?, ?)") // ? = заполнитель
+
 	if err != nil {
 		return err // правильная обработка ошибок вместо паники
 	}
@@ -83,7 +86,8 @@ func (s *session) create(login *Login, sessionId uuid.UUID) error {
 
 func (s *session) update(userId uuid.UUID, sessionId uuid.UUID) error {
 	// Подготовить оператор для вставки данных
-	stmtIns, err := s.db.Prepare("UPDATE `session` set session_id = ? WHERE id = ?") // ? = заполнитель
+	stmtIns, err := s.db.Prepare("UPDATE `session` SET session_id = ? WHERE id = ?") // ? = заполнитель
+
 	if err != nil {
 		return err // правильная обработка ошибок вместо паники
 	}
@@ -111,14 +115,16 @@ func (s *session) update(userId uuid.UUID, sessionId uuid.UUID) error {
 	return nil
 }
 
+const SELECT_USER_ID_AND_SESSION_ID_BY_USERNAME = `
+	SELECT s.id, session_id
+	  FROM ` + "`session`" + ` s
+	  JOIN login l ON s.id = l.id
+	 WHERE username = ?`
+
 func (s *session) ReadByUsername(username string) (*Session, error) {
 
-	stmtOut, err := s.db.Prepare(`
- 		SELECT s.id, session_id
-		  FROM session s
-		  JOIN login l ON s.id = l.id
-		 WHERE username = ?
- 	`)
+	stmtOut, err := s.db.Prepare(SELECT_USER_ID_AND_SESSION_ID_BY_USERNAME)
+
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
@@ -135,14 +141,16 @@ func (s *session) ReadByUsername(username string) (*Session, error) {
 	return &session, nil
 }
 
+const SELECT_USERNAME_BY_SESSION_ID = `
+	SELECT l.username
+	  FROM ` + "`session`" + ` s
+	  JOIN login l ON s.id = l.id
+	 WHERE session_id = ?`
+
 func (s *session) UsernameBySessionId(sessionId uuid.UUID) (*string, error) {
 
-	stmtOut, err := s.db.Prepare(`
- 		SELECT l.username
-		  FROM ` + "`session`" + ` s
-		  JOIN login l ON s.id = l.id
-		 WHERE session_id = ?
- 	`)
+	stmtOut, err := s.db.Prepare(SELECT_USERNAME_BY_SESSION_ID)
+
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
@@ -162,14 +170,16 @@ func (s *session) UsernameBySessionId(sessionId uuid.UUID) (*string, error) {
 	return &username, nil
 }
 
+const SELECT_USER_ID_AND_USERNAME_BY_SESSION_ID = `
+	SELECT l.id, l.username
+	  FROM ` + "`session`" + ` s
+	  JOIN login l ON s.id = l.id
+	 WHERE session_id = ?`
+
 func (s *session) ProfileBySessionId(sessionId uuid.UUID) (*Profile, error) {
 
-	stmtOut, err := s.db.Prepare(`
- 		SELECT l.id, l.username
-		  FROM ` + "`session`" + ` s
-		  JOIN login l ON s.id = l.id
-		 WHERE session_id = ?
- 	`)
+	stmtOut, err := s.db.Prepare(SELECT_USER_ID_AND_USERNAME_BY_SESSION_ID)
+
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
