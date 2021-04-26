@@ -7,7 +7,7 @@ import {compose} from "redux"
 import {connect} from "react-redux"
 import {useHistory, withRouter} from "react-router-dom"
 
-export const UserList = props => {
+const UserList = props => {
 
     const history = useHistory()
 

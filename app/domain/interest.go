@@ -134,9 +134,8 @@ func (i *interest) extractNewInterests(interests []string) ([]string, error) {
 
 func (i *interest) getExistsInterestLabels(interests []string) ([]string, error) {
 
-	stmtOut, err := i.db.Prepare(`
-		SELECT interests FROM interest WHERE JSON_CONTAINS(?, JSON_ARRAY(interests));
-	`)
+	stmtOut, err := i.db.Prepare(`SELECT interests FROM interest WHERE JSON_CONTAINS(?, JSON_ARRAY(interests))`)
+
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}

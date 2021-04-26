@@ -1,65 +1,47 @@
-
 import './App.css'
 
-import AppMenu from "./components/Menu/AppMenu"
-import Error from "./components/Error/Error";
+import Error from "./components/Error/Error"
+import HeaderMenu from "./components/AppMenu/AppMenu"
 import Login from "./components/Login/Login"
+import MyProfile from "./components/MyProfile/MyProfile"
 import Signin from "./components/Signin/Signin"
 import UserForm from './components/UserForm/UserForm'
 import UserList from './components/UserList/UserList'
 
-import React, {useState} from 'react'
+import React from 'react'
 import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom'
 
-const main = setToken => (
+const App = () => (
     <div className="wrapper">
         <BrowserRouter>
-            <AppMenu disabledUserList={false}/>
+            <HeaderMenu
+                onItemClick={item => this.onItemClick(item)}
+                items={[
+                    ["Login", "/login"],
+                    ["Sign-in", "/signin"],
+                    ["User list", "/userlist", true],
+                    ["Profile", "/myprofile", true]
+                ]}
+            />
             <Switch>
                 <Route path="/userlist">
                     <UserList/>
                 </Route>
-                <Route path="/userform/:id" component={UserForm} />
+                <Route path="/userform/:id" component={UserForm}/>
                 <Route path="/signin">
-                    <Signin setToken={setToken}/>
+                    <Signin/>
                 </Route>
                 <Route path="/login">
-                    <Login setToken={setToken}/>
+                    <Login/>
                 </Route>
-                <Route path="/error/:msg" component={Error} />
-                <Redirect from='/' to='/userlist'/>
-            </Switch>
-        </BrowserRouter>
-    </div>
-)
-
-const login = setToken => (
-    <div className="wrapper">
-        <BrowserRouter>
-            <AppMenu disabledUserList={true}/>
-            <Switch>
-                <Route path="/signin">
-                    <Signin setToken={setToken}/>
+                <Route path="/myprofile" component={MyProfile}>
+                    <MyProfile/>
                 </Route>
-                <Route path="/login">
-                    <Login setToken={setToken}/>
-                </Route>
-                <Route path="/error/:msg" component={Error} />
+                <Route path="/error/:msg" component={Error}/>
                 <Redirect from='/' to='/login'/>
             </Switch>
         </BrowserRouter>
     </div>
 )
-
-function App() {
-
-    const [token, setToken] = useState();
-
-    if (token) {
-        return main(setToken)
-    }
-    return login(setToken)
-
-}
 
 export default App

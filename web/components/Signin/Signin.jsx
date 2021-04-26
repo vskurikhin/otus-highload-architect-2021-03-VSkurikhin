@@ -1,35 +1,30 @@
 import './Signin.css'
 
-import PropTypes from 'prop-types'
+import {CITY_OPTIONS, SEX_OPTIONS} from "../../consts"
+import {POST} from "../../lib/consts";
+
 import React, {useState} from 'react'
 import {Dropdown, Input, Modal} from 'semantic-ui-react'
 import {useHistory} from "react-router-dom"
 
-import {CITY_OPTIONS, SEX_OPTIONS} from "../../consts"
-import {POST} from "../../lib/consts";
-
 async function signinUser(credentials) {
-    try {
-        return fetch('/signin', {
-            body: JSON.stringify(credentials),
-            ...POST
-        }).then(data => data.json())
-    } catch (error) {
-        return {Code: 0, Message: error};
-    }
+    return fetch('/signin', {
+        body: JSON.stringify(credentials),
+        ...POST
+    }).then(data => data.json())
 }
 
-export default function Signin({setToken}) {
+export default function Signin() {
 
-    const history = useHistory()
-    const [username, setUserName] = useState()
-    const [password, setPassword] = useState()
-    const [name, setName] = useState()
-    const [surname, setSurname] = useState()
     const [age, setAge] = useState("41")
-    const [sex, setSex] = useState("0")
     const [city, setCity] = useState("Москва")
     const [interests, setInterests] = useState()
+    const [name, setName] = useState()
+    const [password, setPassword] = useState()
+    const [sex, setSex] = useState("0")
+    const [surname, setSurname] = useState()
+    const [username, setUserName] = useState()
+    const history = useHistory()
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -44,24 +39,17 @@ export default function Signin({setToken}) {
             city,
             interests
         })
-        console.log('token')
-        console.log(token)
         if (token) {
-            if (token.Code && token.Message) {
-                console.log('token')
-                console.log(token)
+            if (token.Code > 399 && token.Message) {
                 history.push('/error/' + token.Message)
             } else {
-                setToken(token)
                 history.push('/userlist')
             }
         }
     }
 
     const onSexChange = (e, data) => setSex(data.value)
-
     const onCityChange = (e, data) => setCity(data.value)
-
     const onCitySearchChange = (e, data) => setCity(data.searchQuery)
 
     return (
@@ -178,8 +166,4 @@ export default function Signin({setToken}) {
             </form>
         </div>
     )
-}
-
-Signin.propTypes = {
-    setToken: PropTypes.func.isRequired
 }

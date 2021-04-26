@@ -1,11 +1,11 @@
+import UserDetails from "../UserDefails/UserDetails"
+import {POST} from "../../lib/consts";
+import {getProfileFetch, logoutUser} from "../../redux/currentUser";
+
 import React, {useEffect, useState} from 'react'
 import {compose} from "redux";
-import {withRouter} from "react-router-dom";
 import {connect} from "react-redux";
-
-import UserDetails from "../UserDefails/UserDetails"
-import {getProfileFetch, logoutUser} from "../../redux/currentUser";
-import {POST} from "../../lib/consts";
+import {useHistory, withRouter} from "react-router-dom";
 
 async function friend(credentials) {
     return fetch('/friend', {
@@ -14,18 +14,22 @@ async function friend(credentials) {
     }).then(data => data.json())
 }
 
-export const UserForm = props => {
+const UserForm = props => {
 
-    const [match] = useState(props.match)
-    const [currentUser] = useState(props.user.currentUser)
-    const [isFriend, setIsFriend] = useState(true)
+    // const [currentUser, setCurrentUser] = useState()
+    const [error, setError] = useState(null)
+    const [isLoaded, setIsLoaded] = useState(false)
+    const [item, setItem] = useState({Friend: false})
+    const history = useHistory()
+    const {match} = props
 
     const handleSubmit = async e => {
         e.preventDefault()
         await friend({
-            UserId: currentUser.Id,
+            UserId: props.user.currentUser.Id,
             FriendId: match.params.id
         })
+        history.push('/userlist')
     }
 
     const addFriend = props => {
@@ -56,10 +60,37 @@ export const UserForm = props => {
         )
     }
 
+    const getError = error => {
+        setIsLoaded(true)
+        setError(error)
+    }
+
+    const getItem = async () => {
+        await fetch("/user/" + match.params.id)
+            .then(res => res.json())
+            .then(getResult, getError)
+    }
+
+    const getResult = result => {
+        setIsLoaded(true)
+        if (result.Code > 399 && result.Message) {
+            history.push('/error/' + result.Message)
+        }
+        setItem(result)
+    }
+
+    // useEffect(setCurrentUser, [props.user.currentUser])
     useEffect(() => props.getProfile(), [])
+    useEffect(getItem, [])
 
-    const notOwn = match.params.id !== props.user.currentUser.Id
+    const notOwn = props.user.currentUser.Id !== match.params.id
 
+    if (error) {
+        return <div>Ошибка: {error.message}</div>
+    } else if (!isLoaded) {
+        return <div>Загрузка...</div>
+    }
+    const disabled = props.user.currentUser.Id !== item.Id
     return (
         <div className="login-wrapper">
             <form onSubmit={handleSubmit}>
@@ -73,9 +104,9 @@ export const UserForm = props => {
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
                     </div>
-                    <UserDetails id={match.params.id} setIsFriend={setIsFriend} {...props}/>
+                    <UserDetails disabled={disabled} item={item} {...props}/>
                 </div>
-                {isFriend ? addFriend(props) : notOwn ? okFriend(props) : <div/>}
+                { ! item.Friend && notOwn ? addFriend(props) : (notOwn ? okFriend(props) : <div/>)}
             </form>
         </div>
     )
