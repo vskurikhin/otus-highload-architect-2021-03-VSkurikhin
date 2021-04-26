@@ -1,4 +1,3 @@
-
 import './Login.css'
 
 import PropTypes from 'prop-types'
@@ -16,11 +15,11 @@ async function loginUser(credentials) {
     }).then(data => data.json())
 }
 
-export default function Login({setToken}) {
+export default function Login() {
 
-    const history = useHistory()
-    const [username, setUserName] = useState()
     const [password, setPassword] = useState()
+    const [username, setUserName] = useState()
+    const history = useHistory()
 
     const handleSubmit = async e => {
         e.preventDefault();
@@ -29,8 +28,9 @@ export default function Login({setToken}) {
             username,
             password
         })
-        setToken(token)
-        if (token){
+        if (token.Code > 399 && token.Message) {
+            history.push('/error/' + token.Message)
+        } else {
             history.push('/userlist')
         }
     }
@@ -80,8 +80,4 @@ export default function Login({setToken}) {
             </form>
         </div>
     )
-}
-
-Login.propTypes = {
-    setToken: PropTypes.func.isRequired
 }

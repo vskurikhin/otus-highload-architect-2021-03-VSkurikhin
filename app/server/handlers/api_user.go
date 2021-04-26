@@ -16,7 +16,7 @@ import (
 
 func (h *Handlers) List(ctx *sa.RequestCtx) error {
 
-	u, err := h.Server.DAO.User.ReadListAsString()
+	list, err := h.list(ctx)
 
 	if err != nil {
 		logger.Error(err)
@@ -26,7 +26,29 @@ func (h *Handlers) List(ctx *sa.RequestCtx) error {
 		}
 		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
 	}
-	return ctx.HTTPResponse(u)
+	result := "[" + strings.Join(list, ", ") + "]"
+
+	return ctx.HTTPResponse(result)
+}
+
+func (h *Handlers) list(ctx *sa.RequestCtx) ([]string, error) {
+
+	p, err := h.profile(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+	users, err := h.Server.DAO.User.ReadUserList(p.Id)
+
+	if err != nil {
+		return nil, err
+	}
+	var result []string
+
+	for _, user := range users {
+		result = append(result, user.String())
+	}
+	return result, nil
 }
 
 func (h *Handlers) User(ctx *sa.RequestCtx) error {
@@ -142,6 +164,8 @@ func (h *Handlers) signIn(ctx *sa.RequestCtx) (*domain.Token, error) {
 	interests, _ := h.Server.DAO.Interest.GetExistsInterests(ins)
 	_ = h.Server.DAO.UserHasInterests.LinkInterests(user, interests)
 
+	err = h.Server.DAO.Session.UpdateOrCreate(&login, id)
+
 	return h.generateToken(ctx, id), nil
 }
 
@@ -228,4 +252,60 @@ func (h *Handlers) friend(ctx *sa.RequestCtx) (*domain.Friend, error) {
 	err = h.Server.DAO.UserHasFriends.LinkToFriend(u, f)
 
 	return &friend, nil
+}
+
+func (h *Handlers) Save(ctx *sa.RequestCtx) error {
+
+	user, err := h.save(ctx)
+
+	if err != nil {
+		logger.Error(err)
+		errorCase := domain.ApiMessage{
+			Code:    fasthttp.StatusPreconditionFailed,
+			Message: err.Error(),
+		}
+		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
+	}
+	msg := fmt.Sprintf("updated with id: %s", user.Id().String())
+	created := domain.ApiMessage{
+		Code:    fasthttp.StatusCreated,
+		Message: msg,
+	}
+	return ctx.HTTPResponse(created.String())
+}
+
+type User struct {
+	Id        uuid.UUID
+	Username  string
+	Name      *string
+	SurName   *string
+	Age       int
+	Sex       int
+	Interests []string
+	City      *string
+}
+
+func (h *Handlers) save(ctx *sa.RequestCtx) (*domain.User, error) {
+
+	var u User
+	err := json.Unmarshal(ctx.PostBody(), &u)
+
+	if err != nil {
+		return nil, err
+	}
+	user := domain.User{Username: u.Username, Name: u.Name, SurName: u.SurName, Age: u.Age, Sex: u.Sex, City: u.City}
+	user.SetId(u.Id)
+
+	if logger.DebugEnabled() {
+		logger.Debugf("got user: %s", user.String())
+	}
+	err = h.Server.DAO.User.Update(&user)
+	_ = h.Server.DAO.Interest.CreateInterests(u.Interests)
+	interests, _ := h.Server.DAO.Interest.GetExistsInterests(u.Interests)
+	_ = h.Server.DAO.UserHasInterests.LinkInterests(&user, interests)
+
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }

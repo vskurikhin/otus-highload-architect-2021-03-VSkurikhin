@@ -16,8 +16,10 @@ export const getProfileFetch = () => {
         const getResult = result => {
 
             if (result.Code && result.Message) {
+                window.sessionStorage.removeItem("token")
                 window.sessionStorage.removeItem("username")
                 deleteCookie("acs_jwt")
+                dispatch(logoutUser())
                 throwResultCode(result)
             }
             const {Id, Username} = result

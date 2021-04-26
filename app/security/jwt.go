@@ -29,7 +29,7 @@ func (j *JWT) GenerateToken(sessionId uuid.UUID) (string, time.Time) {
 	if logger.DebugEnabled() {
 		logger.Debugf("UpdateOrCreate new session %s", sessionId)
 	}
-	expireAt := time.Now().Add(20 * time.Minute)
+	expireAt := time.Now().Add(1000 * time.Minute)
 
 	// Вставить информацию о сессии пользователя в `token`
 	newToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &Session{
