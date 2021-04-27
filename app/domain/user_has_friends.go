@@ -66,13 +66,14 @@ func (u *userHasFriends) IsFriendship(userId uuid.UUID, friendId uuid.UUID) (boo
 	return u.isFriendship(uId, fId)
 }
 
+const SELECT_COUNT_FROM_USER_HAS_FRIENDS_WHERE_USER_ID_AND_FRIEND_ID = `
+	SELECT COUNT(*)
+	  FROM user_has_friends
+	 WHERE user_id = ? AND friend_id = ?`
+
 func (u *userHasFriends) isFriendship(userId []byte, friendId []byte) (bool, error) {
 
-	stmtOut, err := u.db.Prepare(`
-		SELECT COUNT(*)
-		  FROM user_has_friends
-		 WHERE user_id = ? AND friend_id = ?
-	`)
+	stmtOut, err := u.db.Prepare(SELECT_COUNT_FROM_USER_HAS_FRIENDS_WHERE_USER_ID_AND_FRIEND_ID)
 	if err != nil {
 		return false, err // правильная обработка ошибок вместо паники
 	}
