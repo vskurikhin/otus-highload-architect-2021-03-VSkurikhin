@@ -60,29 +60,20 @@ func (h *Handlers) save(ctx *sa.RequestCtx) (*domain.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	is, err := h.Server.DAO.Interest.NewInterestMap(u.Interests)
+	im, err := h.Server.DAO.Interest.NewInterestMap(u.Interests)
 
-	if logger.DebugEnabled() {
-		logger.Debugf("save: is: %v", is)
-	}
 	if err != nil {
 		return nil, err
 	}
-	err = h.Server.DAO.Interest.CreateInterests(is.NewSet)
+	err = h.Server.DAO.Interest.CreateInterests(im.NewSet)
 
 	interests, err := h.Server.DAO.Interest.NewInterestMap(u.Interests)
 
-	if logger.DebugEnabled() {
-		logger.Debugf("save: interests: %v", interests)
-	}
 	if err != nil {
 		return nil, err
 	}
 	mapInterests, err := h.Server.DAO.UserHasInterests.LinkedInterestMap(user.Id(), interests)
 
-	if logger.DebugEnabled() {
-		logger.Debugf("save: mapInterests: %v", mapInterests)
-	}
 	if err != nil {
 		return nil, err
 	}

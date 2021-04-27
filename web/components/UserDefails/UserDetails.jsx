@@ -31,7 +31,7 @@ export default function UserDetails(props) {
             Username: username,
             Name: name,
             SurName: surName,
-            Age: age,
+            Age: parseInt(age),
             Sex: sex === "1" ? 1 : 0,
             City: city,
             Interests: interests
