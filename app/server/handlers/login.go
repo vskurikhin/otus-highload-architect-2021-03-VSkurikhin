@@ -38,7 +38,11 @@ func (h *Handlers) Login(ctx *sa.RequestCtx) error {
 			if err != nil {
 				logger.Errorf("Bad password or error: %v", err)
 
-				return ctx.HTTPResponse("{}", fasthttp.StatusForbidden)
+				errorCase := domain.ApiMessage{
+					Code:    fasthttp.StatusForbidden,
+					Message: "Bad password or username",
+				}
+				return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusForbidden)
 			}
 			if logger.DebugEnabled() {
 				logger.Debugf("jwt for session %s created", sessionId)
@@ -55,7 +59,11 @@ func (h *Handlers) Login(ctx *sa.RequestCtx) error {
 	}
 	logger.Errorf("Bad password or error: %v", err)
 
-	return ctx.HTTPResponse("{}", fasthttp.StatusForbidden)
+	errorCase := domain.ApiMessage{
+		Code:    fasthttp.StatusForbidden,
+		Message: "Bad password or username",
+	}
+	return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusForbidden)
 }
 
 func (h *Handlers) login(ctx *sa.RequestCtx) (*domain.Login, error) {

@@ -1,20 +1,19 @@
-
 import React, {useEffect, useState} from 'react'
 import {Table} from 'semantic-ui-react'
 import {useHistory} from "react-router-dom"
 
-import throwResultCode from "../../lib/throwResultCode"
+export default function TableOfUsers() {
 
-const TableOfUsers = () => {
-
-    const history = useHistory()
     const [error, setError] = useState(null)
     const [isLoaded, setIsLoaded] = useState(false)
     const [items, setItems] = useState([])
+    const history = useHistory()
 
     const getResult = result => {
         setIsLoaded(true)
-        throwResultCode(result)
+        if (result.Code > 399 && result.Message) {
+            history.push('/error/' + result.Message)
+        }
         setItems(result)
     }
 
@@ -29,8 +28,6 @@ const TableOfUsers = () => {
             .then(getResult, getError)
     }
 
-    useEffect(getItems, [])
-
     const handleClick = e => {
         e.preventDefault()
         const {target} = e
@@ -40,39 +37,34 @@ const TableOfUsers = () => {
         }
     }
 
+    useEffect(getItems, [])
+
     if (error) {
         return <div>Ошибка: {error.message}</div>
-    } else if ( ! isLoaded) {
+    } else if (!isLoaded) {
         return <div>Загрузка...</div>
-    } else {
-        try {
-            return (
-                <Table celled selectable>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell>FirstName</Table.HeaderCell>
-                            <Table.HeaderCell>SurName</Table.HeaderCell>
-                            <Table.HeaderCell>City</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-
-                    <Table.Body>
-                        {items.map(({Id, Name, SurName, Age, Sex, Interests, City}) => (
-                            <Table.Row key={Id} id={Id}>
-                                <Table.Cell onClick={handleClick}>{Name}</Table.Cell>
-                                <Table.Cell onClick={handleClick}>{SurName}</Table.Cell>
-                                <Table.Cell onClick={handleClick}>{City}</Table.Cell>
-                            </Table.Row>
-                        ))}
-                    </Table.Body>
-                </Table>
-            )
-        } catch (e) {
-            console.debug(e)
-            history.push('/login')
-            return <div/>
-        }
     }
-}
+    return (
+        <Table celled selectable>
+            <Table.Header>
+                <Table.Row>
+                    <Table.HeaderCell>FirstName</Table.HeaderCell>
+                    <Table.HeaderCell>SurName</Table.HeaderCell>
+                    <Table.HeaderCell>City</Table.HeaderCell>
+                    <Table.HeaderCell>Friend</Table.HeaderCell>
+                </Table.Row>
+            </Table.Header>
 
-export default TableOfUsers
+            <Table.Body>
+                {items.map(({Id, Name, SurName, Age, Sex, Interests, City, Friend}) => (
+                    <Table.Row key={Id} id={Id}>
+                        <Table.Cell onClick={handleClick}>{Name}</Table.Cell>
+                        <Table.Cell onClick={handleClick}>{SurName}</Table.Cell>
+                        <Table.Cell onClick={handleClick}>{City}</Table.Cell>
+                        <Table.Cell onClick={handleClick}>{Friend ? "✔" : ""}</Table.Cell>
+                    </Table.Row>
+                ))}
+            </Table.Body>
+        </Table>
+    )
+}

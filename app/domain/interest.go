@@ -13,6 +13,13 @@ type Interest struct {
 	Interests string
 }
 
+type InterestMap struct {
+	NewMap   map[string]Interest
+	NewSet   []Interest
+	SavedMap map[string]Interest
+	SavedSet []Interest
+}
+
 func (i *Interest) Id() uuid.UUID {
 	return i.id
 }
@@ -38,6 +45,7 @@ func (i *Interest) Marshal() []byte {
 func (i *interest) Create(interest *Interest) error {
 	// Подготовить оператор для вставки данных
 	stmtIns, err := i.db.Prepare("INSERT INTO interest (id, interests) VALUES (?, ?)") // ? = заполнитель
+
 	if err != nil {
 		return err // правильная обработка ошибок вместо паники
 	}
@@ -49,26 +57,65 @@ func (i *interest) Create(interest *Interest) error {
 		return err
 	}
 	_, err = stmtIns.Exec(id, interest.Interests)
+
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (i *interest) CreateInterests(interests []string) error {
+func (i *interest) OldCreateInterests(interests []string) error {
 
 	err := i.createInterests(interests)
+
 	if err != nil {
 		return err
 	}
 	return nil
 }
+
+func (i *interest) createInterests(interests []string) error {
+
+	newInterests, err := i.extractNewInterests(interests)
+	if err != nil {
+		return err // правильная обработка ошибок вместо паники
+	}
+	for _, interest := range newInterests {
+		if logger.DebugEnabled() {
+			logger.Debugf("interest: %v", interest)
+		}
+		newInterest := Interest{id: uuid.New(), Interests: interest}
+		err := i.Create(&newInterest)
+
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (i *interest) CreateInterests(interests []Interest) error {
+	for _, interest := range interests {
+		if logger.DebugEnabled() {
+			logger.Debugf("interest: %v", interest)
+		}
+		err := i.Create(&interest)
+
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+const SELECT_ID_INTERESTS_CONTAINS_IN_SET = `
+	SELECT id, interests
+	  FROM interest
+	 WHERE JSON_CONTAINS(?, JSON_ARRAY(interests))`
 
 func (i *interest) GetExistsInterests(interests []string) ([]Interest, error) {
 
-	stmtOut, err := i.db.Prepare(`
-		SELECT id, interests FROM interest WHERE JSON_CONTAINS(?, JSON_ARRAY(interests));
-	`)
+	stmtOut, err := i.db.Prepare(SELECT_ID_INTERESTS_CONTAINS_IN_SET)
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
@@ -96,26 +143,6 @@ func (i *interest) GetExistsInterests(interests []string) ([]Interest, error) {
 	return ids, nil
 }
 
-func (i *interest) createInterests(interests []string) error {
-
-	newInterests, err := i.extractNewInterests(interests)
-	if err != nil {
-		return err // правильная обработка ошибок вместо паники
-	}
-	for _, interest := range newInterests {
-		if logger.DebugEnabled() {
-			logger.Debugf("interest: %v", interest)
-		}
-		newInterest := Interest{id: uuid.New(), Interests: interest}
-		err := i.Create(&newInterest)
-
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func (i *interest) extractNewInterests(interests []string) ([]string, error) {
 
 	existsInterests, err := i.getExistsInterestLabels(interests)
@@ -126,17 +153,20 @@ func (i *interest) extractNewInterests(interests []string) ([]string, error) {
 		logger.Debugf("existsInterests: %v", existsInterests)
 	}
 	result := set.DifferenceString(interests, existsInterests)
+
 	if logger.DebugEnabled() {
 		logger.Debugf("result: %v", result)
 	}
 	return result, nil
 }
 
+const SELECT_INTERESTS_CONTAINS_IN_SET = `
+	SELECT interests FROM interest WHERE JSON_CONTAINS(?, JSON_ARRAY(interests))`
+
 func (i *interest) getExistsInterestLabels(interests []string) ([]string, error) {
 
-	stmtOut, err := i.db.Prepare(`
-		SELECT interests FROM interest WHERE JSON_CONTAINS(?, JSON_ARRAY(interests));
-	`)
+	stmtOut, err := i.db.Prepare(SELECT_INTERESTS_CONTAINS_IN_SET)
+
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
@@ -160,4 +190,62 @@ func (i *interest) getExistsInterestLabels(interests []string) ([]string, error)
 		is = append(is, i)
 	}
 	return is, nil
+}
+
+func (i *interest) NewInterestMap(strings []string) (*InterestMap, error) {
+
+	saved, err := i.GetExistsInterests(strings)
+
+	if err != nil {
+		return nil, err
+	}
+	var existsInterestLabels []string
+	savedInterests := make(map[string]Interest)
+
+	for _, label1 := range saved {
+		savedInterests[label1.Interests] = label1
+		existsInterestLabels = append(existsInterestLabels, label1.Interests)
+	}
+	difference := set.DifferenceString(strings, existsInterestLabels)
+
+	if logger.DebugEnabled() {
+		logger.Debugf("difference: %v", difference)
+	}
+	var newInterestsList []Interest
+	newInterests := make(map[string]Interest)
+
+	for _, label2 := range difference {
+		newInterests[label2] = Interest{id: uuid.New(), Interests: label2}
+		newInterestsList = append(newInterestsList, newInterests[label2])
+	}
+	result := InterestMap{
+		NewMap:   newInterests,
+		NewSet:   newInterestsList,
+		SavedMap: savedInterests,
+		SavedSet: saved,
+	}
+	return &result, nil
+}
+
+func (i *InterestMap) SavedSetLabels() []string {
+
+	var result []string
+
+	for _, value := range i.SavedSet {
+		result = append(result, value.Interests)
+	}
+	return result
+}
+
+func (i *InterestMap) ConcatInterests() []Interest {
+
+	var result []Interest
+
+	for _, value1 := range i.SavedMap {
+		result = append(result, value1)
+	}
+	for _, value2 := range i.NewMap {
+		result = append(result, value2)
+	}
+	return result
 }
