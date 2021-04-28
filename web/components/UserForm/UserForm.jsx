@@ -28,7 +28,7 @@ const UserForm = props => {
             UserId: props.user.currentUser.Id,
             FriendId: match.params.id
         })
-        history.push('/userlist')
+        history.push('/usersearch')
     }
 
     const addFriend = props => {
