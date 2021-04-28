@@ -16,7 +16,6 @@ async function friend(credentials) {
 
 const UserForm = props => {
 
-    // const [currentUser, setCurrentUser] = useState()
     const [error, setError] = useState(null)
     const [isLoaded, setIsLoaded] = useState(false)
     const [item, setItem] = useState({Friend: false})

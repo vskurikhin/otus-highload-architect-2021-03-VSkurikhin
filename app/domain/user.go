@@ -1,7 +1,9 @@
 package domain
 
 import (
+	"database/sql"
 	"encoding/json"
+	"errors"
 	"github.com/google/uuid"
 	"github.com/savsgio/go-logger/v2"
 	"strings"
@@ -186,6 +188,124 @@ func (u *user) ReadUserList(id uuid.UUID) ([]User, error) {
 	defer func() { _ = stmtOut.Close() }()
 
 	rows, err := stmtOut.Query(idBytes)
+
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = rows.Close() }()
+
+	var users []User
+	for rows.Next() {
+
+		var r User
+		var interests string
+
+		err = rows.Scan(&r.id, &r.Username, &r.Name, &r.SurName, &r.Age, &r.Sex, &r.City, &interests, &r.Friend)
+
+		if err != nil {
+			return nil, err
+		}
+		err = json.Unmarshal([]byte(interests), &r.Interests)
+
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, r)
+	}
+	return users, nil
+}
+
+const SELECT_USER_JOIN_INTERESTS_WHERE = `
+    SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests), NOT isnull(uhf.id) AS is_friend 
+      FROM user u
+      LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
+      LEFT JOIN interest i ON i.id = uhi.interest_id
+      LEFT JOIN user_has_friends uhf ON uhf.friend_id = u.id AND uhf.user_id = ?
+     WHERE name LIKE concat(?, '%%') AND surname LIKE concat(?, '%%')
+     GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
+
+func (u *user) SearchUserList(id uuid.UUID, name, surname string) ([]User, error) {
+
+	idBytes, err := id.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+	stmtOut, err := u.db.Prepare(SELECT_USER_JOIN_INTERESTS_WHERE)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }()
+
+	rows, err := stmtOut.Query(idBytes, name, surname)
+
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = rows.Close() }()
+
+	var users []User
+	for rows.Next() {
+
+		var r User
+		var interests string
+
+		err = rows.Scan(&r.id, &r.Username, &r.Name, &r.SurName, &r.Age, &r.Sex, &r.City, &interests, &r.Friend)
+
+		if err != nil {
+			return nil, err
+		}
+		err = json.Unmarshal([]byte(interests), &r.Interests)
+
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, r)
+	}
+	return users, nil
+}
+
+const SELECT_USER_JOIN_INTERESTS_WHERE_NAME = `
+    SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests), NOT isnull(uhf.id) AS is_friend 
+      FROM user u
+      LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
+      LEFT JOIN interest i ON i.id = uhi.interest_id
+      LEFT JOIN user_has_friends uhf ON uhf.friend_id = u.id AND uhf.user_id = ?
+     WHERE name LIKE concat(?, '%%')
+     GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
+
+const SELECT_USER_JOIN_INTERESTS_WHERE_SURNAME = `
+    SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests), NOT isnull(uhf.id) AS is_friend 
+      FROM user u
+      LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
+      LEFT JOIN interest i ON i.id = uhi.interest_id
+      LEFT JOIN user_has_friends uhf ON uhf.friend_id = u.id AND uhf.user_id = ?
+     WHERE surname LIKE concat(?, '%%')
+     GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
+
+func (u *user) SearchByUserList(id uuid.UUID, field, value string) ([]User, error) {
+
+	idBytes, err := id.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+
+	var stmtOut *sql.Stmt
+	switch field {
+	case "name":
+		stmtOut, err = u.db.Prepare(SELECT_USER_JOIN_INTERESTS_WHERE_NAME)
+		break
+	case "surname":
+		stmtOut, err = u.db.Prepare(SELECT_USER_JOIN_INTERESTS_WHERE_SURNAME)
+		break
+	default:
+		return nil, errors.New("Unknown field: " + field)
+	}
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }()
+
+	rows, err := stmtOut.Query(idBytes, value)
 
 	if err != nil {
 		return nil, err
