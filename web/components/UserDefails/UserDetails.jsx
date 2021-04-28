@@ -20,7 +20,7 @@ export default function UserDetails(props) {
     const [id, setId] = useState("")
     const [interests, setInterests] = useState("")
     const [name, setName] = useState("")
-    const [sex, setSex] = useState("0")
+    const [sex, setSex] = useState("")
     const [surName, setSurName] = useState("")
     const [username, setUsername] = useState("")
 
@@ -55,6 +55,7 @@ export default function UserDetails(props) {
     const dropdownSex = () => (
         <Dropdown
             defaultValue={sex || '0'}
+            value={sex || '1'}
             item
             fluid
             selection
