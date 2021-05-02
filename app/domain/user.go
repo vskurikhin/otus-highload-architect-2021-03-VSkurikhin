@@ -358,13 +358,3 @@ func (u *user) Update(user *User) error {
 	}
 	return nil
 }
-
-/*
-SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests), NOT isnull(uhf.id) AS is_friend
-      FROM user u
-      LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
-      LEFT JOIN interest i ON i.id = uhi.interest_id
-      LEFT JOIN user_has_friends uhf ON uhf.friend_id = u.id AND uhf.user_id = ?
-     WHERE name LIKE concat(?, '%%a') AND surname LIKE concat(?, '%%b')
-     GROUP BY u.id, username, name, surname, age, sex, city, uhf.id
- */
