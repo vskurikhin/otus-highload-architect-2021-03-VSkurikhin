@@ -1,6 +1,6 @@
 [![hits](https://hits.deltapapa.io/github/vskurikhin/otus-highload-architect-2021-03-VSkurikhin.svg)](https://hits.deltapapa.io)
 [![license](https://img.shields.io/github/license/vskurikhin/otus-highload-architect-2021-03-VSkurikhin)](https://raw.githubusercontent.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/main/LICENSE)
-
+modify_column_name
 # OTUS Highload Architect
 
 Группа 2021-03
