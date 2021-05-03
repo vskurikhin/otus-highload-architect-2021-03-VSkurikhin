@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/savsgio/go-logger/v2"
 	"strings"
@@ -221,7 +222,7 @@ const SELECT_USER_JOIN_INTERESTS_WHERE = `
       LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
       LEFT JOIN interest i ON i.id = uhi.interest_id
       LEFT JOIN user_has_friends uhf ON uhf.friend_id = u.id AND uhf.user_id = ?
-     WHERE name LIKE concat(?, '%%') AND surname LIKE concat(?, '%%')
+     WHERE name LIKE '%s%%%%' AND surname LIKE '%s%%%%'
      GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
 
 func (u *user) SearchUserList(id uuid.UUID, name, surname string) ([]User, error) {
@@ -230,13 +231,18 @@ func (u *user) SearchUserList(id uuid.UUID, name, surname string) ([]User, error
 	if err != nil {
 		return nil, err
 	}
-	stmtOut, err := u.db.Prepare(SELECT_USER_JOIN_INTERESTS_WHERE)
+
+	query := fmt.Sprintf(SELECT_USER_JOIN_INTERESTS_WHERE, name, surname)
+	if logger.DebugEnabled() {
+		logger.Debugf("SearchUserList query: %s", query)
+	}
+	stmtOut, err := u.db.Prepare(query)
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
 	defer func() { _ = stmtOut.Close() }()
 
-	rows, err := stmtOut.Query(idBytes, name, surname)
+	rows, err := stmtOut.Query(idBytes)
 
 	if err != nil {
 		return nil, err
@@ -270,7 +276,7 @@ const SELECT_USER_JOIN_INTERESTS_WHERE_NAME = `
       LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
       LEFT JOIN interest i ON i.id = uhi.interest_id
       LEFT JOIN user_has_friends uhf ON uhf.friend_id = u.id AND uhf.user_id = ?
-     WHERE name LIKE concat(?, '%%')
+     WHERE name LIKE '%s%%%%'
      GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
 
 const SELECT_USER_JOIN_INTERESTS_WHERE_SURNAME = `
@@ -279,7 +285,7 @@ const SELECT_USER_JOIN_INTERESTS_WHERE_SURNAME = `
       LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
       LEFT JOIN interest i ON i.id = uhi.interest_id
       LEFT JOIN user_has_friends uhf ON uhf.friend_id = u.id AND uhf.user_id = ?
-     WHERE surname LIKE concat(?, '%%')
+     WHERE surname LIKE '%s%%%%'
      GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
 
 func (u *user) SearchByUserList(id uuid.UUID, field, value string) ([]User, error) {
@@ -292,10 +298,18 @@ func (u *user) SearchByUserList(id uuid.UUID, field, value string) ([]User, erro
 	var stmtOut *sql.Stmt
 	switch field {
 	case "name":
-		stmtOut, err = u.db.Prepare(SELECT_USER_JOIN_INTERESTS_WHERE_NAME)
+		query := fmt.Sprintf(SELECT_USER_JOIN_INTERESTS_WHERE_NAME, value)
+		if logger.DebugEnabled() {
+			logger.Debugf("SearchByUserList query: %s", query)
+		}
+		stmtOut, err = u.db.Prepare(query)
 		break
 	case "surname":
-		stmtOut, err = u.db.Prepare(SELECT_USER_JOIN_INTERESTS_WHERE_SURNAME)
+		query := fmt.Sprintf(SELECT_USER_JOIN_INTERESTS_WHERE_SURNAME, value)
+		if logger.DebugEnabled() {
+			logger.Debugf("SearchByUserList query: %s", query)
+		}
+		stmtOut, err = u.db.Prepare(query)
 		break
 	default:
 		return nil, errors.New("Unknown field: " + field)
@@ -305,7 +319,7 @@ func (u *user) SearchByUserList(id uuid.UUID, field, value string) ([]User, erro
 	}
 	defer func() { _ = stmtOut.Close() }()
 
-	rows, err := stmtOut.Query(idBytes, value)
+	rows, err := stmtOut.Query(idBytes)
 
 	if err != nil {
 		return nil, err

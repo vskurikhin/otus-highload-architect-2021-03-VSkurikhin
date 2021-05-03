@@ -10,10 +10,6 @@ import (
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/server/handlers"
 )
 
-func init() { //nolint:gochecknoinits
-	logger.SetLevel(logger.DEBUG)
-}
-
 func main() {
 
 	// Загрузка конфигурации
@@ -31,6 +27,7 @@ func main() {
 	// параметры конфигурации.
 	if environ != nil && environ.Logging.Debug {
 		fmt.Println(environ.String())
+		logger.SetLevel(logger.DEBUG)
 	}
 
 	// Создать инстанс сервера
