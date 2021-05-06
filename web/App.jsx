@@ -7,6 +7,7 @@ import MyProfile from "./components/MyProfile/MyProfile"
 import Signin from "./components/Signin/Signin"
 import UserForm from './components/UserForm/UserForm'
 import UserList from './components/UserList/UserList'
+import UserSearch from "./components/UserSearch/UserSearch";
 
 import React from 'react'
 import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom'
@@ -20,20 +21,24 @@ const App = () => (
                     ["Login", "/login"],
                     ["Sign-in", "/signin"],
                     ["User list", "/userlist", true],
+                    ["User search", "/usersearch", true],
                     ["Profile", "/myprofile", true]
                 ]}
             />
             <Switch>
-                <Route path="/userlist">
-                    <UserList/>
-                </Route>
-                <Route path="/userform/:id" component={UserForm}/>
-                <Route path="/signin">
-                    <Signin/>
-                </Route>
                 <Route path="/login">
                     <Login/>
                 </Route>
+                <Route path="/signin">
+                    <Signin/>
+                </Route>
+                <Route path="/userlist">
+                    <UserList/>
+                </Route>
+                <Route path="/usersearch">
+                    <UserSearch/>
+                </Route>
+                <Route path="/userform/:id" component={UserForm}/>
                 <Route path="/myprofile" component={MyProfile}>
                     <MyProfile/>
                 </Route>

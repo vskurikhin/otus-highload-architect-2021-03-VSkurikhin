@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+data:
+  server.cnf: |
+    # Apply this config.
+    [mysqld]
+    bind-address = 0.0.0.0
+    mysqlx-bind-address = 127.0.0.1
+    log-bin
+    max_connections = 1088
+    gtid_mode = ON
+    replicate-do-db = hl
+    log-slave-updates
+    enforce-gtid-consistency
+    innodb_buffer_pool_size = 134217728
+    sort_buffer_size = 2097152
+    read_buffer_size = 2097152
+    join_buffer_size = 2097152
+
+  configure-slave.sh: |
+    #!/bin/bash
+    if [[ "x$1" == "xrun" ]] ; then
+     (/bin/bash $0)&
+     exit 0
+    fi
+    # Skip the clone if data already exists.
+    [[ -f /var/lib/mysql/mysql/done ]] && exit 0
+    # Skip the clone on primary (ordinal index 0).
+    [[ `hostname` =~ -([0-9]+)$ ]] || exit 0
+    ordinal=${BASH_REMATCH[1]}
+    [[ $ordinal -eq 0 ]] && exit 0
+    echo "Waiting for mysqld to be ready (accepting connections)"
+    c=1; until mysql -h 127.0.0.1 -e "SELECT 1" || [[ $c -le 6 ]] ; do sleep $c; done
+    sleep $c
+    # Clone data from previous peer.
+    echo "Clone data from previous peer."
+    mysql -h 127.0.0.1 -e "STOP SLAVE"
+    mysql -h 127.0.0.1 -e "RESET SLAVE"
+    mysql -h 127.0.0.1 -e "RESET SLAVE ALL"
+    mysqldump -h mysql-0.mysql.default.svc.cluster.local --all-databases --master-data --triggers --routines --events |
+        mysql -h 127.0.0.1
+    mysql -h mysql-0.mysql.default.svc.cluster.local -e 'SHOW MASTER STATUS' |
+      awk '/mysql-0/{printf"CHANGE MASTER TO MASTER_HOST=\"mysql-0.mysql.default.svc.cluster.local\",MASTER_LOG_FILE=\"%s\",MASTER_LOG_POS=%s,MASTER_USER=\"root\",MASTER_PASSWORD=\"\",MASTER_CONNECT_RETRY=10\n",$1,$2}' |
+    mysql -h 127.0.0.1
+    echo "Clone done."
+    mysql -h 127.0.0.1 -e "START SLAVE"
+    touch /var/lib/mysql/mysql/done

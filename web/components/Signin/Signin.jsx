@@ -43,7 +43,7 @@ export default function Signin() {
             if (token.Code > 399 && token.Message) {
                 history.push('/error/' + token.Message)
             } else {
-                history.push('/userlist')
+                history.push('/usersearch')
             }
         }
     }
