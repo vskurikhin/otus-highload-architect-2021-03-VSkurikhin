@@ -31,9 +31,7 @@ func (u *userHasFriends) LinkToFriend(user *User, friend *User) error {
 		return errors.New("friendship exists")
 	}
 	// Подготовить оператор для вставки данных
-	stmtIns, err := u.db.Prepare(`
-		INSERT INTO user_has_friends (id, user_id, friend_id) VALUES (?, ?, ?)
-	`) // ? = заполнитель
+	stmtIns, err := u.dbRw.Prepare(`INSERT INTO user_has_friends (id, user_id, friend_id) VALUES (?, ?, ?)`)
 	if err != nil {
 		return err // правильная обработка ошибок вместо паники
 	}
@@ -73,7 +71,7 @@ const SELECT_COUNT_FROM_USER_HAS_FRIENDS_WHERE_USER_ID_AND_FRIEND_ID = `
 
 func (u *userHasFriends) isFriendship(userId []byte, friendId []byte) (bool, error) {
 
-	stmtOut, err := u.db.Prepare(SELECT_COUNT_FROM_USER_HAS_FRIENDS_WHERE_USER_ID_AND_FRIEND_ID)
+	stmtOut, err := u.dbRo.Prepare(SELECT_COUNT_FROM_USER_HAS_FRIENDS_WHERE_USER_ID_AND_FRIEND_ID)
 	if err != nil {
 		return false, err // правильная обработка ошибок вместо паники
 	}

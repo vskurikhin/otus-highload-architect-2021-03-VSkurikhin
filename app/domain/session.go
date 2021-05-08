@@ -36,7 +36,7 @@ func (s *Session) Marshal() []byte {
 
 func (s *session) UpdateOrCreate(login *Login, sessionId uuid.UUID) error {
 
-	stmtOut, err := s.db.Prepare("SELECT id FROM `session` WHERE id = ?")
+	stmtOut, err := s.dbRo.Prepare("SELECT id FROM `session` WHERE id = ?")
 
 	if err != nil {
 		return err // правильная обработка ошибок вместо паники
@@ -55,7 +55,7 @@ func (s *session) UpdateOrCreate(login *Login, sessionId uuid.UUID) error {
 
 func (s *session) create(login *Login, sessionId uuid.UUID) error {
 	// Подготовить оператор для вставки данных
-	stmtIns, err := s.db.Prepare("INSERT INTO `session` (id, session_id) VALUES (?, ?)") // ? = заполнитель
+	stmtIns, err := s.dbRw.Prepare("INSERT INTO `session` (id, session_id) VALUES (?, ?)") // ? = заполнитель
 
 	if err != nil {
 		return err // правильная обработка ошибок вместо паники
@@ -86,7 +86,7 @@ func (s *session) create(login *Login, sessionId uuid.UUID) error {
 
 func (s *session) update(userId uuid.UUID, sessionId uuid.UUID) error {
 	// Подготовить оператор для вставки данных
-	stmtIns, err := s.db.Prepare("UPDATE `session` SET session_id = ? WHERE id = ?") // ? = заполнитель
+	stmtIns, err := s.dbRw.Prepare("UPDATE `session` SET session_id = ? WHERE id = ?") // ? = заполнитель
 
 	if err != nil {
 		return err // правильная обработка ошибок вместо паники
@@ -123,7 +123,7 @@ const SELECT_USER_ID_AND_SESSION_ID_BY_USERNAME = `
 
 func (s *session) ReadByUsername(username string) (*Session, error) {
 
-	stmtOut, err := s.db.Prepare(SELECT_USER_ID_AND_SESSION_ID_BY_USERNAME)
+	stmtOut, err := s.dbRo.Prepare(SELECT_USER_ID_AND_SESSION_ID_BY_USERNAME)
 
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
@@ -149,7 +149,7 @@ const SELECT_USERNAME_BY_SESSION_ID = `
 
 func (s *session) UsernameBySessionId(sessionId uuid.UUID) (*string, error) {
 
-	stmtOut, err := s.db.Prepare(SELECT_USERNAME_BY_SESSION_ID)
+	stmtOut, err := s.dbRo.Prepare(SELECT_USERNAME_BY_SESSION_ID)
 
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
@@ -178,7 +178,7 @@ const SELECT_USER_ID_AND_USERNAME_BY_SESSION_ID = `
 
 func (s *session) ProfileBySessionId(sessionId uuid.UUID) (*Profile, error) {
 
-	stmtOut, err := s.db.Prepare(SELECT_USER_ID_AND_USERNAME_BY_SESSION_ID)
+	stmtOut, err := s.dbRo.Prepare(SELECT_USER_ID_AND_USERNAME_BY_SESSION_ID)
 
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
