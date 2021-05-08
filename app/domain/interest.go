@@ -44,7 +44,7 @@ func (i *Interest) Marshal() []byte {
 
 func (i *interest) Create(interest *Interest) error {
 	// Подготовить оператор для вставки данных
-	stmtIns, err := i.db.Prepare("INSERT INTO interest (id, interests) VALUES (?, ?)") // ? = заполнитель
+	stmtIns, err := i.dbRw.Prepare("INSERT INTO interest (id, interests) VALUES (?, ?)") // ? = заполнитель
 
 	if err != nil {
 		return err // правильная обработка ошибок вместо паники
@@ -115,7 +115,7 @@ const SELECT_ID_INTERESTS_CONTAINS_IN_SET = `
 
 func (i *interest) GetExistsInterests(interests []string) ([]Interest, error) {
 
-	stmtOut, err := i.db.Prepare(SELECT_ID_INTERESTS_CONTAINS_IN_SET)
+	stmtOut, err := i.dbRw.Prepare(SELECT_ID_INTERESTS_CONTAINS_IN_SET)
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
@@ -165,7 +165,7 @@ const SELECT_INTERESTS_CONTAINS_IN_SET = `
 
 func (i *interest) getExistsInterestLabels(interests []string) ([]string, error) {
 
-	stmtOut, err := i.db.Prepare(SELECT_INTERESTS_CONTAINS_IN_SET)
+	stmtOut, err := i.dbRw.Prepare(SELECT_INTERESTS_CONTAINS_IN_SET)
 
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники

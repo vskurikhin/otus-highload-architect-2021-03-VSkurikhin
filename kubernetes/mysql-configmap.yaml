@@ -16,10 +16,10 @@ data:
     replicate-do-db = hl
     log-slave-updates
     enforce-gtid-consistency
-    innodb_buffer_pool_size = 134217728
-    sort_buffer_size = 2097152
-    read_buffer_size = 2097152
-    join_buffer_size = 2097152
+    innodb_buffer_pool_size = 1073741824
+    sort_buffer_size = 16777216
+    read_buffer_size = 16777216
+    join_buffer_size = 16777216
 
   configure-slave.sh: |
     #!/bin/bash
