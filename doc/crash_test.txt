@@ -1,0 +1,316 @@
+% ./otus-highload-architect-2021-03-VSkurikhin 9999999
+hl:password@tcp(192.168.20.88:3306)/hl
+...
+[mysql] 2021/05/10 19:01:08 packets.go:37: unexpected EOF
+error count = 436
+
+mysql> select @@hostname;
++------------+
+| @@hostname |
++------------+
+| mysql-2    |
++------------+
+1 row in set (0,00 sec)
+
+mysql> SELECT COUNT(*) FROM test_repl;
++----------+
+| COUNT(*) |
++----------+
+|      436 |
++----------+
+1 row in set (0,01 sec)
+
+mysql> select @@hostname;
++------------+
+| @@hostname |
++------------+
+| mysql-1    |
++------------+
+1 row in set (0,00 sec)
+
+mysql> SELECT COUNT(*) FROM test_repl;
++----------+
+| COUNT(*) |
++----------+
+|      436 |
++----------+
+1 row in set (0,04 sec)
+
+mysql> select @@hostname;
++------------+
+| @@hostname |
++------------+
+| mysql-1    |
++------------+
+1 row in set (0,00 sec)
+
+mysql> SHOW SLAVE STATUS\G
+*************************** 1. row ***************************
+               Slave_IO_State:
+                  Master_Host: mysql-0.mysql.default.svc.cluster.local
+                  Master_User: root
+                  Master_Port: 3306
+                Connect_Retry: 10
+              Master_Log_File: mysql-0-bin.000023
+          Read_Master_Log_Pos: 233554
+               Relay_Log_File: mysql-1-relay-bin.000057
+                Relay_Log_Pos: 233773
+        Relay_Master_Log_File: mysql-0-bin.000023
+             Slave_IO_Running: No
+            Slave_SQL_Running: No
+              Replicate_Do_DB: hl
+          Replicate_Ignore_DB:
+           Replicate_Do_Table:
+       Replicate_Ignore_Table:
+      Replicate_Wild_Do_Table:
+  Replicate_Wild_Ignore_Table:
+                   Last_Errno: 0
+                   Last_Error:
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 233554
+              Relay_Log_Space: 234625
+              Until_Condition: None
+               Until_Log_File:
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File:
+           Master_SSL_CA_Path:
+              Master_SSL_Cert:
+            Master_SSL_Cipher:
+               Master_SSL_Key:
+        Seconds_Behind_Master: NULL
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 2005
+                Last_IO_Error: error reconnecting to master 'root@mysql-0.mysql.default.svc.cluster.local:3306' - retry-time: 10 retries: 107 message: Unknown MySQL server host 'mysql-0.mysql.default.svc.cluster.local' (22)
+               Last_SQL_Errno: 0
+               Last_SQL_Error:
+  Replicate_Ignore_Server_Ids:
+             Master_Server_Id: 100
+                  Master_UUID: 888f4ff4-aea0-11eb-a117-0e49989a823f
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State:
+           Master_Retry_Count: 86400
+                  Master_Bind:
+      Last_IO_Error_Timestamp: 210510 16:18:49
+     Last_SQL_Error_Timestamp:
+               Master_SSL_Crl:
+           Master_SSL_Crlpath:
+           Retrieved_Gtid_Set: 888f4ff4-aea0-11eb-a117-0e49989a823f:6-1594
+            Executed_Gtid_Set: 888f4ff4-aea0-11eb-a117-0e49989a823f:1-1594,
+b94db1c9-aea0-11eb-9bcf-2a0d4878e69e:1-11
+                Auto_Position: 0
+         Replicate_Rewrite_DB:
+                 Channel_Name:
+           Master_TLS_Version:
+       Master_public_key_path:
+        Get_master_public_key: 0
+            Network_Namespace:
+1 row in set, 1 warning (0,01 sec)
+
+mysql> STOP SLAVE;
+Query OK, 0 rows affected, 1 warning (0,25 sec)
+
+mysql> RESET SLAVE;
+Query OK, 0 rows affected, 1 warning (0,54 sec)
+
+mysql> RESET SLAVE ALL;
+Query OK, 0 rows affected, 1 warning (0,07 sec)
+
+mysql> SHOW SLAVE STATUS\G
+*************************** 1. row ***************************
+               Slave_IO_State: Reconnecting after a failed master event read
+                  Master_Host: mysql-0.mysql.default.svc.cluster.local
+                  Master_User: root
+                  Master_Port: 3306
+                Connect_Retry: 10
+              Master_Log_File: mysql-0-bin.000023
+          Read_Master_Log_Pos: 233554
+               Relay_Log_File: mysql-2-relay-bin.000059
+                Relay_Log_Pos: 233773
+        Relay_Master_Log_File: mysql-0-bin.000023
+             Slave_IO_Running: Connecting
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: hl
+          Replicate_Ignore_DB:
+           Replicate_Do_Table:
+       Replicate_Ignore_Table:
+      Replicate_Wild_Do_Table:
+  Replicate_Wild_Ignore_Table:
+                   Last_Errno: 0
+                   Last_Error:
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 233554
+              Relay_Log_Space: 234625
+              Until_Condition: None
+               Until_Log_File:
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File:
+           Master_SSL_CA_Path:
+              Master_SSL_Cert:
+            Master_SSL_Cipher:
+               Master_SSL_Key:
+        Seconds_Behind_Master: NULL
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 2005
+                Last_IO_Error: error reconnecting to master 'root@mysql-0.mysql.default.svc.cluster.local:3306' - retry-time: 10 retries: 137 message: Unknown MySQL server host 'mysql-0.mysql.default.svc.cluster.local' (22)
+               Last_SQL_Errno: 0
+               Last_SQL_Error:
+  Replicate_Ignore_Server_Ids:
+             Master_Server_Id: 100
+                  Master_UUID: 888f4ff4-aea0-11eb-a117-0e49989a823f
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates
+           Master_Retry_Count: 86400
+                  Master_Bind:
+      Last_IO_Error_Timestamp: 210510 16:23:50
+     Last_SQL_Error_Timestamp:
+               Master_SSL_Crl:
+           Master_SSL_Crlpath:
+           Retrieved_Gtid_Set: 888f4ff4-aea0-11eb-a117-0e49989a823f:6-1594
+            Executed_Gtid_Set: 68ca9c89-aea1-11eb-85d7-ced74e9d3047:1-11,
+888f4ff4-aea0-11eb-a117-0e49989a823f:1-1594
+                Auto_Position: 0
+         Replicate_Rewrite_DB:
+                 Channel_Name:
+           Master_TLS_Version:
+       Master_public_key_path:
+        Get_master_public_key: 0
+            Network_Namespace:
+1 row in set, 1 warning (0,00 sec)
+
+mysql> STOP SLAVE;
+Query OK, 0 rows affected, 1 warning (0,25 sec)
+
+mysql> RESET SLAVE;
+Query OK, 0 rows affected, 1 warning (0,54 sec)
+
+mysql> RESET SLAVE ALL;
+Query OK, 0 rows affected, 1 warning (0,07 sec)
+
+mysql> select @@hostname;
++------------+
+| @@hostname |
++------------+
+| mysql-1    |
++------------+
+1 row in set (0,00 sec)
+
+mysql> SHOW MASTER STATUS\G
+*************************** 1. row ***************************
+             File: mysql-1-bin.000016
+         Position: 695132
+     Binlog_Do_DB:
+ Binlog_Ignore_DB:
+Executed_Gtid_Set: 888f4ff4-aea0-11eb-a117-0e49989a823f:1-1594,
+b94db1c9-aea0-11eb-9bcf-2a0d4878e69e:1-11
+1 row in set (0,00 sec)
+
+mysql> select @@hostname;
++------------+
+| @@hostname |
++------------+
+| mysql-2    |
++------------+
+1 row in set (0,00 sec)
+
+mysql> CHANGE MASTER TO MASTER_HOST='mysql-1.mysql.default.svc.cluster.local',MASTER_LOG_FILE='mysql-1-bin.000016',MASTER_LOG_POS=695132,MASTER_USER='root',MASTER_PASSWORD='',MASTER_CONNECT_RETRY=10;
+Query OK, 0 rows affected, 8 warnings (1,52 sec)
+
+mysql> START SLAVE;
+Query OK, 0 rows affected, 1 warning (0,54 sec)
+
+mysql> SHOW SLAVE STATUS\G
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: mysql-1.mysql.default.svc.cluster.local
+                  Master_User: root
+                  Master_Port: 3306
+                Connect_Retry: 10
+              Master_Log_File: mysql-1-bin.000016
+          Read_Master_Log_Pos: 695132
+               Relay_Log_File: mysql-2-relay-bin.000002
+                Relay_Log_Pos: 326
+        Relay_Master_Log_File: mysql-1-bin.000016
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: hl
+          Replicate_Ignore_DB:
+           Replicate_Do_Table:
+       Replicate_Ignore_Table:
+      Replicate_Wild_Do_Table:
+  Replicate_Wild_Ignore_Table:
+                   Last_Errno: 0
+                   Last_Error:
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 695132
+              Relay_Log_Space: 537
+              Until_Condition: None
+               Until_Log_File:
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File:
+           Master_SSL_CA_Path:
+              Master_SSL_Cert:
+            Master_SSL_Cipher:
+               Master_SSL_Key:
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error:
+               Last_SQL_Errno: 0
+               Last_SQL_Error:
+  Replicate_Ignore_Server_Ids:
+             Master_Server_Id: 101
+                  Master_UUID: b94db1c9-aea0-11eb-9bcf-2a0d4878e69e
+             Master_Info_File: mysql.slave_master_info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates
+           Master_Retry_Count: 86400
+                  Master_Bind:
+      Last_IO_Error_Timestamp:
+     Last_SQL_Error_Timestamp:
+               Master_SSL_Crl:
+           Master_SSL_Crlpath:
+           Retrieved_Gtid_Set:
+            Executed_Gtid_Set: 68ca9c89-aea1-11eb-85d7-ced74e9d3047:1-11,
+888f4ff4-aea0-11eb-a117-0e49989a823f:1-1594
+                Auto_Position: 0
+         Replicate_Rewrite_DB:
+                 Channel_Name:
+           Master_TLS_Version:
+       Master_public_key_path:
+        Get_master_public_key: 0
+            Network_Namespace:
+1 row in set, 1 warning (0,01 sec)
+
+root@mysql-0:/# mysqldump -h mysql-1.mysql.default.svc.cluster.local --all-databases --master-data --triggers --routines --events | mysql -h 127.0.0.1
+
+mysql> select @@hostname;
++------------+
+| @@hostname |
++------------+
+| mysql-0    |
++------------+
+1 row in set (0.01 sec)
+
+mysql> SHOW MASTER STATUS\G
+*************************** 1. row ***************************
+             File: mysql-0-bin.000003
+         Position: 196
+     Binlog_Do_DB:
+ Binlog_Ignore_DB:
+Executed_Gtid_Set: 18547439-b1ac-11eb-ab50-3aa8583701ce:1-5,
+888f4ff4-aea0-11eb-a117-0e49989a823f:1-1594,
+b94db1c9-aea0-11eb-9bcf-2a0d4878e69e:1-11
+1 row in set (0.00 sec)
+
+root@mysql-1:/# mysql -h mysql-0.mysql.default.svc.cluster.local -e 'SHOW MASTER STATUS' |
+>       awk '/mysql-0/{printf"CHANGE MASTER TO MASTER_HOST=\"mysql-0.mysql.default.svc.cluster.local\",MASTER_LOG_FILE=\"%s\",MASTER_LOG_POS=%s,MASTER_USER=\"root\",MASTER_PASSWORD=\"\",MASTER_CONNECT_RETRY=10\n",$1,$2}' |
+> mysql -h 127.0.0.1
+root@mysql-1:/# mysql -h 127.0.0.1 -e "START SLAVE"
