@@ -177,11 +177,16 @@ func httpd() {
 	// Зарегистрировать маршрут для профиля пользователя.
 	s.GET("/profile", h.Profile)
 
+	// Зарегистрировать маршрут для списка новостей.
+	s.GET("/news/range/{offset}/{limit}", h.NewsList)
+
+	s.POST("/news/add", h.CreateNews)
+
 	// Зарегистрировать маршрут для списка пользователей.
-	s.GET("/users/all", h.List)
+	s.GET("/users/all", h.UserList)
 
 	// Зарегистрировать маршруты для поиска пользователей.
-	s.GET("/users/search/{name}/{surname}", h.Search)
+	s.GET("/users/search/{name}/{surname}", h.UserSearch)
 	s.GET("/users/search-by/{field}/{value}", h.SearchBy)
 
 	// Зарегистрировать маршрут для списка пользователей.
@@ -191,13 +196,13 @@ func httpd() {
 	s.POST("/user", h.Create)
 
 	// Зарегистрировать маршрут для добавления друга.
-	s.POST("/friend", h.Friend)
+	s.POST("/friend", h.UserFriend)
 
 	// Зарегистрировать маршрут для Sign-in пользователя.
-	s.POST("/signin", h.SignIn)
+	s.POST("/signin", h.UserSignIn)
 
 	// Зарегистрировать маршрут для Sign-in пользователя.
-	s.POST("/save", h.Save)
+	s.POST("/save", h.UserSave)
 
 	// Run
 	if err := s.ListenAndServe(); err != nil {
@@ -207,10 +212,12 @@ func httpd() {
 
 func main() {
 
-	upperBound, err := strconv.ParseInt(os.Args[1], 10, 32)
-
-	if err == nil {
-		test(upperBound)
+	size := len(os.Args)
+	if size == 2 {
+		upperBound, err := strconv.ParseInt(os.Args[1], 10, 32)
+		if err == nil {
+			test(upperBound)
+		}
 	} else {
 		httpd()
 	}

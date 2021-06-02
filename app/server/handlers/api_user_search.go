@@ -10,9 +10,9 @@ import (
 	"strings"
 )
 
-func (h *Handlers) Search(ctx *sa.RequestCtx) error {
+func (h *Handlers) UserSearch(ctx *sa.RequestCtx) error {
 
-	list, err := h.search(ctx)
+	list, err := h.userSearch(ctx)
 
 	if err != nil {
 		logger.Error(err)
@@ -27,7 +27,7 @@ func (h *Handlers) Search(ctx *sa.RequestCtx) error {
 	return ctx.HTTPResponse(result)
 }
 
-func (h *Handlers) search(ctx *sa.RequestCtx) ([]string, error) {
+func (h *Handlers) userSearch(ctx *sa.RequestCtx) ([]string, error) {
 
 	p, err := h.profile(ctx)
 

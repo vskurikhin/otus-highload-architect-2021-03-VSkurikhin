@@ -10,9 +10,9 @@ import (
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
 )
 
-func (h *Handlers) Save(ctx *sa.RequestCtx) error {
+func (h *Handlers) UserSave(ctx *sa.RequestCtx) error {
 
-	user, err := h.save(ctx)
+	user, err := h.userSave(ctx)
 
 	if err != nil {
 		logger.Error(err)
@@ -41,7 +41,7 @@ type User struct {
 	City      *string
 }
 
-func (h *Handlers) save(ctx *sa.RequestCtx) (*domain.User, error) {
+func (h *Handlers) userSave(ctx *sa.RequestCtx) (*domain.User, error) {
 
 	var u User
 	err := json.Unmarshal(ctx.PostBody(), &u)
@@ -53,7 +53,7 @@ func (h *Handlers) save(ctx *sa.RequestCtx) (*domain.User, error) {
 	user.SetId(u.Id)
 
 	if logger.DebugEnabled() {
-		logger.Debugf("save: got user: %s", user.String())
+		logger.Debugf("userSave: got user: %s", user.String())
 	}
 	err = h.Server.DAO.User.Update(&user)
 
@@ -80,7 +80,7 @@ func (h *Handlers) save(ctx *sa.RequestCtx) (*domain.User, error) {
 	forLink := mapInterests.ConcatInterests()
 
 	if logger.DebugEnabled() {
-		logger.Debugf("save: forLink: %v", forLink)
+		logger.Debugf("userSave: forLink: %v", forLink)
 	}
 	err = h.Server.DAO.UserHasInterests.LinkInterests(&user, forLink)
 

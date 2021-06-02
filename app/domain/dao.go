@@ -8,6 +8,7 @@ type (
 	DAO struct {
 		Interest         *interest
 		Login            *login
+		News             *news
 		Session          *session
 		User             *user
 		UserHasFriends   *userHasFriends
@@ -18,6 +19,10 @@ type (
 		dbRw *sql.DB
 	}
 	login struct {
+		dbRo *sql.DB
+		dbRw *sql.DB
+	}
+	news struct {
 		dbRo *sql.DB
 		dbRw *sql.DB
 	}
@@ -43,6 +48,7 @@ func New(dbRo *sql.DB, dbRw *sql.DB) *DAO {
 	return &DAO{
 		Interest:         &interest{dbRo: dbRo, dbRw: dbRw},
 		Login:            &login{dbRo: dbRo, dbRw: dbRw},
+		News:             &news{dbRo: dbRo, dbRw: dbRw},
 		Session:          &session{dbRo: dbRo, dbRw: dbRw},
 		User:             &user{dbRo: dbRo, dbRw: dbRw},
 		UserHasFriends:   &userHasFriends{dbRo: dbRo, dbRw: dbRw},

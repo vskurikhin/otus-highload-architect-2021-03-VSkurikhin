@@ -3,15 +3,16 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/valyala/fasthttp"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
 )
 
-func (h *Handlers) UserFriend(ctx *sa.RequestCtx) error {
+func (h *Handlers) CreateNews(ctx *sa.RequestCtx) error {
 
-	friend, err := h.userFriend(ctx)
+	news, err := h.createNews(ctx)
 
 	if err != nil {
 		logger.Error(err)
@@ -21,7 +22,7 @@ func (h *Handlers) UserFriend(ctx *sa.RequestCtx) error {
 		}
 		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
 	}
-	msg := fmt.Sprintf("linked user id: %s and userFriend id: %s", friend.UserId, friend.FriendId)
+	msg := fmt.Sprintf("updated with id: %s", news.Id())
 	created := domain.ApiMessage{
 		Code:    fasthttp.StatusCreated,
 		Message: msg,
@@ -29,31 +30,39 @@ func (h *Handlers) UserFriend(ctx *sa.RequestCtx) error {
 	return ctx.HTTPResponse(created.String())
 }
 
-func (h *Handlers) userFriend(ctx *sa.RequestCtx) (*domain.Friend, error) {
+type news struct {
+	Title    string
+	Content  string
+	PublicAt string
+}
 
-	var friend domain.Friend
-	err := json.Unmarshal(ctx.PostBody(), &friend)
+func (h *Handlers) createNews(ctx *sa.RequestCtx) (*domain.News, error) {
+
+	_, err := h.profile(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var n news
+	err = json.Unmarshal(ctx.PostBody(), &n)
 
 	if err != nil {
 		return nil, err
 	}
+	news := domain.News{Title: n.Title, Content: n.Content, PublicAt: n.PublicAt}
+	news.SetId(uuid.New())
+
 	if logger.DebugEnabled() {
-		logger.Debugf("got user id: %s", friend.UserId)
+		logger.Debugf("createNews: got news: %s", news.String())
 	}
-	u, err := h.Server.DAO.User.ReadUser(friend.UserId)
-
-	if err != nil {
-		return nil, err
-	}
-	if logger.DebugEnabled() {
-		logger.Debugf("got userFriend id: %s", friend.FriendId)
-	}
-	f, err := h.Server.DAO.User.ReadUser(friend.FriendId)
-	if err != nil {
-		return nil, err
+	err = h.Server.DAO.News.Create(&news)
+	if err == nil {
+		updateCache(news)
 	}
 
-	err = h.Server.DAO.UserHasFriends.LinkToFriend(u, f)
+	return &news, nil
+}
 
-	return &friend, nil
+func updateCache(n domain.News) {
+
 }
