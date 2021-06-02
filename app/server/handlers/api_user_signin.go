@@ -13,9 +13,9 @@ import (
 	"strings"
 )
 
-func (h *Handlers) SignIn(ctx *sa.RequestCtx) error {
+func (h *Handlers) UserSignIn(ctx *sa.RequestCtx) error {
 
-	token, err := h.signIn(ctx)
+	token, err := h.userSignIn(ctx)
 
 	if err != nil {
 		logger.Error(err)
@@ -29,7 +29,7 @@ func (h *Handlers) SignIn(ctx *sa.RequestCtx) error {
 	return ctx.HTTPResponse(token.String())
 }
 
-func (h *Handlers) signIn(ctx *sa.RequestCtx) (*domain.Token, error) {
+func (h *Handlers) userSignIn(ctx *sa.RequestCtx) (*domain.Token, error) {
 
 	var s domain.Signin
 	err := json.Unmarshal(ctx.PostBody(), &s)

@@ -7,7 +7,7 @@ metadata:
 spec:
   type: LoadBalancer
   externalIPs:
-    - 192.168.88.88
+    - 192.168.20.88
   externalTrafficPolicy: Cluster
   selector:
     statefulset.kubernetes.io/pod-name: mysql-0
@@ -15,5 +15,3 @@ spec:
     - protocol: TCP
       port: 3306
       targetPort: 3306
-  selector:
-    app: mysql

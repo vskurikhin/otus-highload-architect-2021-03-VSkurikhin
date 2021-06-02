@@ -9,9 +9,12 @@ import {connect} from "react-redux";
 
 class AppMenu extends Component {
 
-    disabledUser = mayBeDisabled => {
+    disabledUser = (mayBeDisabled, mayBeAdmin) => {
         const {currentUser} = this.props.user
-        if (mayBeDisabled) {
+        if (mayBeAdmin) {
+            return currentUser.Id === null
+                || currentUser.Id === undefined || currentUser.Username !== 'root'
+        } if (mayBeDisabled) {
             return currentUser.Id === null
                 || currentUser.Id === undefined
         }
@@ -29,12 +32,13 @@ class AppMenu extends Component {
             const name = this.props.items[i][0]
             const route = this.props.items[i][1]
             const mayBeDisabled = this.props.items[i][2]
+            const mayBeAdmin = this.props.items[i][3]
             menuItems.push(
                 <Menu.Item
                     key={"item-" + i}
-                    disabled={this.disabledUser(mayBeDisabled)}
+                    disabled={this.disabledUser(mayBeDisabled, mayBeAdmin)}
                     index={i}
-                    as={this.disabledUser(mayBeDisabled) ? null : Link}
+                    as={this.disabledUser(mayBeDisabled, mayBeAdmin) ? null : Link}
                     to={route}
                     header={i === 0}
                     active={route === this.props.location.pathname}

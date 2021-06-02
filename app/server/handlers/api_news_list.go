@@ -1,16 +1,18 @@
 package handlers
 
 import (
+	"fmt"
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/valyala/fasthttp"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/utils"
 	"strings"
 )
 
-func (h *Handlers) UserList(ctx *sa.RequestCtx) error {
+func (h *Handlers) NewsList(ctx *sa.RequestCtx) error {
 
-	list, err := h.userList(ctx)
+	list, err := h.newsList(ctx)
 
 	if err != nil {
 		logger.Error(err)
@@ -25,21 +27,30 @@ func (h *Handlers) UserList(ctx *sa.RequestCtx) error {
 	return ctx.HTTPResponse(result)
 }
 
-func (h *Handlers) userList(ctx *sa.RequestCtx) ([]string, error) {
+func (h *Handlers) newsList(ctx *sa.RequestCtx) ([]string, error) {
 
-	p, err := h.profile(ctx)
-
+	_, err := h.profile(ctx)
 	if err != nil {
 		return nil, err
 	}
-	users, err := h.Server.DAO.User.ReadUserList(p.Id)
 
+	offsetString := fmt.Sprintf("%v", ctx.UserValue("offset"))
+	offset, err := utils.ParseInt(offsetString)
+	if err != nil {
+		return nil, err
+	}
+	limitString := fmt.Sprintf("%v", ctx.UserValue("limit"))
+	limit, err := utils.ParseInt(limitString)
+	if err != nil {
+		return nil, err
+	}
+	newsList, err := h.Server.DAO.News.ReadNewsList(offset, limit)
 	if err != nil {
 		return nil, err
 	}
 	var result []string
 
-	for _, user := range users {
+	for _, user := range newsList {
 		result = append(result, user.String())
 	}
 	return result, nil
