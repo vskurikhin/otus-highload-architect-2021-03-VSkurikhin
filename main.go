@@ -171,6 +171,8 @@ func httpd() {
 	// Зарегистрировать индексный маршрут.
 	s.GET("/", h.Root)
 
+	s.WS("/ws-newslist", h.WsNewsList)
+
 	// Зарегистрировать login маршрут.
 	s.POST("/login", h.Login)
 

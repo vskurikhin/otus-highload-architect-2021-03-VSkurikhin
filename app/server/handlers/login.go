@@ -85,6 +85,9 @@ func (h *Handlers) login(ctx *sa.RequestCtx) (*domain.Login, error) {
 		return nil, err
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(login.Password()), []byte(dto.Password))
+	if err != nil {
+		return nil, err
+	}
 
 	return login, nil
 }

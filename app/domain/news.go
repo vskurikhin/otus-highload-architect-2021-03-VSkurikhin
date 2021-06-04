@@ -1,9 +1,11 @@
 package domain
 
 import (
+	"database/sql"
 	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/savsgio/go-logger/v2"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/cache"
 )
 
 type News struct {
@@ -19,6 +21,18 @@ func (l *News) Id() uuid.UUID {
 
 func (l *News) SetId(id uuid.UUID) {
 	l.id = id
+}
+
+func NewsConvert(d *News) *cache.News {
+	return &cache.News{Id: d.Id().String(), Title: d.Title, Content: d.Content, PublicAt: d.PublicAt}
+}
+
+func ConvertNews(d *cache.News) *News {
+	id, err := uuid.Parse(d.Id)
+	if err != nil {
+		id = uuid.New()
+	}
+	return &News{id: id, Title: d.Title, Content: d.Content, PublicAt: d.PublicAt}
 }
 
 func (n *News) Marshal() []byte {
@@ -55,16 +69,56 @@ func (l *news) Create(news *News) error {
 const SELECT_NEWS = `
     SELECT id, title, content, public_at 
       FROM news
-      ORDER BY public_at DESC
-      LIMIT ? OFFSET ?`
+      WHERE id = ?`
 
-func (u *news) ReadNewsList(offset, rowcount int) ([]News, error) {
+func (u *news) ReadNews(id uuid.UUID) (*News, error) {
 
+	i, err := id.MarshalBinary()
 	stmtOut, err := u.dbRo.Prepare(SELECT_NEWS)
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
 	defer func() { _ = stmtOut.Close() }()
+
+	var n News
+	err = stmtOut.QueryRow(i).
+		Scan(&n.id, &n.Title, &n.Content, &n.PublicAt)
+	if err != nil {
+		return nil, err
+	}
+
+	return &n, nil
+}
+
+const SELECT_NEWS_LIST = `
+    SELECT id, title, content, public_at 
+      FROM news
+      ORDER BY public_at DESC
+      LIMIT ? OFFSET ?`
+
+func (u *news) ReadNewsList(offset, rowcount int) ([]News, error) {
+
+	stmtOut, err := u.dbRo.Prepare(SELECT_NEWS_LIST)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }()
+
+	return readNewsList(stmtOut, offset, rowcount)
+}
+
+func (u *news) RefreshNewsList(offset, rowcount int) ([]News, error) {
+
+	stmtOut, err := u.dbRw.Prepare(SELECT_NEWS_LIST)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }()
+
+	return readNewsList(stmtOut, offset, rowcount)
+}
+
+func readNewsList(stmtOut *sql.Stmt, offset, rowcount int) ([]News, error) {
 
 	rows, err := stmtOut.Query(rowcount, offset)
 

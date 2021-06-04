@@ -1,11 +1,15 @@
 package server
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
+	"github.com/atreugo/websocket"
+	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/cache"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/security"
@@ -13,8 +17,12 @@ import (
 	"os"
 )
 
+var ctx = context.Background()
+
 // Server определяет параметры для запуска HTTP-сервера.
 type Server struct {
+	Client *redis.Client
+	Cache  *cache.Redis
 	DAO    *domain.DAO
 	JWT    *security.JWT
 	Server *sa.Atreugo
@@ -52,8 +60,31 @@ func New(cfg *config.Config) *Server {
 	dbRw := openDBRw(cfg)
 	go gracefulClose(dbRo, dbRw)
 	versionDB(dbRw)
+	rcdb, err := newRedisClient(cfg)
+	if err != nil {
+		panic(err.Error())
+	}
+	r := cache.NewRedis(cfg)
 
-	return &Server{DAO: domain.New(dbRo, dbRw), JWT: security.New(cfg), Server: sa.New(c)}
+	return &Server{Cache: r, Client: rcdb, DAO: domain.New(dbRo, dbRw), JWT: security.New(cfg), Server: sa.New(c)}
+}
+
+func newRedisClient(cfg *config.Config) (*redis.Client, error) {
+	addr := fmt.Sprintf("%s:%d", cfg.Cache.Host, cfg.Cache.Port)
+	logger.Debugf(addr)
+	client := redis.NewClient(&redis.Options{
+		Addr:       addr,
+		Username:   cfg.Cache.Username,
+		Password:   cfg.Cache.Password,
+		DB:         0,
+		MaxRetries: 2,
+	})
+
+	if _, err := client.Ping(ctx).Result(); err != nil {
+		client.Close()
+		return nil, err
+	}
+	return client, nil
 }
 
 func (s *Server) UseBefore(fns sa.Middleware) *sa.Router {
@@ -96,6 +127,15 @@ func (s *Server) PUT(url string, viewFn sa.View) *sa.Path {
 
 func (s *Server) DELETE(url string, viewFn sa.View) *sa.Path {
 	return s.Server.DELETE(url, viewFn)
+}
+
+var upgrader = websocket.New(websocket.Config{
+	AllowedOrigins: []string{"*"},
+})
+
+func (s *Server) WS(url string, viewFn websocket.View) *sa.Path {
+	var WsNewsList = upgrader.Upgrade(viewFn)
+	return s.Server.GET(url, WsNewsList)
 }
 
 // ListenAndServe запускает сервер для ответа на сетевые запросы HTTP.
