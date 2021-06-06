@@ -17,7 +17,7 @@ export default function AddNews() {
 
     const [title, setTitle] = useState("Title")
     const [content, setContent] = useState("Content")
-    const [publicAt, setPublicAt] = useState("2021-06-02 11:39:30")
+    const [publicAt, setPublicAt] = useState("2021-06-04 00:00:00")
     const history = useHistory()
 
     const handleSubmit = async e => {
