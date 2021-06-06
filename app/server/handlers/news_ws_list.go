@@ -8,6 +8,7 @@ import (
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/queue"
 	"strings"
+	"time"
 )
 
 type Method struct {
@@ -18,42 +19,70 @@ type Method struct {
 
 func (h *Handlers) WsNewsList(ws *websocket.Conn) error {
 	ws.SetCloseHandler(func(code int, text string) error {
-		delete(queue.MapBq, ws) // TODO need LOCK MapBq!!!
+		queue.WebSocketsMapBQueue.Delete(ws)
 		logger.Debugf("close: %d, %s", code, text)
 		return nil
 	})
+	ws.SetPongHandler(func(string) error {
+		err := ws.SetWriteDeadline(time.Now().Add(3 * time.Second))
+		if err != nil {
+			fmt.Println("error first setwrite deadline ", err)
+		}
+		return nil
+	})
 
-	queue.MapBq[ws] = queue.New()
-	go h.readBq(ws, queue.MapBq[ws])
+	queue.WebSocketsMapBQueue.Add(ws)
+	go h.readBq(ws, queue.WebSocketsMapBQueue.Get(ws))
 
 	for {
-		mt, message, err := ws.ReadMessage()
+		err := ws.SetReadDeadline(time.Now().Add(55 * time.Second))
 		if err != nil {
-			logger.Errorf("handlers.WsNewsList: %s", err)
+			logger.Errorf("handlers.WsNewsList SetReadDeadline: %s", err)
 			return err
 		}
-		logger.Debugf("handlers.WsNewsList: recv: %s", message)
-		var m Method
-		err = json.Unmarshal(message, &m)
-
-		if err == nil {
-			me := fmt.Sprintf("%v", m)
-			logger.Debugf("handlers.WsNewsList: me: %s", me)
-			list, _ := h.getNewsList(0, 99)
-			result := "[" + strings.Join(list, ", ") + "]"
-			err = ws.WriteMessage(mt, []byte(result))
+		mt, message, err := ws.ReadMessage()
+		if err != nil {
+			logger.Errorf("handlers.WsNewsList ReadMessage: %s", err)
+			return err
+		} else {
+			err = h.WsNewsListSwitchMethod(ws, mt, message)
 			if err != nil {
-				logger.Errorf("handlers.WsNewsList: %s", err)
+				logger.Errorf("handlers.WsNewsList WsNewsListSwitchMethod: %s", err)
 				return err
 			}
 		}
 	}
 }
 
+func (h *Handlers) WsNewsListSwitchMethod(ws *websocket.Conn, mt int, message []byte) error {
+	logger.Debugf("handlers.WsNewsList: recv: %s", message)
+	var m Method
+	err := json.Unmarshal(message, &m)
+	if err == nil {
+		switch m.Method {
+		case "fetch":
+			return h.WsNewsListFetch(ws, mt, m)
+		case "heartbeat":
+			return h.WsNewsListHeartbeat(ws, mt)
+		}
+	}
+	return err
+}
+
+func (h *Handlers) WsNewsListFetch(ws *websocket.Conn, mt int, m Method) error {
+	list, _ := h.getNewsList(m.Offset, m.Limit)
+	result := "[" + strings.Join(list, ", ") + "]"
+	return ws.WriteMessage(mt, []byte(result))
+}
+
+func (h *Handlers) WsNewsListHeartbeat(ws *websocket.Conn, mt int) error {
+	return ws.WriteMessage(mt, []byte(`{"Code": 200, "Message": "ok"}`))
+}
+
 func (h *Handlers) readBq(ws *websocket.Conn, blockingQueue *queue.BlockingQueue) {
 	e, ok := blockingQueue.Pop()
 	for ok {
-		if _, ok := queue.MapBq[ws]; !ok || h == nil { // TODO need LOCK MapBq!!!
+		if !queue.WebSocketsMapBQueue.Exists(ws) {
 			return
 		}
 		message := fmt.Sprintf("%v", e)
@@ -63,7 +92,7 @@ func (h *Handlers) readBq(ws *websocket.Conn, blockingQueue *queue.BlockingQueue
 				Code:    1,
 				Message: message,
 			}
-			if _, ok := queue.MapBq[ws]; ok && h != nil { // TODO need LOCK MapBq!!!
+			if queue.WebSocketsMapBQueue.Exists(ws) {
 				err := ws.WriteMessage(1, []byte(messageCase.String()))
 				if err != nil {
 					logger.Errorf("handlers.readBq: %s", err)

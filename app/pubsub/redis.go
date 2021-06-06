@@ -30,6 +30,6 @@ func (r *Redis) Subscribe(channel string) {
 	ch := pubsub.Channel()
 
 	for msg := range ch {
-		queue.PutToMapWsBq(msg.Payload)
+		queue.WebSocketsMapBQueue.PutToMapWsBq(msg.Payload)
 	}
 }

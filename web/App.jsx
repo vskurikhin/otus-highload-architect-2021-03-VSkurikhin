@@ -13,8 +13,6 @@ import UserSearch from "./components/UserSearch/UserSearch";
 
 import React, {useEffect, useRef, useState} from 'react'
 import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom'
-import ChatWindow from "./components/ChatWindow/ChatWindow";
-import ChatEntry from "./components/ChatEntry/ChatEntry";
 
 const App = () => {
     return (
@@ -25,9 +23,8 @@ const App = () => {
                     items={[
                         ["Login", "/login"],
                         ["Sign-in", "/signin"],
-                        ["Add news", "/addnews", true, true],
+                        ["Add news", "/addnews", true],
                         ["News list", "/newslist", true],
-                        // ["User list", "/userlist", true],
                         ["User search", "/usersearch", true],
                         ["Profile", "/myprofile", true]
                     ]}
@@ -45,9 +42,6 @@ const App = () => {
                     <Route path="/newslist">
                         <NewsList/>
                     </Route>
-                    {/*<Route path="/userlist">*/}
-                    {/*    <UserList/>*/}
-                    {/*</Route>*/}
                     <Route path="/usersearch">
                         <UserSearch/>
                     </Route>

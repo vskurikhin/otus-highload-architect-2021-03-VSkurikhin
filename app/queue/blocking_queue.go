@@ -42,7 +42,7 @@ func (bq *BlockingQueue) Put(value interface{}) bool {
 	return true
 }
 
-// Put положить значение в очередь или удалить, если очередь заполнена.
+// PutOrDrop положить значение в очередь или удалить, если очередь заполнена.
 // Возвращает false, если очередь закрыта или она заполнена
 func (bq *BlockingQueue) PutOrDrop(value interface{}, limit int) bool {
 	if bq.closed {
@@ -100,7 +100,7 @@ func (bq *BlockingQueue) Closed() bool {
 	return bq.closed
 }
 
-// Закрыть очередь и явно удалите каждый элемент из очереди.
+// Close закрыть очередь и явно удалите каждый элемент из очереди.
 // Также уведомляет всех читателей (они вернут nil и false).
 // Возвращает ошибку, если очередь уже закрыта.
 func (bq *BlockingQueue) Close() error {
