@@ -8,9 +8,17 @@ import (
 type (
 	// Config обеспечивает конфигурацию системы.
 	Config struct {
+		Cache    Cache
 		DataBase DataBase
 		Server   Server
 		Logging  Logging
+	}
+	// DataBase обеспечивает конфигурацию подключения к БД.
+	Cache struct {
+		Host     string `envconfig:"CACHE_HOST" default:"localhost"`
+		Port     int    `envconfig:"CACHE_PORT" default:"6379"`
+		Username string `envconfig:"CACHE_USERNAME" default:"hl"`
+		Password string `envconfig:"CACHE_PASSWORD" default:"password"`
 	}
 	// DataBase обеспечивает конфигурацию подключения к БД.
 	DataBase struct {

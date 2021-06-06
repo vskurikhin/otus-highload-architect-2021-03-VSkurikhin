@@ -7,8 +7,11 @@ import (
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/valyala/fasthttp"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/cache"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
 )
+
+const layout = "1970-01-01T00:00:00.000Z"
 
 func (h *Handlers) CreateNews(ctx *sa.RequestCtx) error {
 
@@ -30,12 +33,6 @@ func (h *Handlers) CreateNews(ctx *sa.RequestCtx) error {
 	return ctx.HTTPResponse(created.String())
 }
 
-type news struct {
-	Title    string
-	Content  string
-	PublicAt string
-}
-
 func (h *Handlers) createNews(ctx *sa.RequestCtx) (*domain.News, error) {
 
 	_, err := h.profile(ctx)
@@ -43,26 +40,23 @@ func (h *Handlers) createNews(ctx *sa.RequestCtx) (*domain.News, error) {
 		return nil, err
 	}
 
-	var n news
+	var n cache.News
 	err = json.Unmarshal(ctx.PostBody(), &n)
 
 	if err != nil {
 		return nil, err
 	}
-	news := domain.News{Title: n.Title, Content: n.Content, PublicAt: n.PublicAt}
+	news := domain.ConvertNews(&n)
 	news.SetId(uuid.New())
+	n.Id = news.Id().String()
 
 	if logger.DebugEnabled() {
 		logger.Debugf("createNews: got news: %s", news.String())
 	}
-	err = h.Server.DAO.News.Create(&news)
+	err = h.Server.DAO.News.Create(news)
 	if err == nil {
-		updateCache(news)
+		h.Server.Cache.PutNews(&n)
 	}
-
-	return &news, nil
-}
-
-func updateCache(n domain.News) {
-
+	h.Server.PubSub.Publish("/ws-newslist", "push")
+	return news, nil
 }

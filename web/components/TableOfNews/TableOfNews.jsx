@@ -1,31 +1,43 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import {Table} from 'semantic-ui-react'
 import {useHistory} from "react-router-dom"
+
+const FETCH = {Method: "fetch", Offset: 0, Limit: 99}
 
 export default function TableOfNews() {
 
     const [error, setError] = useState(null)
     const [isLoaded, setIsLoaded] = useState(false)
     const [items, setItems] = useState([])
+    const [newMessage] = useState(FETCH);
+
     const history = useHistory()
+    const socket = useRef(null)
+
+    useEffect(() => {
+        socket.current = new WebSocket("ws://localhost:8080/ws-newslist");
+        socket.current.onopen = () => {
+            console.debug("ws opened")
+            socket.current.send(JSON.stringify(newMessage))
+        }
+        socket.current.onclose = () => console.debug("ws closed")
+        socket.current.onmessage = (msg) => {
+            getResult(JSON.parse(msg.data))
+        }
+        return () => {
+            socket.current.close();
+        };
+    }, []);
 
     const getResult = result => {
         setIsLoaded(true)
         if (result.Code > 399 && result.Message) {
             history.push('/error/' + result.Message)
+        } else if (result.Code === 1 && result.Message === "push") {
+            socket.current.send(JSON.stringify(newMessage))
+        } else {
+            setItems(result)
         }
-        setItems(result)
-    }
-
-    const getError = error => {
-        setIsLoaded(true)
-        setError(error)
-    }
-
-    const getItems = () => {
-        fetch("/news/range/0/99")
-            .then(res => res.json())
-            .then(getResult, getError)
     }
 
     const handleClick = e => {
@@ -36,8 +48,6 @@ export default function TableOfNews() {
             history.push('/userform/' + parentElement.id)
         }
     }
-
-    useEffect(getItems, [])
 
     if (error) {
         return <div>Ошибка: {error.message}</div>
@@ -55,11 +65,11 @@ export default function TableOfNews() {
             </Table.Header>
 
             <Table.Body>
-                {items.map(({id, Title, Content, PublicAt}) => (
-                    <Table.Row key={id} id={id}>
-                        <Table.Cell onClick={handleClick}>{Title}</Table.Cell>
-                        <Table.Cell onClick={handleClick}>{Content}</Table.Cell>
-                        <Table.Cell onClick={handleClick}>{PublicAt}</Table.Cell>
+                {items.map(({Id, Title, Content, PublicAt}) => (
+                    <Table.Row key={Id} id={Id}>
+                        <Table.Cell key={Id + ".Title"} onClick={handleClick}>{Title}</Table.Cell>
+                        <Table.Cell key={Id + ".Content"} onClick={handleClick}>{Content}</Table.Cell>
+                        <Table.Cell key={Id + ".PublicAt"} onClick={handleClick}>{PublicAt}</Table.Cell>
                     </Table.Row>
                 ))}
             </Table.Body>
