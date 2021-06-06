@@ -1,5 +1,6 @@
 module github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin
 
+// +heroku goVersion go1.12
 go 1.12
 
 require (
