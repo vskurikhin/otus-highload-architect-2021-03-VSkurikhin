@@ -1,6 +1,6 @@
 module github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin
 
-go 1.11
+go 1.12.17
 
 require (
 	github.com/ClickHouse/clickhouse-go v1.4.3 // indirect
