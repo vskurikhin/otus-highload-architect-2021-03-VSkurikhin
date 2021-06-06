@@ -15,7 +15,16 @@ export default function TableOfNews() {
     const socket = useRef(null)
 
     useEffect(() => {
-        socket.current = new WebSocket("ws://localhost:8080/ws-newslist");
+        var loc = window.location, new_uri;
+        if (loc.protocol === "https:") {
+            new_uri = "wss:";
+        } else {
+            new_uri = "ws:";
+        }
+        new_uri += "//" + loc.host;
+        new_uri += "/ws-newslist";
+        socket.current = new WebSocket(new_uri);
+        console.debug(`WebSocket(${new_uri})`)
         socket.current.onopen = () => {
             console.debug("ws opened")
             socket.current.send(JSON.stringify(newMessage))
