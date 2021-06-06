@@ -35,13 +35,14 @@ func (h *Handlers) CreateNews(ctx *sa.RequestCtx) error {
 
 func (h *Handlers) createNews(ctx *sa.RequestCtx) (*domain.News, error) {
 
-	_, err := h.profile(ctx)
+	p, err := h.profile(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	var n cache.News
 	err = json.Unmarshal(ctx.PostBody(), &n)
+	n.Username = p.Username
 
 	if err != nil {
 		return nil, err
