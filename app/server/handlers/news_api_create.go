@@ -57,5 +57,6 @@ func (h *Handlers) createNews(ctx *sa.RequestCtx) (*domain.News, error) {
 	if err == nil {
 		h.Server.Cache.PutNews(&n)
 	}
+	h.Server.PubSub.Publish("/ws-newslist", "push")
 	return news, nil
 }

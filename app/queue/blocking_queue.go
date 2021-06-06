@@ -6,7 +6,8 @@ import (
 	"sync"
 )
 
-// BlockingQueue is a FIFO queue where Pop() operation is blocking if no items exists
+// BlockingQueue это очередь FIFO, в которой операция Pop() блокируется,
+// если элементов не существует
 type BlockingQueue struct {
 	closed bool
 	lock   sync.Mutex
@@ -16,14 +17,14 @@ type BlockingQueue struct {
 	monitor    *sync.Cond
 }
 
-// New instance of FIFO queue
+// New создать экземпляр очереди FIFO
 func New() *BlockingQueue {
 	bq := &BlockingQueue{queue: list.New()}
 	bq.monitor = sync.NewCond(&bq.notifyLock)
 	return bq
 }
 
-// Put any value to queue back. Returns false if queue closed
+// Put положить любое значение в очередь. Возвращает false, если очередь закрыта
 func (bq *BlockingQueue) Put(value interface{}) bool {
 	if bq.closed {
 		return false
@@ -41,8 +42,8 @@ func (bq *BlockingQueue) Put(value interface{}) bool {
 	return true
 }
 
-// Put value to queue back or drop if queue full.
-// Returns false if queue closed or queue is full
+// Put положить значение в очередь или удалить, если очередь заполнена.
+// Возвращает false, если очередь закрыта или она заполнена
 func (bq *BlockingQueue) PutOrDrop(value interface{}, limit int) bool {
 	if bq.closed {
 		return false
@@ -63,7 +64,8 @@ func (bq *BlockingQueue) PutOrDrop(value interface{}, limit int) bool {
 	return ok
 }
 
-// Pop front value from queue. Returns nil and false if queue closed
+// Pop вытащить переднее значение из очереди.
+// Возвращает nil и false, если очередь закрыта
 func (bq *BlockingQueue) Pop() (interface{}, bool) {
 	if bq.closed {
 		return nil, false
@@ -84,7 +86,7 @@ func (bq *BlockingQueue) Pop() (interface{}, bool) {
 	return nil, false
 }
 
-// Size of queue. Performance is O(1)
+// Size размер очереди. Производительность O(1)
 func (bq *BlockingQueue) Size() int {
 	bq.lock.Lock()
 	defer bq.lock.Unlock()
@@ -98,9 +100,9 @@ func (bq *BlockingQueue) Closed() bool {
 	return bq.closed
 }
 
-// Close queue and explicitly remove each item from queue.
-// Also notifies all reader (they will return nil and false)
-// Returns error if queue already closed
+// Закрыть очередь и явно удалите каждый элемент из очереди.
+// Также уведомляет всех читателей (они вернут nil и false).
+// Возвращает ошибку, если очередь уже закрыта.
 func (bq *BlockingQueue) Close() error {
 	if bq.closed {
 		return errors.New("Already closed")
