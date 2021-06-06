@@ -14,8 +14,10 @@ type (
 	}
 	// DataBase обеспечивает конфигурацию подключения к БД.
 	DataBase struct {
-		Host     string `envconfig:"DB_HOST" default:"localhost"`
-		Port     int    `envconfig:"DB_PORT" default:"3306"`
+		HostRw   string `envconfig:"DB_HOST_RW" default:"localhost"`
+		PortRw   int    `envconfig:"DB_PORT_RW" default:"3306"`
+		HostRo   string `envconfig:"DB_HOST_RO" default:"localhost"`
+		PortRo   int    `envconfig:"DB_PORT_RO" default:"3306"`
 		DBName   string `envconfig:"DB_NAME" default:"hl"`
 		Username string `envconfig:"DB_USERNAME" default:"hl"`
 		Password string `envconfig:"DB_PASSWORD" default:"password"`

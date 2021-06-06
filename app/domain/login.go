@@ -44,7 +44,7 @@ func (l *Login) Marshal() []byte {
 
 func (l *login) Create(login *Login) error {
 	// Подготовить оператор для вставки данных
-	stmtIns, err := l.db.Prepare("INSERT INTO login (id, username, password) VALUES (?, ?, ?)") // ? = заполнитель
+	stmtIns, err := l.dbRw.Prepare("INSERT INTO login (id, username, password) VALUES (?, ?, ?)") // ? = заполнитель
 
 	if err != nil {
 		return err // правильная обработка ошибок вместо паники
@@ -61,7 +61,7 @@ func (l *login) Create(login *Login) error {
 
 func (l *login) Read(username string) (*Login, error) {
 
-	stmtOut, err := l.db.Prepare(`SELECT id, username, password FROM login WHERE username = ?`)
+	stmtOut, err := l.dbRw.Prepare(`SELECT id, username, password FROM login WHERE username = ?`)
 
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники

@@ -8,9 +8,9 @@ import (
 	"strings"
 )
 
-func (h *Handlers) List(ctx *sa.RequestCtx) error {
+func (h *Handlers) UserList(ctx *sa.RequestCtx) error {
 
-	list, err := h.list(ctx)
+	list, err := h.userList(ctx)
 
 	if err != nil {
 		logger.Error(err)
@@ -25,7 +25,7 @@ func (h *Handlers) List(ctx *sa.RequestCtx) error {
 	return ctx.HTTPResponse(result)
 }
 
-func (h *Handlers) list(ctx *sa.RequestCtx) ([]string, error) {
+func (h *Handlers) userList(ctx *sa.RequestCtx) ([]string, error) {
 
 	p, err := h.profile(ctx)
 

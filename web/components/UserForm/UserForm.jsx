@@ -16,7 +16,6 @@ async function friend(credentials) {
 
 const UserForm = props => {
 
-    // const [currentUser, setCurrentUser] = useState()
     const [error, setError] = useState(null)
     const [isLoaded, setIsLoaded] = useState(false)
     const [item, setItem] = useState({Friend: false})
@@ -29,7 +28,7 @@ const UserForm = props => {
             UserId: props.user.currentUser.Id,
             FriendId: match.params.id
         })
-        history.push('/userlist')
+        history.push('/usersearch')
     }
 
     const addFriend = props => {

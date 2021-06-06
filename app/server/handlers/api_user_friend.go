@@ -9,9 +9,9 @@ import (
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
 )
 
-func (h *Handlers) Friend(ctx *sa.RequestCtx) error {
+func (h *Handlers) UserFriend(ctx *sa.RequestCtx) error {
 
-	friend, err := h.friend(ctx)
+	friend, err := h.userFriend(ctx)
 
 	if err != nil {
 		logger.Error(err)
@@ -21,7 +21,7 @@ func (h *Handlers) Friend(ctx *sa.RequestCtx) error {
 		}
 		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
 	}
-	msg := fmt.Sprintf("linked user id: %s and friend id: %s", friend.UserId, friend.FriendId)
+	msg := fmt.Sprintf("linked user id: %s and userFriend id: %s", friend.UserId, friend.FriendId)
 	created := domain.ApiMessage{
 		Code:    fasthttp.StatusCreated,
 		Message: msg,
@@ -29,7 +29,7 @@ func (h *Handlers) Friend(ctx *sa.RequestCtx) error {
 	return ctx.HTTPResponse(created.String())
 }
 
-func (h *Handlers) friend(ctx *sa.RequestCtx) (*domain.Friend, error) {
+func (h *Handlers) userFriend(ctx *sa.RequestCtx) (*domain.Friend, error) {
 
 	var friend domain.Friend
 	err := json.Unmarshal(ctx.PostBody(), &friend)
@@ -46,7 +46,7 @@ func (h *Handlers) friend(ctx *sa.RequestCtx) (*domain.Friend, error) {
 		return nil, err
 	}
 	if logger.DebugEnabled() {
-		logger.Debugf("got friend id: %s", friend.FriendId)
+		logger.Debugf("got userFriend id: %s", friend.FriendId)
 	}
 	f, err := h.Server.DAO.User.ReadUser(friend.FriendId)
 	if err != nil {

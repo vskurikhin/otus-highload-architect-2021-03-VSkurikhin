@@ -17,7 +17,7 @@ export default function Modal(props) {
     return (
         <div id="openModal" className="modalDialog">
             <div>
-                <a href="#close" title="Close" className="close" onClick={handleClose}>>X</a>
+                <a href="#close" title="Close" className="close" onClick={handleClose}>x</a>
                 <h2>Error</h2>
                 <p>{params.msg}</p>
             </div>

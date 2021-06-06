@@ -8,38 +8,50 @@ type (
 	DAO struct {
 		Interest         *interest
 		Login            *login
+		News             *news
 		Session          *session
 		User             *user
 		UserHasFriends   *userHasFriends
 		UserHasInterests *userHasInterests
 	}
 	interest struct {
-		db *sql.DB
+		dbRo *sql.DB
+		dbRw *sql.DB
 	}
 	login struct {
-		db *sql.DB
+		dbRo *sql.DB
+		dbRw *sql.DB
+	}
+	news struct {
+		dbRo *sql.DB
+		dbRw *sql.DB
 	}
 	session struct {
-		db *sql.DB
+		dbRo *sql.DB
+		dbRw *sql.DB
 	}
 	user struct {
-		db *sql.DB
+		dbRo *sql.DB
+		dbRw *sql.DB
 	}
 	userHasFriends struct {
-		db *sql.DB
+		dbRo *sql.DB
+		dbRw *sql.DB
 	}
 	userHasInterests struct {
-		db *sql.DB
+		dbRo *sql.DB
+		dbRw *sql.DB
 	}
 )
 
-func New(db *sql.DB) *DAO {
+func New(dbRo *sql.DB, dbRw *sql.DB) *DAO {
 	return &DAO{
-		Interest:         &interest{db: db},
-		Login:            &login{db: db},
-		Session:          &session{db: db},
-		User:             &user{db: db},
-		UserHasFriends:   &userHasFriends{db: db},
-		UserHasInterests: &userHasInterests{db: db},
+		Interest:         &interest{dbRo: dbRo, dbRw: dbRw},
+		Login:            &login{dbRo: dbRo, dbRw: dbRw},
+		News:             &news{dbRo: dbRo, dbRw: dbRw},
+		Session:          &session{dbRo: dbRo, dbRw: dbRw},
+		User:             &user{dbRo: dbRo, dbRw: dbRw},
+		UserHasFriends:   &userHasFriends{dbRo: dbRo, dbRw: dbRw},
+		UserHasInterests: &userHasInterests{dbRo: dbRo, dbRw: dbRw},
 	}
 }

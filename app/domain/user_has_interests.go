@@ -8,7 +8,7 @@ import (
 
 func (u *userHasInterests) Link(user *User, interest *Interest) error {
 	// Подготовить оператор для вставки данных
-	stmtIns, err := u.db.Prepare(`INSERT INTO user_has_interests (id, user_id, interest_id) VALUES (?, ?, ?)`)
+	stmtIns, err := u.dbRw.Prepare(`INSERT INTO user_has_interests (id, user_id, interest_id) VALUES (?, ?, ?)`)
 	if err != nil {
 		return err // правильная обработка ошибок вместо паники
 	}
@@ -57,7 +57,7 @@ func (u *userHasInterests) LinkedInterestMap(userId uuid.UUID, is *InterestMap) 
 		return nil, err // правильная обработка ошибок вместо паники
 	}
 
-	stmtOut1, err := u.db.Prepare(SELECT_ALL_INTERESTS_CONTAINS_IN_SET)
+	stmtOut1, err := u.dbRo.Prepare(SELECT_ALL_INTERESTS_CONTAINS_IN_SET)
 
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
@@ -81,7 +81,7 @@ func (u *userHasInterests) LinkedInterestMap(userId uuid.UUID, is *InterestMap) 
 		}
 		delete(is.SavedMap, i)
 	}
-	stmtOut2, err := u.db.Prepare(DELETE_ALL_INTERESTS_CONTAINS_NOT_IN_SET)
+	stmtOut2, err := u.dbRw.Prepare(DELETE_ALL_INTERESTS_CONTAINS_NOT_IN_SET)
 
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
