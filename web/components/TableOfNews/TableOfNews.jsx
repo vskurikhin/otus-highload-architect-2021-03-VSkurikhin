@@ -2,23 +2,42 @@ import React, {useEffect, useRef, useState} from 'react'
 import {Table} from 'semantic-ui-react'
 import {useHistory} from "react-router-dom"
 
-const FETCH = {Method: "fetch", Offset: 0, Limit: 99}
+const HEARTBEAT_TIMEOUT = 5000 // 5s
+const HEARTBEAT = {Method: "heartbeat"}
+const FETCH = {Method: "fetch", Offset: 0, Limit: 1000}
 
 export default function TableOfNews() {
 
     const [error, setError] = useState(null)
     const [isLoaded, setIsLoaded] = useState(false)
     const [items, setItems] = useState([])
-    const [newMessage] = useState(FETCH);
+    const [newMessage] = useState(FETCH)
 
     const history = useHistory()
     const socket = useRef(null)
 
+    function heartbeat() {
+        if (!socket.current) return
+        if (socket.current.readyState !== 1) return
+        socket.current.send(JSON.stringify(HEARTBEAT))
+        setTimeout(heartbeat, HEARTBEAT_TIMEOUT)
+    }
+
     useEffect(() => {
-        socket.current = new WebSocket("ws://localhost:8080/ws-newslist");
+        var loc = window.location, new_uri
+        if (loc.protocol === "https:") {
+            new_uri = "wss:"
+        } else {
+            new_uri = "ws:"
+        }
+        new_uri += "//" + loc.host
+        new_uri += "/ws-newslist"
+        socket.current = new WebSocket(new_uri)
+        console.debug(`WebSocket(${new_uri})`)
         socket.current.onopen = () => {
             console.debug("ws opened")
             socket.current.send(JSON.stringify(newMessage))
+            heartbeat()
         }
         socket.current.onclose = () => console.debug("ws closed")
         socket.current.onmessage = (msg) => {
@@ -27,7 +46,7 @@ export default function TableOfNews() {
         return () => {
             socket.current.close();
         };
-    }, []);
+    }, [])
 
     const getResult = result => {
         setIsLoaded(true)
@@ -35,6 +54,8 @@ export default function TableOfNews() {
             history.push('/error/' + result.Message)
         } else if (result.Code === 1 && result.Message === "push") {
             socket.current.send(JSON.stringify(newMessage))
+        } else if (result.Code === 200 && result.Message === "ok") {
+            console.debug(`heartbeat ok: ${result}`)
         } else {
             setItems(result)
         }

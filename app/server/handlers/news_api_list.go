@@ -52,7 +52,7 @@ func (h *Handlers) getNewsList(offset, limit int) ([]string, error) {
 		logger.Errorf("SCard error %v", intCmd.Err())
 	}
 	if intCmd.Val() < 1 {
-		logger.Debugf("read from db")
+		logger.Infof("read news from db")
 		newsList, err := h.Server.DAO.News.ReadNewsList(offset, limit)
 		if err != nil {
 			return nil, err
@@ -64,7 +64,7 @@ func (h *Handlers) getNewsList(offset, limit int) ([]string, error) {
 			h.Server.Cache.PutNews(n)
 		}
 	} else {
-		logger.Debugf("read from cache")
+		logger.Infof("read news from cache")
 		keys := h.Server.Cache.SortNewsKeys(int64(offset), int64(limit))
 		logger.Debugf("read from cache keys: %s", keys)
 		for _, key := range keys {
