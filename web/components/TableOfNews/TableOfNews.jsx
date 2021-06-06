@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react'
 import {Table} from 'semantic-ui-react'
 import {useHistory} from "react-router-dom"
 
-const HEARTBEAT_TIMEOUT = 5000 // 5s
+const HEARTBEAT_TIMEOUT = 7000 // 7s
 const HEARTBEAT = {Method: "heartbeat"}
 const FETCH = {Method: "fetch", Offset: 0, Limit: 1000}
 
@@ -80,17 +80,19 @@ export default function TableOfNews() {
             <Table.Header>
                 <Table.Row>
                     <Table.HeaderCell>Title</Table.HeaderCell>
-                    <Table.HeaderCell>Content</Table.HeaderCell>
+                    <Table.HeaderCell>Username</Table.HeaderCell>
                     <Table.HeaderCell>Public At</Table.HeaderCell>
+                    <Table.HeaderCell>Content</Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
 
             <Table.Body>
-                {items.map(({Id, Title, Content, PublicAt}) => (
+                {items.map(({Id, Title, Content, PublicAt, Username}) => (
                     <Table.Row key={Id} id={Id}>
                         <Table.Cell key={Id + ".Title"} onClick={handleClick}>{Title}</Table.Cell>
-                        <Table.Cell key={Id + ".Content"} onClick={handleClick}>{Content}</Table.Cell>
+                        <Table.Cell key={Id + ".Username"} onClick={handleClick}>{Username}</Table.Cell>
                         <Table.Cell key={Id + ".PublicAt"} onClick={handleClick}>{PublicAt}</Table.Cell>
+                        <Table.Cell key={Id + ".Content"} onClick={handleClick}>{Content}</Table.Cell>
                     </Table.Row>
                 ))}
             </Table.Body>

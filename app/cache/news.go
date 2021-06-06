@@ -10,6 +10,7 @@ type News struct {
 	Title    string
 	Content  string
 	PublicAt string
+	Username string
 }
 
 func (n *News) Marshal() []byte {
