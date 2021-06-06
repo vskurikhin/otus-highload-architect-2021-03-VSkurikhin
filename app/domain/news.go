@@ -13,6 +13,7 @@ type News struct {
 	Title    string
 	Content  string
 	PublicAt string
+	Username string
 }
 
 func (l *News) Id() uuid.UUID {
@@ -24,15 +25,15 @@ func (l *News) SetId(id uuid.UUID) {
 }
 
 func NewsConvert(d *News) *cache.News {
-	return &cache.News{Id: d.Id().String(), Title: d.Title, Content: d.Content, PublicAt: d.PublicAt}
+	return &cache.News{Id: d.Id().String(), Title: d.Title, Content: d.Content, PublicAt: d.PublicAt, Username: d.Username}
 }
 
-func ConvertNews(d *cache.News) *News {
-	id, err := uuid.Parse(d.Id)
+func ConvertNews(c *cache.News) *News {
+	id, err := uuid.Parse(c.Id)
 	if err != nil {
 		id = uuid.New()
 	}
-	return &News{id: id, Title: d.Title, Content: d.Content, PublicAt: d.PublicAt}
+	return &News{id: id, Title: c.Title, Content: c.Content, PublicAt: c.PublicAt, Username: c.Username}
 }
 
 func (n *News) Marshal() []byte {
@@ -51,14 +52,14 @@ func (n *News) String() string {
 
 func (l *news) Create(news *News) error {
 	// Подготовить оператор для вставки данных
-	stmtIns, err := l.dbRw.Prepare("INSERT INTO news (id, title, content, public_at) VALUES (?, ?, ?, ?)")
+	stmtIns, err := l.dbRw.Prepare("INSERT INTO news (id, title, content, public_at, username) VALUES (?, ?, ?, ?, ?)")
 	if err != nil {
 		return err // правильная обработка ошибок вместо паники
 	}
 	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
 
 	id, err := news.Id().MarshalBinary()
-	_, err = stmtIns.Exec(id, news.Title, news.Content, news.PublicAt)
+	_, err = stmtIns.Exec(id, news.Title, news.Content, news.PublicAt, news.Username)
 	if err != nil {
 		return err
 	}
@@ -67,7 +68,7 @@ func (l *news) Create(news *News) error {
 }
 
 const SELECT_NEWS = `
-    SELECT id, title, content, public_at 
+    SELECT id, title, content, public_at, username
       FROM news
       WHERE id = ?`
 
@@ -91,7 +92,7 @@ func (u *news) ReadNews(id uuid.UUID) (*News, error) {
 }
 
 const SELECT_NEWS_LIST = `
-    SELECT id, title, content, public_at 
+    SELECT id, title, content, public_at, username
       FROM news
       ORDER BY public_at DESC
       LIMIT ? OFFSET ?`
@@ -131,7 +132,7 @@ func readNewsList(stmtOut *sql.Stmt, offset, rowcount int) ([]News, error) {
 	for rows.Next() {
 
 		var n News
-		err = rows.Scan(&n.id, &n.Title, &n.Content, &n.PublicAt)
+		err = rows.Scan(&n.id, &n.Title, &n.Content, &n.PublicAt, &n.Username)
 		if err != nil {
 			return nil, err
 		}
