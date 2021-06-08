@@ -7,17 +7,22 @@ import (
 )
 
 type Login struct {
-	id       uuid.UUID
+	id       *uuid.UUID
 	Username string
 	password string
 }
 
-func (l *Login) Id() uuid.UUID {
+func (l *Login) Id() *uuid.UUID {
 	return l.id
 }
 
-func (l *Login) SetId(id uuid.UUID) {
+func (l *Login) SetId(id *uuid.UUID) {
 	l.id = id
+}
+
+func (l *Login) NewId() {
+	id := uuid.New()
+	l.id = &id
 }
 
 func (l *Login) Password() string {

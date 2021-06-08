@@ -3,15 +3,17 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/valyala/fasthttp"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/cache"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/pubsub"
+	"strings"
+	"time"
 )
 
-const layout = "1970-01-01T00:00:00.000Z"
+const layout = "1970-12-30 00:00:00"
 
 func (h *Handlers) CreateNews(ctx *sa.RequestCtx) error {
 
@@ -48,16 +50,25 @@ func (h *Handlers) createNews(ctx *sa.RequestCtx) (*domain.News, error) {
 		return nil, err
 	}
 	news := domain.ConvertNews(&n)
-	news.SetId(uuid.New())
+	news.NewId()
 	n.Id = news.Id().String()
 
 	if logger.DebugEnabled() {
 		logger.Debugf("createNews: got news: %s", news.String())
 	}
 	err = h.Server.DAO.News.Create(news)
-	if err == nil {
-		h.Server.Cache.PutNews(&n)
+	if err != nil {
+		return nil, err
 	}
-	h.Server.PubSub.Publish("/ws-newslist", "push")
+	rfc3339t := strings.Replace(news.PublicAt, " ", "T", 1) + "Z"
+	t, err := time.Parse(time.RFC3339, rfc3339t)
+	if err != nil {
+		return nil, err
+	}
+	key := cache.CreateNewsKey(&t, news.Id())
+	message := pubsub.CreateMessage(1, key.Key)
+	channel := pubsub.CreateChannel("news", p)
+	h.Server.Cache.PutNews(p.Cache(), key, &n)
+	h.Server.PubSub.Publish(channel.Name, message)
 	return news, nil
 }

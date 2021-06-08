@@ -15,12 +15,12 @@ type News struct {
 
 func (n *News) Marshal() []byte {
 
-	login, err := json.Marshal(*n)
+	bytes, err := json.Marshal(*n)
 	if err != nil {
 		logger.Error(err)
 		return nil
 	}
-	return login
+	return bytes
 }
 
 func (n *News) String() string {

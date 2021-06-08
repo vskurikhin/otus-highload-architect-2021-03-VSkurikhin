@@ -8,15 +8,15 @@ import (
 )
 
 type Session struct {
-	id        uuid.UUID
-	SessionId uuid.UUID
+	id        *uuid.UUID
+	SessionId *uuid.UUID
 }
 
-func (s *Session) Id() uuid.UUID {
+func (s *Session) Id() *uuid.UUID {
 	return s.id
 }
 
-func (s *Session) SetId(id uuid.UUID) {
+func (s *Session) SetId(id *uuid.UUID) {
 	s.id = id
 }
 
@@ -197,7 +197,7 @@ func (s *session) ProfileBySessionId(sessionId uuid.UUID) (*Profile, error) {
 		return nil, err
 	}
 
-	profile := Profile{Id: loginId, Username: username}
+	profile := Profile{Id: &loginId, Username: username}
 
 	return &profile, nil
 }

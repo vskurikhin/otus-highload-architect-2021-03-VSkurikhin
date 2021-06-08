@@ -31,7 +31,7 @@ func (h *Handlers) UserSave(ctx *sa.RequestCtx) error {
 }
 
 type User struct {
-	Id        uuid.UUID
+	Id        *uuid.UUID
 	Username  string
 	Name      *string
 	SurName   *string

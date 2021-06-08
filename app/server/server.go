@@ -57,7 +57,7 @@ func New(cfg *config.Config) *Server {
 	dbRw := openDBRw(cfg)
 	go gracefulClose(dbRo, dbRw)
 	versionDB(dbRw)
-	redis := cache.NewRedis(cfg)
+	redis := cache.CreateRedisCacheClient(cfg)
 
 	return &Server{
 		Cache:  redis,
