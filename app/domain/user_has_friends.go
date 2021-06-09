@@ -46,7 +46,7 @@ func (u *userHasFriends) LinkToFriend(user *User, friend *User) error {
 	return nil
 }
 
-func (u *userHasFriends) IsFriendship(userId uuid.UUID, friendId uuid.UUID) (bool, error) {
+func (u *userHasFriends) IsFriendship(userId *uuid.UUID, friendId *uuid.UUID) (bool, error) {
 
 	uId, err := userId.MarshalBinary()
 

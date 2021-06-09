@@ -50,7 +50,7 @@ const DELETE_ALL_INTERESTS_CONTAINS_NOT_IN_SET = `
              FROM interest i
             WHERE JSON_CONTAINS(?, JSON_ARRAY(i.interests)))`
 
-func (u *userHasInterests) LinkedInterestMap(userId uuid.UUID, is *InterestMap) (*InterestMap, error) {
+func (u *userHasInterests) LinkedInterestMap(userId *uuid.UUID, is *InterestMap) (*InterestMap, error) {
 
 	id, err := userId.MarshalBinary()
 	if err != nil {

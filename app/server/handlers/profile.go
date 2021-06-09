@@ -42,12 +42,15 @@ func (h *Handlers) profile(ctx *sa.RequestCtx) (*domain.Profile, error) {
 		return nil, errors.New(" session id is empty ")
 	}
 	sessionId, err := uuid.Parse(*psid)
-
 	if err != nil {
 		return nil, err
 	}
-	profile, err := h.Server.DAO.Session.ProfileBySessionId(sessionId)
+	return h.GetProfile(sessionId)
+}
 
+func (h *Handlers) GetProfile(sessionId uuid.UUID) (*domain.Profile, error) {
+
+	profile, err := h.Server.DAO.Session.ProfileBySessionId(sessionId)
 	if err != nil {
 		return nil, err
 	}

@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react'
 import {Table} from 'semantic-ui-react'
 import {useHistory} from "react-router-dom"
 
-const HEARTBEAT_TIMEOUT = 7000 // 7s
+const HEARTBEAT_TIMEOUT = 31000 // 31s
 const HEARTBEAT = {Method: "heartbeat"}
 const FETCH = {Method: "fetch", Offset: 0, Limit: 1000}
 

@@ -11,7 +11,7 @@ import (
 )
 
 type User struct {
-	id        uuid.UUID
+	id        *uuid.UUID
 	Username  string
 	Name      *string
 	SurName   *string
@@ -23,7 +23,7 @@ type User struct {
 }
 
 func Create(
-	id uuid.UUID,
+	id *uuid.UUID,
 	username string,
 	name *string,
 	surname *string,
@@ -46,12 +46,17 @@ func Create(
 	}
 }
 
-func (u *User) Id() uuid.UUID {
+func (u *User) Id() *uuid.UUID {
 	return u.id
 }
 
-func (u *User) SetId(id uuid.UUID) {
+func (u *User) SetId(id *uuid.UUID) {
 	u.id = id
+}
+
+func (u *User) NewId() {
+	id := uuid.New()
+	u.id = &id
 }
 
 func (u *User) StringInterests() string {
@@ -68,7 +73,7 @@ func (u *User) String() string {
 func (u *User) Marshal() []byte {
 
 	user, err := json.Marshal(struct {
-		Id        uuid.UUID
+		Id        *uuid.UUID
 		Username  string
 		Name      *string
 		SurName   *string
@@ -176,7 +181,7 @@ const SELECT_USER_JOIN_INTERESTS = `
       LEFT JOIN user_has_friends uhf ON uhf.friend_id = u.id AND uhf.user_id = ?
      GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
 
-func (u *user) ReadUserList(id uuid.UUID) ([]User, error) {
+func (u *user) ReadUserList(id *uuid.UUID) ([]User, error) {
 
 	idBytes, err := id.MarshalBinary()
 	if err != nil {
@@ -225,7 +230,7 @@ const SELECT_USER_JOIN_INTERESTS_WHERE = `
      WHERE name LIKE '%s%%%%' AND surname LIKE '%s%%%%'
      GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
 
-func (u *user) SearchUserList(id uuid.UUID, name, surname string) ([]User, error) {
+func (u *user) SearchUserList(id *uuid.UUID, name, surname string) ([]User, error) {
 
 	idBytes, err := id.MarshalBinary()
 	if err != nil {
@@ -288,7 +293,7 @@ const SELECT_USER_JOIN_INTERESTS_WHERE_SURNAME = `
      WHERE surname LIKE '%s%%%%'
      GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
 
-func (u *user) SearchByUserList(id uuid.UUID, field, value string) ([]User, error) {
+func (u *user) SearchByUserList(id *uuid.UUID, field, value string) ([]User, error) {
 
 	idBytes, err := id.MarshalBinary()
 	if err != nil {

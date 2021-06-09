@@ -37,6 +37,7 @@ func (j *JWT) AuthCheckToken(ctx *sa.RequestCtx) error {
 	}
 
 	jwtCookie := ctx.Request.Header.Cookie(config.ACCESS_TOKEN_COOKIE)
+	ctx.SetUserValueBytes([]byte("jwtCookie"), jwtCookie)
 
 	if len(jwtCookie) == 0 {
 		return ctx.ErrorResponse(errors.New(domain.LoginRequired.String()), fasthttp.StatusForbidden)

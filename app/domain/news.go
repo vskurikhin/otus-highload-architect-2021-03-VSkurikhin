@@ -9,18 +9,23 @@ import (
 )
 
 type News struct {
-	id       uuid.UUID
+	id       *uuid.UUID
 	Title    string
 	Content  string
 	PublicAt string
 	Username string
 }
 
-func (l *News) Id() uuid.UUID {
+func (l *News) Id() *uuid.UUID {
 	return l.id
 }
 
-func (l *News) SetId(id uuid.UUID) {
+func (l *News) NewId() {
+	id := uuid.New()
+	l.id = &id
+}
+
+func (l *News) SetId(id *uuid.UUID) {
 	l.id = id
 }
 
@@ -33,7 +38,7 @@ func ConvertNews(c *cache.News) *News {
 	if err != nil {
 		id = uuid.New()
 	}
-	return &News{id: id, Title: c.Title, Content: c.Content, PublicAt: c.PublicAt, Username: c.Username}
+	return &News{id: &id, Title: c.Title, Content: c.Content, PublicAt: c.PublicAt, Username: c.Username}
 }
 
 func (n *News) Marshal() []byte {
@@ -91,6 +96,131 @@ func (u *news) ReadNews(id uuid.UUID) (*News, error) {
 	return &n, nil
 }
 
+const COUNT_MY_NEWS_LIST = `
+    SELECT COUNT(*) size
+      FROM news n
+      WHERE n.username IN (
+        SELECT r.username
+          FROM ` + "`user`" + ` r
+         WHERE r.id = ?
+        UNION
+        SELECT u.username
+          FROM user_has_friends uhf
+          JOIN ` + "`user`" + ` u ON u.id = uhf.friend_id
+         WHERE uhf.user_id = ?)
+      ORDER BY n.public_at DESC
+      LIMIT ? OFFSET ?`
+
+func (u *news) SizeMyNewsList(p *Profile, offset, limit int) (int64, error) {
+
+	stmtOut, err := u.dbRw.Prepare(COUNT_MY_NEWS_LIST)
+	if err != nil {
+		return 0, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }()
+
+	id, err := p.Id.MarshalBinary()
+	if err != nil {
+		return 0, err // правильная обработка ошибок вместо паники
+	}
+	var result int64
+	err = stmtOut.QueryRow(id, id, limit, offset).Scan(&result)
+	if err != nil {
+		return 0, err // правильная обработка ошибок вместо паники
+	}
+	return result, nil
+}
+
+const LAST_MY_NEWS = `
+    SELECT n.id, n.title, n.content, n.public_at, n.username, BIN_TO_UUID(n.id) uid
+      FROM news n
+      WHERE n.username IN (
+        SELECT r.username
+          FROM ` + "`user`" + ` r
+         WHERE r.id = ?
+        UNION
+        SELECT u.username
+          FROM user_has_friends uhf
+          JOIN ` + "`user`" + ` u ON u.id = uhf.friend_id
+         WHERE uhf.user_id = ?)
+      ORDER BY n.public_at DESC, uid ASC
+      LIMIT 1 OFFSET 0`
+
+func (u *news) LastMyNews(p *Profile) (*News, error) {
+
+	var n News
+	stmtOut, err := u.dbRw.Prepare(LAST_MY_NEWS)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }()
+
+	id, err := p.Id.MarshalBinary()
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	var uid string
+	err = stmtOut.QueryRow(id, id).Scan(&n.id, &n.Title, &n.Content, &n.PublicAt, &n.Username, &uid)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	return &n, nil
+}
+
+const SELECT_MY_NEWS_LIST = `
+    SELECT n.id, n.title, n.content, n.public_at, n.username
+      FROM news n
+      WHERE n.username IN (
+        SELECT r.username
+          FROM ` + "`user`" + ` r
+         WHERE r.id = ?
+        UNION
+        SELECT u.username
+          FROM user_has_friends uhf
+          JOIN ` + "`user`" + ` u ON u.id = uhf.friend_id
+         WHERE uhf.user_id = ?)
+      ORDER BY n.public_at DESC
+      LIMIT ? OFFSET ?`
+
+func (u *news) ReadMyNewsList(p *Profile, offset, limit int) ([]News, error) {
+
+	stmtOut, err := u.dbRo.Prepare(SELECT_MY_NEWS_LIST)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }()
+
+	return readMyNewsList(stmtOut, p, offset, limit)
+}
+
+func readMyNewsList(stmtOut *sql.Stmt, p *Profile, offset, limit int) ([]News, error) {
+
+	var result []News
+
+	id, err := p.Id.MarshalBinary()
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	rows, err := stmtOut.Query(id, id, limit, offset)
+	logger.Debugf("readMyNewsList %v", rows)
+
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = rows.Close() }()
+
+	for rows.Next() {
+		var n News
+		err = rows.Scan(&n.id, &n.Title, &n.Content, &n.PublicAt, &n.Username)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, n)
+	}
+	return result, nil
+}
+
+/*
 const SELECT_NEWS_LIST = `
     SELECT id, title, content, public_at, username
       FROM news
@@ -140,3 +270,45 @@ func readNewsList(stmtOut *sql.Stmt, offset, rowcount int) ([]News, error) {
 	}
 	return newsSet, nil
 }
+
+const SELECT_FRIENDS_NEWS_LIST = `
+    SELECT n.id, n.title, n.content, n.public_at, n.username
+      FROM news n
+      WHERE n.username IN (
+        SELECT u.username
+          FROM user_has_friends uhf
+          JOIN ` + "`user`" + ` u ON u.id = uhf.friend_id
+         WHERE uhf.user_id = ?)
+      ORDER BY n.public_at DESC
+      LIMIT ? OFFSET ?`
+
+func (u *news) ReadFriendsNewsListOld(offset, limit int, id uuid.UUID) ([]News, error) {
+
+	stmtOut, err := u.dbRw.Prepare(SELECT_FRIENDS_NEWS_LIST)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }()
+
+	i, err := id.MarshalBinary()
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	rows, err := stmtOut.Query(i, limit, offset)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+
+	var newsSet []News
+	for rows.Next() {
+
+		var n News
+		err = rows.Scan(&n.id, &n.Title, &n.Content, &n.PublicAt, &n.Username)
+		if err != nil {
+			return nil, err
+		}
+		newsSet = append(newsSet, n)
+	}
+	return newsSet, nil
+}
+*/

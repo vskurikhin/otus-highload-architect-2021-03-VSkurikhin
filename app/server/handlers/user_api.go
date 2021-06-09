@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/valyala/fasthttp"
@@ -23,7 +22,7 @@ func (h *Handlers) Create(ctx *sa.RequestCtx) error {
 		}
 		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
 	}
-	user.SetId(uuid.New())
+	user.NewId()
 
 	if logger.DebugEnabled() {
 		logger.Debugf("got user: %s", user.String())

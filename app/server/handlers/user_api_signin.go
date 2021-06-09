@@ -54,7 +54,7 @@ func (h *Handlers) userSignIn(ctx *sa.RequestCtx) (*domain.Token, error) {
 	id := uuid.New()
 	password := security.HashAndSalt([]byte(s.Password))
 	login := domain.Login{Username: s.Username}
-	login.SetId(id)
+	login.SetId(&id)
 	login.SetPassword(password)
 	err = h.Server.DAO.Login.Create(&login)
 
@@ -72,7 +72,7 @@ func (h *Handlers) userSignIn(ctx *sa.RequestCtx) (*domain.Token, error) {
 		return nil, err
 	}
 	ins := strings.Split(s.Interests, "\n")
-	user := domain.Create(id, s.Username, &s.Name, &s.Surname, int(age), int(sex), ins, &s.City, true)
+	user := domain.Create(&id, s.Username, &s.Name, &s.Surname, int(age), int(sex), ins, &s.City, true)
 
 	if logger.DebugEnabled() {
 		logger.Debugf("got user: %s", user.String())
