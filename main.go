@@ -37,8 +37,6 @@ func httpd() {
 	// Создать инстанс сервера
 	s := server.New(environ)
 
-	go func() { s.PubSub.Subscribe("/ws-newslist") }()
-
 	// Зарегистрируйте для аутентификации перед обработкой запросов.
 	s.UseBefore(s.JWT.AuthCheckToken)
 

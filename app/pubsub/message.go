@@ -33,3 +33,12 @@ func (m *Message) Marshal() []byte {
 func (m *Message) String() string {
 	return string(m.Marshal())
 }
+
+func (m *Message) MarshalBinary() ([]byte, error) {
+	return json.Marshal(m)
+}
+
+func (m *Message) UnmarshalBinary(data []byte) error {
+	// конвертировать данные в ваши, давайте предположим, что это данные json
+	return json.Unmarshal(data, m)
+}

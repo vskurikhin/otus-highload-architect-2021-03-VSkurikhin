@@ -24,12 +24,16 @@ func (r *Redis) Publish(channel string, message interface{}) {
 	}
 }
 
-func (r *Redis) Subscribe(channel string) {
-	pubsub := r.PubSub.Subscribe(ctx, channel)
+func (r *Redis) Subscribe(channel string, blockingQueue *queue.BlockingQueue) {
 
+	pubsub := r.PubSub.Subscribe(ctx, channel)
 	ch := pubsub.Channel()
 
 	for msg := range ch {
-		queue.WebSocketsMapBQueue.PutToMapWsBq(msg.Payload)
+		if blockingQueue.Closed() {
+			logger.Debugf("blockingQueue: %s closed", blockingQueue)
+			return
+		}
+		blockingQueue.Put(msg.Payload)
 	}
 }

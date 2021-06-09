@@ -98,3 +98,34 @@ func (u *userHasFriends) LinkFriends(user *User, friends []User) error {
 	}
 	return nil
 }
+
+const SELECT_FRIEND_ID_BY_USER_ID = `
+	SELECT friend_id
+	  FROM user_has_friends
+	 WHERE user_id = ?`
+
+func (u *userHasFriends) GetFriendsIds(p *Profile) ([]*uuid.UUID, error) {
+	var result []*uuid.UUID
+	id, err := p.Id.MarshalBinary()
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	stmtOut, err := u.dbRo.Prepare(SELECT_FRIEND_ID_BY_USER_ID)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }()
+	rows, err := stmtOut.Query(id)
+	if err != nil {
+		return result, err
+	}
+	for rows.Next() {
+		var id uuid.UUID
+		err = rows.Scan(&id)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, &id)
+	}
+	return result, nil
+}

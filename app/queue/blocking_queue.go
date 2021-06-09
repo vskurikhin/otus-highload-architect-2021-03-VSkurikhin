@@ -17,8 +17,8 @@ type BlockingQueue struct {
 	monitor    *sync.Cond
 }
 
-// New создать экземпляр очереди FIFO
-func New() *BlockingQueue {
+// NewBlockingQueue создать экземпляр очереди FIFO
+func NewBlockingQueue() *BlockingQueue {
 	bq := &BlockingQueue{queue: list.New()}
 	bq.monitor = sync.NewCond(&bq.notifyLock)
 	return bq
