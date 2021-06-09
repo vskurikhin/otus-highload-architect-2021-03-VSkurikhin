@@ -64,6 +64,14 @@ func (r *Redis) PutNews(p *Profile, key *NewsKey, news *News) {
 	}
 }
 
+func (r *Redis) PutSetKey(p *Profile, key *NewsKey) {
+	sk := CreateSetKey(p)
+	err := r.Cache.SAdd(ctx, sk.Key, key.Key).Err()
+	if err != nil {
+		logger.Errorf("cache.PutSetKey: r.Cache.SAdd: %v", err)
+	}
+}
+
 func (r *Redis) LastMyNewsKey(p *Profile) (*NewsKey, error) {
 	sk := CreateSetKey(p)
 	logger.Debugf("cache.LastMyNews: sk: %s", sk)
@@ -87,23 +95,6 @@ func (r *Redis) SortMyNewsKeys(p *Profile, offset, limit int64) []string {
 	}
 	return cmd.Val()
 }
-
-//
-//func (r *Redis) PutNews(news *News) {
-//	if news == nil {
-//		return
-//	}
-//	key := fmt.Sprintf("News|%s|%s", news.PublicAt, news.Id)
-//	logger.Debugf("PutNews: key: %s", key)
-//	err := r.Cache.Set(ctx, key, news.String(), redis.KeepTTL).Err()
-//	if err != nil {
-//		logger.Errorf("PutNews: 1: %v", err)
-//	}
-//	err = r.Cache.SAdd(ctx, "News", key).Err()
-//	if err != nil {
-//		logger.Errorf("PutNews: 2: %v", err)
-//	}
-//}
 
 func (r *Redis) SAdd(id uuid.UUID, key string) {
 	k := fmt.Sprintf("News|%s", id)
@@ -130,15 +121,6 @@ func (r *Redis) PutFriendNews(news *News, id *uuid.UUID) {
 	}
 }
 
-//func (r *Redis) SortNewsKeys(offset, limit int64) []string {
-//	logger.Debugf("cache.SortNewsKeys: %d, %d", offset, limit)
-//	cmd := r.Cache.Sort(ctx, "News", &redis.Sort{Offset: offset, Count: limit, Order: "DESC", Alpha: true})
-//	if cmd != nil && cmd.Err() != nil {
-//		logger.Errorf("cache.SortNewsKeys: %v", cmd.Err())
-//	}
-//	return cmd.Val()
-//}
-
 func (r *Redis) SortFriendsNewsKeys(offset int64, limit int64, id uuid.UUID) []string {
 	key := fmt.Sprintf("News|%s", id)
 	logger.Debugf("cache.SortFriendsNewsKeys: %d, %d", offset, limit)
@@ -148,20 +130,6 @@ func (r *Redis) SortFriendsNewsKeys(offset int64, limit int64, id uuid.UUID) []s
 	}
 	return cmd.Val()
 }
-
-//func (r *Redis) SetOfNews(offset, limit int64) []string {
-//	var result []string
-//	keys := r.SortNewsKeys(offset, limit)
-//	for _, key := range keys {
-//		cmd := r.Cache.Get(ctx, key)
-//		if cmd != nil && cmd.Err() != nil {
-//			logger.Errorf("SetOfNews: key: %s %v", key, cmd.Err())
-//		} else {
-//			result = append(result, cmd.Val())
-//		}
-//	}
-//	return result
-//}
 
 func (r *Redis) GetNewsJson(key string) (*string, error) {
 	cmd := r.Cache.Get(ctx, key)

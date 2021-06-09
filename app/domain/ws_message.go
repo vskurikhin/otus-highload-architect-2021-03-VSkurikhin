@@ -8,7 +8,7 @@ import (
 
 type WsMessage struct {
 	Code    int
-	Id      uuid.UUID
+	Id      *uuid.UUID
 	Message string
 }
 
