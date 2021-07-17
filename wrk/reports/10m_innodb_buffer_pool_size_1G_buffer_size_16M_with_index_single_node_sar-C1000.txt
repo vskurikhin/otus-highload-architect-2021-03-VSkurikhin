@@ -1,0 +1,100 @@
+Linux 4.18.0-240.22.1.el8_3.x86_64 (k8s4) 	05/08/21 	_x86_64_	(2 CPU)
+
+20:32:29        CPU     %user     %nice   %system   %iowait    %steal     %idle
+20:33:29        all     84.38      0.02     12.03      0.00      3.57      0.00
+
+20:32:29    kbmemfree   kbavail kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit  kbactive   kbinact   kbdirty  kbanonpg    kbslab  kbkstack   kbpgtbl  kbvmused
+20:33:29      5733860   6796364   6351552     52.56      2120   1226280   7591844     62.82   5371964    645252        20   4747856    201888     19776     21836         0
+
+20:32:29      runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+20:33:29           68      1232    261.13    113.70     65.49         0
+
+20:33:29        CPU     %user     %nice   %system   %iowait    %steal     %idle
+20:34:29        all     81.72      0.02     14.86      0.00      3.38      0.03
+
+20:33:29    kbmemfree   kbavail kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit  kbactive   kbinact   kbdirty  kbanonpg    kbslab  kbkstack   kbpgtbl  kbvmused
+20:34:29      3355168   4998452   8730244     72.24      2120   1806452   7842024     64.89   7164616   1225260    444112   6540580    203116     19796     25152         0
+
+20:33:29      runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+20:34:29          207      1237    443.11    193.06     95.81         0
+
+20:34:29        CPU     %user     %nice   %system   %iowait    %steal     %idle
+20:35:29        all     80.43      0.03     14.99      0.00      4.55      0.00
+
+20:34:29    kbmemfree   kbavail kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit  kbactive   kbinact   kbdirty  kbanonpg    kbslab  kbkstack   kbpgtbl  kbvmused
+20:35:29      1885756   4030192  10199656     84.40      2120   2307004   7600500     62.89   8127288   1725736    232536   7503144    204420     19532     26588         0
+
+20:34:29      runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+20:35:29          256      1221    393.29    227.92    114.11         0
+
+20:35:29        CPU     %user     %nice   %system   %iowait    %steal     %idle
+20:36:29        all     80.95      0.03     14.83      0.00      4.19      0.00
+
+20:35:29    kbmemfree   kbavail kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit  kbactive   kbinact   kbdirty  kbanonpg    kbslab  kbkstack   kbpgtbl  kbvmused
+20:36:29      1493872   3949480  10591540     87.64      2120   2617444   7569484     62.63   8206676   2036428    381732   7580508    205604     19424     26612         0
+
+20:35:29      runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+20:36:29          571      1213    326.26    236.75    124.16         0
+
+20:36:29        CPU     %user     %nice   %system   %iowait    %steal     %idle
+20:37:29        all     80.94      0.03     14.67      0.00      4.37      0.00
+
+20:36:29    kbmemfree   kbavail kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit  kbactive   kbinact   kbdirty  kbanonpg    kbslab  kbkstack   kbpgtbl  kbvmused
+20:37:29      1379952   3955772  10705460     88.58      2120   2737452   7557728     62.54   8200476   2156100    378356   7572784    205912     19328     26576         0
+
+20:36:29      runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+20:37:29          402      1208    310.23    249.32    135.58         0
+
+20:37:29        CPU     %user     %nice   %system   %iowait    %steal     %idle
+20:38:29        all     80.69      0.03     14.97      0.00      4.31      0.00
+
+20:37:29    kbmemfree   kbavail kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit  kbactive   kbinact   kbdirty  kbanonpg    kbslab  kbkstack   kbpgtbl  kbvmused
+20:38:29      1664740   3909284  10420672     86.23      2120   2406144   7568584     62.63   8246856   1825016    196880   7619424    205948     19200     26656         0
+
+20:37:29      runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+20:38:29          156      1197    341.29    264.74    147.72         2
+
+20:38:29        CPU     %user     %nice   %system   %iowait    %steal     %idle
+20:39:29        all     81.20      0.03     14.54      0.00      4.24      0.00
+
+20:38:29    kbmemfree   kbavail kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit  kbactive   kbinact   kbdirty  kbanonpg    kbslab  kbkstack   kbpgtbl  kbvmused
+20:39:29      1551068   3928692  10534344     87.17      2120   2539352   7561496     62.57   8228880   1958116    333816   7599304    206004     18820     26628         0
+
+20:38:29      runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+20:39:29          195      1171    345.68    278.37    159.63         0
+
+20:39:29        CPU     %user     %nice   %system   %iowait    %steal     %idle
+20:40:29        all     81.24      0.03     14.24      0.00      4.47      0.01
+
+20:39:29    kbmemfree   kbavail kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit  kbactive   kbinact   kbdirty  kbanonpg    kbslab  kbkstack   kbpgtbl  kbvmused
+20:40:29      1804564   3980960  10280848     85.07      2120   2337952   7564184     62.59   8175700   1756732    345340   7546288    206228     19108     26476         0
+
+20:39:29      runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+20:40:29          122      1194    283.69    272.73    165.11         0
+
+20:40:29        CPU     %user     %nice   %system   %iowait    %steal     %idle
+20:41:29        all     81.40      0.03     14.40      0.00      4.17      0.00
+
+20:40:29    kbmemfree   kbavail kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit  kbactive   kbinact   kbdirty  kbanonpg    kbslab  kbkstack   kbpgtbl  kbvmused
+20:41:29      1704020   4058956  10381392     85.90      2120   2516272   7554980     62.51   8094740   1934960    406980   7461560    206688     19856     26336         0
+
+20:40:29      runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+20:41:29          186      1240    346.74    292.27    178.53         0
+
+20:41:29        CPU     %user     %nice   %system   %iowait    %steal     %idle
+20:42:29        all     81.46      0.03     14.19      0.00      4.32      0.00
+
+20:41:29    kbmemfree   kbavail kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit  kbactive   kbinact   kbdirty  kbanonpg    kbslab  kbkstack   kbpgtbl  kbvmused
+20:42:29      1534128   4007132  10551284     87.31      2120   2634356   7562532     62.58   8146332   2053024    269276   7513164    206724     19184     26436         0
+
+20:41:29      runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+20:42:29          355      1200    302.73    288.95    184.47         1
+
+Average:        CPU     %user     %nice   %system   %iowait    %steal     %idle
+Average:        all     81.44      0.03     14.37      0.00      4.16      0.00
+
+Average:    kbmemfree   kbavail kbmemused  %memused kbbuffers  kbcached  kbcommit   %commit  kbactive   kbinact   kbdirty  kbanonpg    kbslab  kbkstack   kbpgtbl  kbvmused
+Average:      2210713   4361528   9874699     81.71      2120   2312871   7597336     62.86   7796353   1731662    298905   7168461    205253     19402     25930         0
+
+Average:      runq-sz  plist-sz   ldavg-1   ldavg-5  ldavg-15   blocked
+Average:          252      1211    335.42    241.78    137.06         0
