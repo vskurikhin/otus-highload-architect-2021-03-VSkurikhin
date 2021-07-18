@@ -1,5 +1,6 @@
 FROM tarantool/tarantool:2.7.2
 
+COPY run-replicatord.sh /opt/tarantool
 COPY replicatord.yaml /opt/tarantool
 COPY replicatord /opt/tarantool
 COPY box.lua /opt/tarantool

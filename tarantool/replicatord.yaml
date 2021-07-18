@@ -7,7 +7,7 @@ mysql:
 
 tarantool:
     host: 172.16.1.210:3301
-    binlog_pos_space: 513
+    binlog_pos_space: 512
     binlog_pos_key: 0
     connect_retry: 15 # seconds
     sync_retry: 1000 # milliseconds
@@ -16,17 +16,5 @@ mappings:
     - database: hl
       table: user
       columns: [ id, name, username, surname, age, sex, city ]
-      space: 514
-      key_fields:  [ 0 ]
-      # 
-    - database: hl
-      table: user
-      columns: [ name, id ]
-      space: 515
-      key_fields:  [ 0 ]
-      # 
-    - database: hl
-      table: user
-      columns: [ surname, id ]
-      space: 516
+      space: 513
       key_fields:  [ 0 ]

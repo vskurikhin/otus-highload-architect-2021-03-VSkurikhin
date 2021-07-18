@@ -19,26 +19,15 @@ local function bootstrap()
 
     if not box.space.mysqldaemon then
         s = box.schema.space.create('mysqldaemon')
-        s:create_index('primary',
-        {type = 'tree', parts = {1, 'unsigned'}, if_not_exists = true})
+        s:create_index('primary', {type = 'TREE', parts = {1, 'unsigned'}, if_not_exists = true})
     end
 
-    if not box.space.mysqldata then
+    if not box.space.user then
         t = box.schema.space.create('user')
-        t:create_index('primary',
-        {type = 'tree', parts = {1, 'unsigned'}, if_not_exists = true})
-    end
-
-    if not box.space.mysqldata then
-        t = box.schema.space.create('name_user_id')
-        t:create_index('primary',
-        {type = 'tree', parts = {1, 'string'}, if_not_exists = true})
-    end
-
-    if not box.space.mysqldata then
-        t = box.schema.space.create('surname_user_id')
-        t:create_index('primary',
-        {type = 'tree', parts = {1, 'string'}, if_not_exists = true})
+        t:create_index('primary', {type = 'TREE', parts = {1, 'unsigned'}, if_not_exists = true})
+        t:create_index('name', {type = 'TREE', unique = false, parts = {2, 'string'}, if_not_exists = true})
+        t:create_index('surname', {type = 'TREE', unique = false, parts = {4, 'string'}, if_not_exists = true})
+        t:create_index('name_surname', {type = 'TREE', unique = false, parts = {2, 'string', 4, 'string'}, if_not_exists = true})
     end
 
 end
