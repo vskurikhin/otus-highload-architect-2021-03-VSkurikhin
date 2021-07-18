@@ -1,0 +1,14 @@
+CREATE DATABASE IF NOT EXISTS hl DEFAULT CHARACTER SET = 'binary' COLLATE = 'binary';
+
+CREATE USER 'hl'@'%' IDENTIFIED BY 'password';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE VIEW, REFERENCES, INDEX, DROP, ALTER, EXECUTE, TRIGGER, CREATE TEMPORARY TABLES, LOCK TABLES ON hl.* TO 'hl'@'%';
+
+CREATE USER 'tarantool'@'%' IDENTIFIED BY 'password';
+GRANT REPLICATION CLIENT ON *.* TO 'tarantool'@'%';
+GRANT REPLICATION SLAVE ON *.* TO 'tarantool'@'%';
+GRANT SELECT ON hl.* TO tarantool@'%';
+
+ALTER USER 'hl'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
+ALTER USER 'tarantool'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
+
+FLUSH PRIVILEGES;
