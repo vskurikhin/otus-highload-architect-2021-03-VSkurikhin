@@ -49,6 +49,12 @@ func main() {
 	// Зарегистрировать login маршрут.
 	s.POST("/login", h.Login)
 
+	// Зарегистрировать маршрут для профиля пользователя.
+	s.GET("/profile", h.Profile)
+
+	// Зарегистрировать маршрут для Sign-in пользователя.
+	s.POST("/signin", h.UserSignIn)
+
 	// Run
 	if err := s.ListenAndServe(); err != nil {
 		panic(err)
