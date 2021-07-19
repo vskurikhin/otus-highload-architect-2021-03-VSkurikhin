@@ -55,6 +55,13 @@ func main() {
 	// Зарегистрировать маршрут для Sign-in пользователя.
 	s.POST("/signin", h.UserSignIn)
 
+	// Зарегистрировать маршруты для поиска пользователей.
+	s.GET("/users/search/{name}/{surname}", h.UserSearch)
+	s.GET("/users/search-by/{field}/{value}", h.SearchBy)
+
+	// Зарегистрировать маршрут для списка пользователей.
+	s.GET("/user/{id}", h.User)
+
 	// Run
 	if err := s.ListenAndServe(); err != nil {
 		panic(err)
