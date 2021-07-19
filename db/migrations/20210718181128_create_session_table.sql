@@ -4,8 +4,8 @@ SELECT 'up SQL query';
 -- +goose StatementEnd
 
 CREATE TABLE `session` (
- id         INT PRIMARY KEY AUTO_INCREMENT,
- session_id INT NOT NULL
+ id         BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+ session_id BIGINT UNSIGNED NOT NULL
 );
 
 -- +goose Down

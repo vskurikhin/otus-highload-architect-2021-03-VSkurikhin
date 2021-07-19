@@ -38,7 +38,7 @@ func (s *session) UpdateOrCreate(login *Login, sessionId uint64) error {
 	defer func() { _ = stmtOut.Close() }() // Закрывается оператор, когда выйдете из функции
 
 	var userId uint64
-	err = stmtOut.QueryRow(login.Id).Scan(userId)
+	err = stmtOut.QueryRow(login.Id).Scan(&userId)
 
 	if err == sql.ErrNoRows {
 		return s.create(login, sessionId)
@@ -91,4 +91,32 @@ func (s *session) update(userId uint64, sessionId uint64) error {
 		logger.Debugf("session %s updated", sessionId)
 	}
 	return nil
+}
+
+const SELECT_USER_ID_AND_USERNAME_BY_SESSION_ID = `
+        SELECT l.id, l.username
+          FROM ` + "`session`" + ` s
+          JOIN login l ON s.id = l.id
+         WHERE session_id = ?`
+
+func (s *session) ProfileBySessionId(sessionId uint64) (*Profile, error) {
+
+	stmtOut, err := s.dbRo.Prepare(SELECT_USER_ID_AND_USERNAME_BY_SESSION_ID)
+
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }() // Закрывается оператор, когда выйдете из функции
+
+	var loginId uint64
+	var username string
+	err = stmtOut.QueryRow(sessionId).Scan(&loginId, &username)
+
+	if err != nil {
+		return nil, err
+	}
+
+	profile := Profile{Id: loginId, Username: username}
+
+	return &profile, nil
 }

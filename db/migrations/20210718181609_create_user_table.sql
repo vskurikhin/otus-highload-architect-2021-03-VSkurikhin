@@ -4,7 +4,7 @@ SELECT 'up SQL query';
 -- +goose StatementEnd
 
 CREATE TABLE `user` (
- id         INT PRIMARY KEY AUTO_INCREMENT,
+ id         BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
  username   VARCHAR(32) NOT NULL,
  name       VARCHAR(128),
  surname    VARCHAR(128),
