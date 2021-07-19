@@ -31,5 +31,11 @@ func main() {
 	}
 
 	// Создать инстанс сервера
-	server.New(environ)
+	s := server.New(environ)
+
+	// Зарегистрируйте для аутентификации перед обработкой запросов.
+	s.UseBefore(s.JWT.AuthCheckToken)
+
+	// Обработка статичных фалов из каталога web/public.
+	s.StaticCustom()
 }
