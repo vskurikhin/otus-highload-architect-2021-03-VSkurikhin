@@ -47,15 +47,11 @@ func (s *Server) UseBefore(fns sa.Middleware) *sa.Router {
 
 func (s *Server) StaticCustom() *sa.Path {
 
-	pathRewriteCalled := false
-
 	return s.Server.StaticCustom("/", &sa.StaticFS{
 		Root:               "web/public",
 		GenerateIndexPages: true,
 		AcceptByteRange:    true,
 		PathRewrite: func(ctx *sa.RequestCtx) []byte {
-			pathRewriteCalled = true
-
 			return ctx.Path()
 		},
 		PathNotFound: func(ctx *sa.RequestCtx) error {

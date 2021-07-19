@@ -32,9 +32,9 @@ func (u *User) Marshal() []byte {
 
 const INSERT_INTO_USER_USERNAME_NAME_SURNAME_AGE_SEX_CITY = `
     INSERT INTO user
-       (username, name, surname, age, sex, city)
+       (id, username, name, surname, age, sex, city)
       VALUES
-       (?, ?, ?, ?, ?, ?)`
+       (?, ?, ?, ?, ?, ?, ?)`
 
 func (u *user) Create(user *User) (*User, error) {
 	// Подготовить оператор для вставки данных
@@ -45,7 +45,7 @@ func (u *user) Create(user *User) (*User, error) {
 	}
 	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
 
-	res, err := stmtIns.Exec(user.Username, user.Name, user.SurName, user.Age, user.Sex, user.City)
+	res, err := stmtIns.Exec(user.Id, user.Username, user.Name, user.SurName, user.Age, user.Sex, user.City)
 	if err != nil {
 		return user, err
 	}
