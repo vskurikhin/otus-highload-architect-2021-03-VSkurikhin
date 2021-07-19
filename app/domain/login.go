@@ -24,3 +24,48 @@ func (l *Login) Marshal() []byte {
 	}
 	return login
 }
+
+const INSERT_INTO_LOGIN_USERNAME_PASSWORD = `
+	INSERT INTO login (username, password) VALUES (?, ?)`
+
+func (l *login) Create(login *Login) (*Login, error) {
+	// Подготовить оператор для вставки данных
+	stmtIns, err := l.dbRw.Prepare(INSERT_INTO_LOGIN_USERNAME_PASSWORD) // ? = заполнитель
+
+	if err != nil {
+		return login, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
+
+	res, err := stmtIns.Exec(login.Username, login.Password)
+	if err != nil {
+		return login, err
+	}
+	id, err := (res.LastInsertId())
+	if err != nil {
+		return login, err
+	}
+	login.Id = uint64(id)
+
+	return login, nil
+}
+
+const SELECT_ID_USERNAME_PASSWORD_FROM_LOGIN = `
+	SELECT id, username, password FROM login WHERE username = ?`
+
+func (l *login) Read(username string) (*Login, error) {
+
+	stmtOut, err := l.dbRw.Prepare(SELECT_ID_USERNAME_PASSWORD_FROM_LOGIN)
+
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }() // Закрывается оператор, когда выйдете из функции
+
+	var login Login
+	err = stmtOut.QueryRow(username).Scan(&login.Id, &login.Username, &login.Password)
+	if err != nil {
+		return nil, err
+	}
+	return &login, nil
+}
