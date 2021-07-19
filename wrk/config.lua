@@ -10,7 +10,7 @@ request = function()
   rangeSurNames = table.getn(surNames) - 1
   path = "/users/search/" .. firstNames[math.random(rangeFirstNames)] .. "/" .. surNames[math.random(rangeSurNames)]
   -- Return the request object with the current URL path
-  return wrk.format('GET', path, {['Host'] = 'localhost', ["Cookie"] = ""})
+  return wrk.format('GET', path, {['Host'] = 'localhost', ["Cookie"] = "_ga=GA1.1.100769609.1603607547; acs_jwt=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjY3NjQ1NjYsImp0aSI6IjkzMjgzMzAyMjc0MzIyMjI5NjMifQ.tRIr7m-eBlY-Y0-oVsouXwHEJS4ABhruaB5G--Zqk6XMqVK70Qxf_0V2t0VvQsEq_JJzuRQ4dChD6R0dP3mekA"})
 end
 
 response = function(status, headers, body)

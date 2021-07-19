@@ -117,7 +117,7 @@ func (u *user) SearchUserList(id uint64, name, surname string) ([]User, error) {
 	}
 	defer func() { _ = stmtOut.Close() }()
 
-	rows, err := stmtOut.Query(id)
+	rows, err := stmtOut.Query()
 
 	if err != nil {
 		return nil, err
