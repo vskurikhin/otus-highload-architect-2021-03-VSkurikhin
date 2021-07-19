@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/savsgio/go-logger/v2"
+	"strconv"
 )
 
 type User struct {
@@ -31,6 +32,44 @@ func (u *User) Marshal() []byte {
 		return nil
 	}
 	return user
+}
+
+func (u *user) ReadUser(sid string) (*User, error) {
+
+	id, err := strconv.ParseUint(sid, 10, 64)
+
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	user, err := u.readUser(id)
+
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+const SELECT_ID_USERNAME_NAME_SURNAME_AGE_SEX_CITY_FROM_USER = `
+    SELECT id, username, name, surname, age, sex, city
+      FROM user
+     WHERE id = ?`
+
+func (u *user) readUser(id uint64) (*User, error) {
+
+	stmtOut, err := u.dbRo.Prepare(SELECT_ID_USERNAME_NAME_SURNAME_AGE_SEX_CITY_FROM_USER)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }()
+
+	var user User
+
+	err = stmtOut.QueryRow(id).
+		Scan(&user.Id, &user.Username, &user.Name, &user.SurName, &user.Age, &user.Sex, &user.City)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
 }
 
 const INSERT_INTO_USER_USERNAME_NAME_SURNAME_AGE_SEX_CITY = `
