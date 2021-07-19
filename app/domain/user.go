@@ -6,7 +6,7 @@ import (
 )
 
 type User struct {
-	id       uint64
+	Id       uint64
 	Username string
 	Name     *string
 	SurName  *string
@@ -28,4 +28,32 @@ func (u *User) Marshal() []byte {
 		return nil
 	}
 	return user
+}
+
+const INSERT_INTO_USER_USERNAME_NAME_SURNAME_AGE_SEX_CITY = `
+    INSERT INTO user
+       (username, name, surname, age, sex, city)
+      VALUES
+       (?, ?, ?, ?, ?, ?)`
+
+func (u *user) Create(user *User) (*User, error) {
+	// Подготовить оператор для вставки данных
+	stmtIns, err := u.dbRw.Prepare(INSERT_INTO_USER_USERNAME_NAME_SURNAME_AGE_SEX_CITY) // ? = заполнитель
+
+	if err != nil {
+		return user, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
+
+	res, err := stmtIns.Exec(user.Username, user.Name, user.SurName, user.Age, user.Sex, user.City)
+	if err != nil {
+		return user, err
+	}
+	id, err := (res.LastInsertId())
+	if err != nil {
+		return user, err
+	}
+	user.Id = uint64(id)
+
+	return user, nil
 }
