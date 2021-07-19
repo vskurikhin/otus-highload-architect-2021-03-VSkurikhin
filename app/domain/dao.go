@@ -21,3 +21,11 @@ type (
 		dbRw *sql.DB
 	}
 )
+
+func New(dbRo *sql.DB, dbRw *sql.DB) *DAO {
+	return &DAO{
+		Login:   &login{dbRo: dbRo, dbRw: dbRw},
+		Session: &session{dbRo: dbRo, dbRw: dbRw},
+		User:    &user{dbRo: dbRo, dbRw: dbRw},
+	}
+}
