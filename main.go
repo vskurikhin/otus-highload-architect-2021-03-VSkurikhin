@@ -8,6 +8,7 @@ import (
 	"github.com/savsgio/go-logger/v2"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/server"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/server/handlers"
 )
 
 func main() {
@@ -38,4 +39,18 @@ func main() {
 
 	// Обработка статичных фалов из каталога web/public.
 	s.StaticCustom()
+
+	// Обработчики запросов.
+	h := handlers.Handlers{Server: s}
+
+	// Зарегистрировать индексный маршрут.
+	s.GET("/", h.Root)
+
+	// Зарегистрировать login маршрут.
+	s.POST("/login", h.Login)
+
+	// Run
+	if err := s.ListenAndServe(); err != nil {
+		panic(err)
+	}
 }
