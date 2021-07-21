@@ -31,7 +31,7 @@ export default function Login() {
         if (token.Code > 399 && token.Message) {
             history.push('/error/' + token.Message)
         } else {
-            history.push('/newslist')
+            history.push('/usersearch')
         }
     }
 

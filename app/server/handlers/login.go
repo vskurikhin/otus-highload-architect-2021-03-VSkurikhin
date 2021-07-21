@@ -3,13 +3,13 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/valyala/fasthttp"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/security"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -21,13 +21,12 @@ type login struct {
 func (l *login) String() string {
 	return fmt.Sprintf("{username: %s, password: %s}", l.Username, l.Password)
 }
-
 func (h *Handlers) Login(ctx *sa.RequestCtx) error {
 
 	login, err := h.login(ctx)
 
 	if err == nil {
-		sessionId := uuid.New()
+		sessionId := utils.RandomSessionId()
 		jwtCookie := ctx.Request.Header.Cookie(config.ACCESS_TOKEN_COOKIE)
 
 		if len(jwtCookie) == 0 {
@@ -45,7 +44,7 @@ func (h *Handlers) Login(ctx *sa.RequestCtx) error {
 				return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusForbidden)
 			}
 			if logger.DebugEnabled() {
-				logger.Debugf("jwt for session %s created", sessionId)
+				logger.Debugf("jwt for session %d created", sessionId)
 			}
 			return ctx.HTTPResponse(token.String())
 		}
@@ -53,7 +52,7 @@ func (h *Handlers) Login(ctx *sa.RequestCtx) error {
 		err = h.Server.DAO.Session.UpdateOrCreate(login, sessionId)
 
 		if logger.DebugEnabled() {
-			logger.Debugf("jwt for session %s updated", sessionId)
+			logger.Debugf("jwt for session %d updated", sessionId)
 		}
 		return ctx.HTTPResponse(token.String())
 	}
@@ -84,7 +83,7 @@ func (h *Handlers) login(ctx *sa.RequestCtx) (*domain.Login, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = bcrypt.CompareHashAndPassword([]byte(login.Password()), []byte(dto.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(login.Password), []byte(dto.Password))
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +91,7 @@ func (h *Handlers) login(ctx *sa.RequestCtx) (*domain.Login, error) {
 	return login, nil
 }
 
-func (h *Handlers) generateToken(ctx *sa.RequestCtx, sessionId uuid.UUID) *domain.Token {
+func (h *Handlers) generateToken(ctx *sa.RequestCtx, sessionId uint64) *domain.Token {
 
 	tokenString, expireAt := h.Server.JWT.GenerateToken(sessionId)
 
