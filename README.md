@@ -8,6 +8,7 @@ modify_column_name
 Виктор Скурихин (Victor Skurikhin)
 
 - [Лекции](doc/lectures.md)
+<<<<<<< HEAD
     1. [Проблемы высоких нагрузок](doc/lectures.md#проблемы-высоких-нагрузок)
 - [Домашние задания](doc/homeworks.md)
     1. [Заготовка для социальной сети](doc/solutions_of_homework.md#заготовка-для-социальной-сети)
@@ -16,3 +17,46 @@ modify_column_name
         - [Лента новостей социальной сети](solutions_of_homework.md#лента-новостей-социальной-сети)
         - [Полусинхронная репликация](doc/solutions_of_homework.md#полусинхронная-репликация)
 - [Разное](doc/other.md)
+=======
+  1. [Проблемы высоких нагрузок](doc/lectures.md#проблемы-высоких-нагрузок)
+- [Домашние задания](doc/homeworks.md)
+  1. [Заготовка для социальной сети](doc/solutions_of_homework.md#заготовка-для-социальной-сети)
+     - [Заготовка для социальной сети](doc/solutions_of_homework.md#заготовка-для-социальной-сети)
+     - [Производительность индексов](doc/solutions_of_homework.md#производительность-индексов)
+     - [Лента новостей социальной сети](solutions_of_homework.md#лента-новостей-социальной-сети)
+     - [Полусинхронная репликация](doc/solutions_of_homework.md#полусинхронная-репликация)
+- [Разное](doc/other.md)
+
+# Установка
+
+- [Установить](https://github.com/pressly/goose) :\
+  `go get -u github.com/pressly/goose/cmd/goose`
+- [Скачать репозиторий](https://github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin.git)
+- [Создать БД, пользователя и раздать привелегии](db/create/create.sql) :\
+  `cat ./db/create/create.sql | mysql`
+- Выполнить скрипты миграции БД:\
+  `goose -v -dir ./db/migrations mysql "hl:password@/hl?parseTime=true" up`
+- При необходимости обновиить React:
+  ```
+  npm install
+  npm run dev
+  ```
+  Собранное React приложение уже присутвует в репозитории: `app-bundle.js`.\
+  Клиентское JavaScript приложение отрабатывает в браузере клиента.  
+- Выкачать зависимости:\
+  `go mod download`
+- `go run .`
+
+# Библиотеки
+
+- https://github.com/dgrijalva/jwt-go
+- https://github.com/google/uuid
+- https://github.com/joho/godotenv
+- https://github.com/kelseyhightower/envconfig
+- https://github.com/savsgio/atreugo/v11
+- https://github.com/savsgio/go-logger/v2
+- https://github.com/valyala/fasthttp
+- https://golang.org/x/crypto/bcrypt
+- https://golang.org/x/sync
+- https://gopkg.in/yaml.v2
+>>>>>>> 8fe67f3d8cb85b763f0eda2466c0db9477cd163d
