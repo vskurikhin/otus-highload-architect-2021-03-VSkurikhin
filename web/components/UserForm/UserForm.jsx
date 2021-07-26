@@ -1,5 +1,5 @@
 import UserDetails from "../UserDefails/UserDetails"
-import {POST} from "../../lib/consts";
+import {AFTER_LOGIN, POST} from "../../lib/consts";
 import {getProfileFetch, logoutUser} from "../../redux/currentUser";
 
 import React, {useEffect, useState} from 'react'
@@ -28,7 +28,7 @@ const UserForm = props => {
             UserId: props.user.currentUser.Id,
             FriendId: match.params.id
         })
-        history.push('/usersearch')
+        history.push(AFTER_LOGIN)
     }
 
     const addFriend = props => {

@@ -1,48 +1,49 @@
-import './Login.css'
+import './Messages.css'
 
-import React, {useState} from 'react'
-import {Input} from "semantic-ui-react"
-import {useHistory} from "react-router-dom"
-
-import deleteCookie from "../../lib/deleteCookie";
 import {AFTER_LOGIN, POST} from "../../lib/consts";
 
-async function loginUser(credentials) {
-    return fetch('/login', {
-        body: JSON.stringify(credentials),
+import React, {useState} from 'react'
+import {Input} from 'semantic-ui-react'
+import {useHistory} from "react-router-dom"
+
+async function postMessage(message) {
+    return fetch('/message', {
+        body: JSON.stringify(message),
         ...POST
     }).then(data => data.json())
 }
 
-export default function Login() {
+export default function Messages() {
 
-    const [password, setPassword] = useState()
+    const [message, setMessage] = useState()
     const [username, setUserName] = useState()
     const history = useHistory()
 
     const handleSubmit = async e => {
-        e.preventDefault();
-        deleteCookie("acs_jwt")
-        const token = await loginUser({
-            username,
-            password
+        e.preventDefault()
+
+        const token = await postMessage({
+            Message: message,
+            ToUser: username,
         })
-        if (token.Code > 399 && token.Message) {
-            history.push('/error/' + token.Message)
-        } else {
-            history.push(AFTER_LOGIN)
+        if (token) {
+            if (token.Code > 399 && token.Message) {
+                history.push('/error/' + token.Message)
+            } else {
+                history.push(AFTER_LOGIN)
+            }
         }
     }
 
     return (
-        <div className="login-wrapper">
+        <div className="signin-wrapper">
             <form onSubmit={handleSubmit}>
                 <div className="my-divTable">
                     <div className="my-divTableBody">
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <h1>Please Log In</h1>
+                                <h1>Message For</h1>
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>
@@ -57,12 +58,12 @@ export default function Login() {
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <p className="my-p-label">Password:</p>
-                                <Input
-                                    type="password"
-                                    name="password"
-                                    placeholder='password...'
-                                    onChange={e => setPassword(e.target.value)}
+                                <p className="my-p-label">Message</p>
+                                <textarea
+                                    rows="5"
+                                    cols="48"
+                                    name="message"
+                                    onChange={e => setMessage(e.target.value)}
                                 />
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
@@ -70,7 +71,10 @@ export default function Login() {
                         <div className="my-divTableRow">
                             <div className="my-divTableCellLeft">&nbsp;</div>
                             <div className="my-divTableCell">
-                                <button type="submit">Submit</button>
+                                <button
+                                    type="submit"
+                                >Submit
+                                </button>
                             </div>
                             <div className="my-divTableCellRight">&nbsp;</div>
                         </div>

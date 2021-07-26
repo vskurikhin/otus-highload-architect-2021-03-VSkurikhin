@@ -1,0 +1,72 @@
+version: "3.8"
+services:
+  db-node-1:
+    image: local/mysql 
+    container_name: db-node-1
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: hl
+      MYSQL_USER: hl
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: '1'
+    command: >
+      --sql-mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+      --general-log=ON
+      --log-queries-not-using-indexes=ON
+    networks:
+      ab_subnet:
+        aliases:
+          - db-node-1.localhost.ab.sberbank.ru
+        ipv4_address: 172.16.1.211
+    ports:
+      - 3360:3306
+    volumes:
+      - db-node-1-data:/var/lib/mysql
+
+  db-node-2:
+    image: local/mysql 
+    container_name: db-node-2
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: hl
+      MYSQL_USER: hl
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: '1'
+    command: >
+      --sql-mode='STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'
+      --general-log=ON
+      --log-queries-not-using-indexes=ON
+    networks:
+      ab_subnet:
+        aliases:
+          - db-node-2.localhost.ab.sberbank.ru
+        ipv4_address: 172.16.1.212
+    ports:
+      - 3361:3306
+    volumes:
+      - db-node-2-data:/var/lib/mysql
+
+  proxysql:
+    image: local/proxysql
+    container_name: proxysql
+    volumes:
+      - proxysql-data:/var/lib/proxysql
+    networks:
+      ab_subnet:
+        aliases:
+          - proxysql.localhost.ab.sberbank.ru
+        ipv4_address: 172.16.1.213
+    ports:
+      # Mysql Client Port
+      - "6033:6033"
+      # Mysql Admin Port
+      - "6032:6032"
+
+volumes:
+  db-node-1-data:
+  db-node-2-data:
+  proxysql-data:
+
+networks:
+  ab_subnet:
+    external: true

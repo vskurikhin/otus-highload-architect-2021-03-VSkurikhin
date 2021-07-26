@@ -21,6 +21,7 @@ type login struct {
 func (l *login) String() string {
 	return fmt.Sprintf("{username: %s, password: %s}", l.Username, l.Password)
 }
+
 func (h *Handlers) Login(ctx *sa.RequestCtx) error {
 
 	login, err := h.login(ctx)
