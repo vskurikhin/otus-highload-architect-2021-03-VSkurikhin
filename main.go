@@ -55,9 +55,11 @@ func main() {
 	// Зарегистрировать маршрут для Sign-in пользователя.
 	s.POST("/signin", h.UserSignIn)
 
+	s.POST("/message", h.PostMessage)
+
 	// Зарегистрировать маршруты для поиска пользователей.
-	s.GET("/users/search/{name}/{surname}", h.UserSearch)
-	s.GET("/users/search-by/{field}/{value}", h.SearchBy)
+	// s.GET("/users/search/{name}/{surname}", h.UserSearch)
+	// s.GET("/users/search-by/{field}/{value}", h.SearchBy)
 
 	// Зарегистрировать маршрут для списка пользователей.
 	s.GET("/user/{id}", h.User)

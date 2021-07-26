@@ -34,7 +34,7 @@ func (h *Handlers) user(ctx *sa.RequestCtx) (*domain.User, error) {
 	if logger.DebugEnabled() {
 		logger.Debugf("got user id: %s", id)
 	}
-	u, err := h.Server.DAO.User.ReadUser(id)
+	u, err := h.Server.DAO.User.ReadUserBySid(id)
 
 	if err != nil {
 		return nil, err

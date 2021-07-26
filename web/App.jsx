@@ -6,7 +6,7 @@ import Login from "./components/Login/Login"
 import MyProfile from "./components/MyProfile/MyProfile"
 import Signin from "./components/Signin/Signin"
 import UserForm from './components/UserForm/UserForm'
-import UserSearch from "./components/UserSearch/UserSearch";
+import UserMessage from "./components/UserMessage/UserMessage";
 
 import React from 'react'
 import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom'
@@ -20,7 +20,7 @@ const App = () => {
                     items={[
                         ["Login", "/login"],
                         ["Sign-in", "/signin"],
-                        ["User search", "/usersearch", true],
+                        ["Messages", "/messages", true],
                         ["Profile", "/myprofile", true]
                     ]}
                 />
@@ -31,10 +31,9 @@ const App = () => {
                     <Route path="/signin">
                         <Signin/>
                     </Route>
-                    <Route path="/usersearch">
-                        <UserSearch/>
+                    <Route path="/messages">
+                        <UserMessage/>
                     </Route>
-                    <Route path="/userform/:id" component={UserForm}/>
                     <Route path="/myprofile" component={MyProfile}>
                         <MyProfile/>
                     </Route>

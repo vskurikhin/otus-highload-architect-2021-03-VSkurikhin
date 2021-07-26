@@ -6,6 +6,8 @@ SELECT 'up SQL query';
 CREATE TABLE dialog_message (
  id         BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
  shard_id   INT NOT NULL,
+ from_user  BIGINT UNSIGNED NOT NULL,
+ to_user    BIGINT UNSIGNED NOT NULL,
  message    VARCHAR(256)
 );
 

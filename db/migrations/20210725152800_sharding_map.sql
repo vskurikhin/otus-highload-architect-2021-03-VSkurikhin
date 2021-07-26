@@ -5,7 +5,9 @@ SELECT 'up SQL query';
 
 CREATE TABLE sharding_map (
  id         INT PRIMARY KEY AUTO_INCREMENT,
- city       VARCHAR(128)
+ field      VARCHAR(64) NOT NULL,
+ city       VARCHAR(128),
+ shard_id   INT
 );
 
 -- +goose Down
