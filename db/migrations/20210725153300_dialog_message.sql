@@ -8,7 +8,8 @@ CREATE TABLE dialog_message (
  shard_id   INT NOT NULL,
  from_user  BIGINT UNSIGNED NOT NULL,
  to_user    BIGINT UNSIGNED NOT NULL,
- message    VARCHAR(256)
+ message    VARCHAR(256),
+ parent_id  BIGINT UNSIGNED
 );
 
 -- +goose Down

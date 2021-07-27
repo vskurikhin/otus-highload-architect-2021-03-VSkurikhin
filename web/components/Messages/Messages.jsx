@@ -5,6 +5,7 @@ import {AFTER_LOGIN, POST} from "../../lib/consts";
 import React, {useState} from 'react'
 import {Input} from 'semantic-ui-react'
 import {useHistory} from "react-router-dom"
+import TableOfMessages from "../TableOfMessages/TableOfMessages";
 
 async function postMessage(message) {
     return fetch('/message', {
@@ -13,7 +14,7 @@ async function postMessage(message) {
     }).then(data => data.json())
 }
 
-export default function Messages() {
+export default function Messages(props) {
 
     const [message, setMessage] = useState()
     const [username, setUserName] = useState()
@@ -81,6 +82,26 @@ export default function Messages() {
                     </div>
                 </div>
             </form>
+            <div className="login-wrapper">
+                <div className="my-divTable">
+                    <div className="my-divTableBody">
+                        <div className="my-divTableRow">
+                            <div className="my-divTableCellLeft">&nbsp;</div>
+                            <div className="my-divTableCell">
+                                <h1>Dialog messages</h1>
+                            </div>
+                            <div className="my-divTableCellRight">&nbsp;</div>
+                        </div>
+                        <div className="my-divTableRow">
+                            <div className="my-divTableCellLeft">&nbsp;</div>
+                            <div className="my-divTableCell">
+                                <TableOfMessages {...props}/>
+                            </div>
+                            <div className="my-divTableCellRight">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

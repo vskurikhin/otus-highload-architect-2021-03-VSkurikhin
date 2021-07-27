@@ -15,26 +15,7 @@ const UserMessage = props => {
 
     try {
         return (
-            <div className="login-wrapper">
-                <div className="my-divTable">
-                    <div className="my-divTableBody">
-                        <div className="my-divTableRow">
-                            <div className="my-divTableCellLeft">&nbsp;</div>
-                            <div className="my-divTableCell">
-                                <h1>User search</h1>
-                            </div>
-                            <div className="my-divTableCellRight">&nbsp;</div>
-                        </div>
-                        <div className="my-divTableRow">
-                            <div className="my-divTableCellLeft">&nbsp;</div>
-                            <div className="my-divTableCell">
-                                <Messages {...props}/>
-                            </div>
-                            <div className="my-divTableCellRight">&nbsp;</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Messages {...props}/>
         )
     } catch (e) {
         console.debug(e)

@@ -27,6 +27,14 @@ ALTER TABLE dialog_message
     ON UPDATE CASCADE
     ON DELETE RESTRICT;
 
+ALTER TABLE dialog_message
+    ADD CONSTRAINT fk_self_parent_id_9999
+    FOREIGN KEY fk_self_parent_id_9999 (parent_id)
+    REFERENCES dialog_message (id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT;
+
+
 -- +goose Down
 -- +goose StatementBegin
 SELECT 'down SQL query';

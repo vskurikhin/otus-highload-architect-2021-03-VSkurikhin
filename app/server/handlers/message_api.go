@@ -8,6 +8,7 @@ import (
 	"github.com/valyala/fasthttp"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/utils"
+	"strings"
 )
 
 type message struct {
@@ -75,4 +76,53 @@ func (h *Handlers) postMessage(ctx *sa.RequestCtx) (*uint64, error) {
 		logger.Debugf("got message: %m", message.String())
 	}
 	return &id, nil
+}
+
+func (h *Handlers) GetMessages(ctx *sa.RequestCtx) error {
+
+	list, err := h.getMessages(ctx)
+
+	if err != nil {
+		logger.Error(err)
+		errorCase := domain.ApiMessage{
+			Code:    fasthttp.StatusPreconditionFailed,
+			Message: err.Error(),
+		}
+		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
+	}
+	result := "[" + strings.Join(list, ", ") + "]"
+
+	return ctx.HTTPResponse(result)
+}
+
+func (h *Handlers) getMessages(ctx *sa.RequestCtx) ([]string, error) {
+	p, err := h.profile(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+	messages, err := h.getDialogMessages(p.Id)
+	if err != nil {
+		return nil, err
+	}
+	var result []string
+
+	for _, message := range messages {
+		result = append(result, message.String())
+	}
+	return result, nil
+}
+
+func (h *Handlers) getDialogMessages(id uint64) ([]domain.UserDialogMessage, error) {
+	user, err := h.Server.DAO.User.ReadUserById(id)
+	if err != nil {
+		return nil, err
+	}
+	shardId := domain.GetShardId(*user.City)
+	messages, err := h.Server.DAO.DialogMessage.GetAllByUserId(shardId, id)
+
+	if err != nil {
+		return nil, err
+	}
+	return messages, nil
 }
