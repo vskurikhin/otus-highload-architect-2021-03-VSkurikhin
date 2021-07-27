@@ -11,6 +11,7 @@ type DialogMessage struct {
 	FromUser uint64
 	ToUser   uint64
 	Message  string
+	ParentId *uint64
 }
 
 func (d *DialogMessage) String() string {
@@ -39,9 +40,9 @@ func (d *dialogMessage) Create(shardId uint8, dm *DialogMessage) error {
 
 const INSERT_INTO_DIALOG_MESSAGE = `
 	INSERT INTO dialog_message
-	    (shard_id, id, from_user, to_user, message)
+	    (shard_id, id, from_user, to_user, message, parent_id)
 	     VALUES
-	    (0, ?, ?, ?, ?)`
+	    (0, ?, ?, ?, ?, ?)`
 
 func (d *dialogMessage) create(dm *DialogMessage) error {
 	// Подготовить оператор для вставки данных
@@ -51,7 +52,7 @@ func (d *dialogMessage) create(dm *DialogMessage) error {
 		return err // правильная обработка ошибок вместо паники
 	}
 	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
-	_, err = stmtIns.Exec(dm.Id, dm.FromUser, dm.ToUser, dm.Message)
+	_, err = stmtIns.Exec(dm.Id, dm.FromUser, dm.ToUser, dm.Message, dm.ParentId)
 
 	if err != nil {
 		return err
@@ -61,8 +62,8 @@ func (d *dialogMessage) create(dm *DialogMessage) error {
 }
 
 const INSERT_INTO_DIALOG_MESSAGE_SHARD_ID_1 = "INSERT INTO dialog_message" +
-	" (shard_id, id, from_user, to_user, message)" +
-	" VALUES (1, ?, ?, ?, ?)"
+	" (shard_id, id, from_user, to_user, message, parent_id)" +
+	" VALUES (1, ?, ?, ?, ?, ?)"
 
 func (d *dialogMessage) createOnShardId1(dm *DialogMessage) error {
 	// Подготовить оператор для вставки данных
@@ -72,61 +73,13 @@ func (d *dialogMessage) createOnShardId1(dm *DialogMessage) error {
 		return err // правильная обработка ошибок вместо паники
 	}
 	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
-	_, err = stmtIns.Exec(dm.Id, dm.FromUser, dm.ToUser, dm.Message)
+	_, err = stmtIns.Exec(dm.Id, dm.FromUser, dm.ToUser, dm.Message, dm.ParentId)
 
 	if err != nil {
 		return err
 	}
 
 	return nil
-}
-
-const SELECT_DIALOG_MESSAGE_BY_ID_SHARD_ID = `
-        SELECT from_user, to_user, message
-          FROM dialog_message
-         WHERE shard_id = ? AND id = ?`
-
-func (s *session) getByIdShardId(id uint64, shardId uint8) (*DialogMessage, error) {
-
-	stmtOut, err := s.dbRo.Prepare(SELECT_DIALOG_MESSAGE_BY_ID_SHARD_ID)
-
-	if err != nil {
-		return nil, err // правильная обработка ошибок вместо паники
-	}
-	defer func() { _ = stmtOut.Close() }() // Закрывается оператор, когда выйдете из функции
-
-	dm := DialogMessage{Id: id, ShardId: shardId}
-	err = stmtOut.QueryRow(shardId, id).Scan(&dm.FromUser, &dm.ToUser, &dm.Message)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &dm, nil
-}
-
-const SELECT_ALL_DIALOG_MESSAGE_BY_SHARD_ID = `
-        SELECT id, from_user, to_user, message
-          FROM dialog_message
-         WHERE shard_id = ?`
-
-func (s *session) getAll(shardId uint8) (*DialogMessage, error) {
-
-	stmtOut, err := s.dbRo.Prepare(SELECT_ALL_DIALOG_MESSAGE_BY_SHARD_ID)
-
-	if err != nil {
-		return nil, err // правильная обработка ошибок вместо паники
-	}
-	defer func() { _ = stmtOut.Close() }() // Закрывается оператор, когда выйдете из функции
-
-	dm := DialogMessage{ShardId: shardId}
-	err = stmtOut.QueryRow(shardId).Scan(&dm.Id, &dm.FromUser, &dm.ToUser, &dm.Message)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &dm, nil
 }
 
 const UPDATE_DIALOG_MESSAGE_MESSAGE = `

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {Table} from 'semantic-ui-react'
 import {useHistory} from "react-router-dom"
 
-export default function TableOfUsers() {
+export default function TableOfMessages(props) {
 
     const [error, setError] = useState(null)
     const [isLoaded, setIsLoaded] = useState(false)
@@ -22,19 +22,12 @@ export default function TableOfUsers() {
         setError(error)
     }
 
-    const getItems = () => {
-        fetch("/users/all")
+    const getItems = userId => {
+        console.debug('props')
+        console.debug(props)
+        fetch("/messages")
             .then(res => res.json())
             .then(getResult, getError)
-    }
-
-    const handleClick = e => {
-        e.preventDefault()
-        const {target} = e
-        const {parentElement} = target
-        if (parentElement) {
-            history.push('/userform/' + parentElement.id)
-        }
     }
 
     useEffect(getItems, [])
@@ -48,20 +41,18 @@ export default function TableOfUsers() {
         <Table celled selectable>
             <Table.Header>
                 <Table.Row>
-                    <Table.HeaderCell>FirstName</Table.HeaderCell>
-                    <Table.HeaderCell>SurName</Table.HeaderCell>
-                    <Table.HeaderCell>City</Table.HeaderCell>
-                    <Table.HeaderCell>Friend</Table.HeaderCell>
+                    <Table.HeaderCell>FromUser</Table.HeaderCell>
+                    <Table.HeaderCell>ToUser</Table.HeaderCell>
+                    <Table.HeaderCell>Message</Table.HeaderCell>
                 </Table.Row>
             </Table.Header>
 
             <Table.Body>
-                {items.map(({Id, Name, SurName, Age, Sex, Interests, City, Friend}) => (
+                {items.map(({Id, FromUser, ToUser, Message}) => (
                     <Table.Row key={Id} id={Id}>
-                        <Table.Cell onClick={handleClick}>{Name}</Table.Cell>
-                        <Table.Cell onClick={handleClick}>{SurName}</Table.Cell>
-                        <Table.Cell onClick={handleClick}>{City}</Table.Cell>
-                        <Table.Cell onClick={handleClick}>{Friend ? "✔" : ""}</Table.Cell>
+                        <Table.Cell>{FromUser}</Table.Cell>
+                        <Table.Cell>{ToUser}</Table.Cell>
+                        <Table.Cell>{Message}</Table.Cell>
                     </Table.Row>
                 ))}
             </Table.Body>
