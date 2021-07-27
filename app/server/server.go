@@ -6,7 +6,6 @@ import (
 	"github.com/atreugo/websocket"
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/cache"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/security"
@@ -16,7 +15,7 @@ import (
 
 // Server определяет параметры для запуска HTTP-сервера.
 type Server struct {
-	Cache  *cache.Tarantool
+	// Cache  *cache.Tarantool
 	DAO    *domain.DAO
 	JWT    *security.JWT
 	Server *sa.Atreugo
@@ -35,10 +34,15 @@ func New(cfg *config.Config) *Server {
 	dbRw := openDBRw(cfg)
 	go gracefulClose(dbRo, dbRw)
 	versionDB(dbRw)
+	dao := domain.New(dbRo, dbRw)
+	_, err := dao.ShardingMap.ReadMap()
+	if err != nil {
+		panic(err)
+	}
 
 	return &Server{
-		Cache:  cache.CreateTarantoolCacheClient(cfg),
-		DAO:    domain.New(dbRo, dbRw),
+		// Cache:  cache.CreateTarantoolCacheClient(cfg),
+		DAO:    dao,
 		JWT:    security.New(cfg),
 		Server: sa.New(c),
 	}

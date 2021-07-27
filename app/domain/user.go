@@ -34,19 +34,22 @@ func (u *User) Marshal() []byte {
 	return user
 }
 
-func (u *user) ReadUser(sid string) (*User, error) {
+func (u *user) ReadUserById(id uint64) (*User, error) {
 
-	id, err := strconv.ParseUint(sid, 10, 64)
-
-	if err != nil {
-		return nil, err // правильная обработка ошибок вместо паники
-	}
 	user, err := u.readUser(id)
-
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (u *user) ReadUserBySid(sid string) (*User, error) {
+
+	id, err := strconv.ParseUint(sid, 10, 64)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	return u.ReadUserById(id)
 }
 
 const SELECT_ID_USERNAME_NAME_SURNAME_AGE_SEX_CITY_FROM_USER = `
@@ -65,6 +68,34 @@ func (u *user) readUser(id uint64) (*User, error) {
 	var user User
 
 	err = stmtOut.QueryRow(id).
+		Scan(&user.Id, &user.Username, &user.Name, &user.SurName, &user.Age, &user.Sex, &user.City)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (u *user) ReadUserByName(name string) (*User, error) {
+	return u.readUserByName(name)
+}
+
+const SELECT_ID_USERNAME_NAME_SURNAME_AGE_SEX_CITY_FROM_USER_BY_NAME = `
+    SELECT u.id, u.username, u.name, u.surname, u.age, u.sex, u.city
+      FROM user u
+      JOIN login l ON l.id = u.id
+     WHERE l.username = ?`
+
+func (u *user) readUserByName(name string) (*User, error) {
+
+	stmtOut, err := u.dbRo.Prepare(SELECT_ID_USERNAME_NAME_SURNAME_AGE_SEX_CITY_FROM_USER_BY_NAME)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }()
+
+	var user User
+
+	err = stmtOut.QueryRow(name).
 		Scan(&user.Id, &user.Username, &user.Name, &user.SurName, &user.Age, &user.Sex, &user.City)
 	if err != nil {
 		return nil, err
