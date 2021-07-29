@@ -1,7 +1,7 @@
 import './Signin.css'
 
 import {CITY_OPTIONS, SEX_OPTIONS} from "../../consts"
-import {AFTER_LOGIN, POST} from "../../lib/consts";
+import {POST} from "../../lib/consts";
 
 import React, {useState} from 'react'
 import {Dropdown, Input, Modal} from 'semantic-ui-react'
@@ -43,7 +43,7 @@ export default function Signin() {
             if (token.Code > 399 && token.Message) {
                 history.push('/error/' + token.Message)
             } else {
-                history.push(AFTER_LOGIN)
+                history.push('/usersearch')
             }
         }
     }

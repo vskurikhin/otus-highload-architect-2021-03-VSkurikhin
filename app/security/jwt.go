@@ -2,8 +2,8 @@ package security
 
 import (
 	"errors"
+	"github.com/google/uuid"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
-	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -24,7 +24,7 @@ type Session struct {
 }
 
 // GenerateToken создаёт токен.
-func (j *JWT) GenerateToken(sessionId uint64) (string, time.Time) {
+func (j *JWT) GenerateToken(sessionId uuid.UUID) (string, time.Time) {
 
 	if logger.DebugEnabled() {
 		logger.Debugf("UpdateOrCreate new session %s", sessionId)
@@ -34,7 +34,7 @@ func (j *JWT) GenerateToken(sessionId uint64) (string, time.Time) {
 	// Вставить информацию о сессии пользователя в `token`
 	newToken := jwt.NewWithClaims(jwt.SigningMethodHS512, &Session{
 		StandardClaims: jwt.StandardClaims{
-			Id:        strconv.FormatUint(sessionId, 10),
+			Id:        sessionId.String(),
 			ExpiresAt: expireAt.Unix(),
 		},
 	})

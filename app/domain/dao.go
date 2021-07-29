@@ -1,16 +1,20 @@
 package domain
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type (
 	DAO struct {
-		DialogMessage *dialogMessage
-		Login         *login
-		Session       *session
-		ShardingMap   *shardingMap
-		User          *user
+		Interest         *interest
+		Login            *login
+		News             *news
+		Session          *session
+		User             *user
+		UserHasFriends   *userHasFriends
+		UserHasInterests *userHasInterests
 	}
-	dialogMessage struct {
+	interest struct {
 		dbRo *sql.DB
 		dbRw *sql.DB
 	}
@@ -18,11 +22,11 @@ type (
 		dbRo *sql.DB
 		dbRw *sql.DB
 	}
-	session struct {
+	news struct {
 		dbRo *sql.DB
 		dbRw *sql.DB
 	}
-	shardingMap struct {
+	session struct {
 		dbRo *sql.DB
 		dbRw *sql.DB
 	}
@@ -30,14 +34,24 @@ type (
 		dbRo *sql.DB
 		dbRw *sql.DB
 	}
+	userHasFriends struct {
+		dbRo *sql.DB
+		dbRw *sql.DB
+	}
+	userHasInterests struct {
+		dbRo *sql.DB
+		dbRw *sql.DB
+	}
 )
 
 func New(dbRo *sql.DB, dbRw *sql.DB) *DAO {
 	return &DAO{
-		DialogMessage: &dialogMessage{dbRo: dbRo, dbRw: dbRw},
-		Login:         &login{dbRo: dbRo, dbRw: dbRw},
-		Session:       &session{dbRo: dbRo, dbRw: dbRw},
-		ShardingMap:   &shardingMap{dbRo: dbRo, dbRw: dbRw},
-		User:          &user{dbRo: dbRo, dbRw: dbRw},
+		Interest:         &interest{dbRo: dbRo, dbRw: dbRw},
+		Login:            &login{dbRo: dbRo, dbRw: dbRw},
+		News:             &news{dbRo: dbRo, dbRw: dbRw},
+		Session:          &session{dbRo: dbRo, dbRw: dbRw},
+		User:             &user{dbRo: dbRo, dbRw: dbRw},
+		UserHasFriends:   &userHasFriends{dbRo: dbRo, dbRw: dbRw},
+		UserHasInterests: &userHasInterests{dbRo: dbRo, dbRw: dbRw},
 	}
 }

@@ -9,9 +9,12 @@ import (
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/server"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/server/handlers"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/test"
+	"os"
+	"strconv"
 )
 
-func main() {
+func httpd() {
 
 	// Загрузка конфигурации
 	var envFile string
@@ -46,20 +49,56 @@ func main() {
 	// Зарегистрировать индексный маршрут.
 	s.GET("/", h.Root)
 
+	s.WS("/ws-newslist", h.WsNewsList)
+
 	// Зарегистрировать login маршрут.
 	s.POST("/login", h.Login)
 
 	// Зарегистрировать маршрут для профиля пользователя.
 	s.GET("/profile", h.Profile)
 
+	// Зарегистрировать маршрут для списка новостей.
+	s.GET("/news/range/{offset}/{limit}", h.NewsList)
+
+	s.POST("/news/add", h.CreateNews)
+
+	// Зарегистрировать маршрут для списка пользователей.
+	s.GET("/users/all", h.UserList)
+
+	// Зарегистрировать маршруты для поиска пользователей.
+	s.GET("/users/search/{name}/{surname}", h.UserSearch)
+	s.GET("/users/search-by/{field}/{value}", h.SearchBy)
+
+	// Зарегистрировать маршрут для списка пользователей.
+	s.GET("/user/{id}", h.User)
+
+	// Зарегистрировать маршрут для создания пользователя.
+	s.POST("/user", h.Create)
+
+	// Зарегистрировать маршрут для добавления друга.
+	s.POST("/friend", h.UserFriend)
+
 	// Зарегистрировать маршрут для Sign-in пользователя.
 	s.POST("/signin", h.UserSignIn)
 
-	s.GET("/messages", h.GetMessages)
-	s.POST("/message", h.PostMessage)
+	// Зарегистрировать маршрут для Sign-in пользователя.
+	s.POST("/save", h.UserSave)
 
 	// Run
 	if err := s.ListenAndServe(); err != nil {
 		panic(err)
+	}
+}
+
+func main() {
+
+	size := len(os.Args)
+	if size == 2 {
+		upperBound, err := strconv.ParseInt(os.Args[1], 10, 32)
+		if err == nil {
+			test.FakeIt(upperBound)
+		}
+	} else {
+		httpd()
 	}
 }

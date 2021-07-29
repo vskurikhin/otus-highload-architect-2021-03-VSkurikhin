@@ -12,5 +12,3 @@ export const POST = {
         'Content-Type': 'application/json'
     }
 }
-
-export const AFTER_LOGIN = '/messages'
