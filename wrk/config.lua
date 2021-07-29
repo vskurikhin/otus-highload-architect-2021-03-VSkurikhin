@@ -2,15 +2,15 @@
 math.randomseed(os.time())
 math.random(); math.random(); math.random()
 
-firstNames = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}
-surNames = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}
+firstNames = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'}
+surNames = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'}
 
 request = function()
   rangeFirstNames = table.getn(firstNames) - 1
   rangeSurNames = table.getn(surNames) - 1
   path = "/users/search/" .. firstNames[math.random(rangeFirstNames)] .. "/" .. surNames[math.random(rangeSurNames)]
   -- Return the request object with the current URL path
-  return wrk.format('GET', path, {['Host'] = 'localhost', ["Cookie"] = "acs_jwt=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MjAwOTY4MjcsImp0aSI6IjhlMWY3MDhlLWY5YWItNGEyYy1iZjAyLTc0NDYyNTQ1MDU3OSJ9.GIuWSVtd9YUO-cEiQFgNeZetfKMWIdVs8ozLkthTmLHSuetfhd3UAna6rhpZhT0oFrB-7sE0fR7WXoL54ZtdXg;"})
+  return wrk.format('GET', path, {['Host'] = 'localhost', ["Cookie"] = "_ga=GA1.1.100769609.1603607547; acs_jwt=___JWT___"})
 end
 
 response = function(status, headers, body)

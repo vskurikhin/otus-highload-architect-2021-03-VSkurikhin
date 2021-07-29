@@ -4,13 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/atreugo/websocket"
-	_ "github.com/go-sql-driver/mysql"
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/cache"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/pubsub"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/security"
 	"log"
 	"os"
@@ -18,30 +16,10 @@ import (
 
 // Server определяет параметры для запуска HTTP-сервера.
 type Server struct {
-	Cache  *cache.Redis
+	Cache  *cache.Tarantool
 	DAO    *domain.DAO
 	JWT    *security.JWT
-	PubSub *pubsub.Redis
 	Server *sa.Atreugo
-}
-
-func gracefulClose(dbRo *sql.DB, dbRw *sql.DB) {
-	// Настраиваем канал для отправки сигнальных уведомлений.
-	// Нужно использовать буферизованный канал или есть риск пропустить сигнал
-	// если не готовы принять сигнал при отправке.
-	c := make(chan os.Signal, 1)
-
-	// Блокировать до получения сигнала.
-	s := <-c
-	fmt.Println("Got signal:", s)
-	err := dbRw.Close()
-	if err != nil {
-		log.Println(err)
-	}
-	err = dbRo.Close()
-	if err != nil {
-		log.Println(err)
-	}
 }
 
 // New инициализирует сервер для ответа на сетевые запросы HTTP.
@@ -57,13 +35,11 @@ func New(cfg *config.Config) *Server {
 	dbRw := openDBRw(cfg)
 	go gracefulClose(dbRo, dbRw)
 	versionDB(dbRw)
-	redis := cache.CreateRedisCacheClient(cfg)
 
 	return &Server{
-		Cache:  redis,
+		Cache:  cache.CreateTarantoolCacheClient(cfg),
 		DAO:    domain.New(dbRo, dbRw),
 		JWT:    security.New(cfg),
-		PubSub: pubsub.NewRedis(redis.Cache),
 		Server: sa.New(c),
 	}
 }
@@ -74,15 +50,11 @@ func (s *Server) UseBefore(fns sa.Middleware) *sa.Router {
 
 func (s *Server) StaticCustom() *sa.Path {
 
-	pathRewriteCalled := false
-
 	return s.Server.StaticCustom("/", &sa.StaticFS{
 		Root:               "web/public",
 		GenerateIndexPages: true,
 		AcceptByteRange:    true,
 		PathRewrite: func(ctx *sa.RequestCtx) []byte {
-			pathRewriteCalled = true
-
 			return ctx.Path()
 		},
 		PathNotFound: func(ctx *sa.RequestCtx) error {
@@ -122,6 +94,25 @@ func (s *Server) WS(url string, viewFn websocket.View) *sa.Path {
 // ListenAndServe запускает сервер для ответа на сетевые запросы HTTP.
 func (s *Server) ListenAndServe() error {
 	return s.Server.ListenAndServe()
+}
+
+func gracefulClose(dbRo *sql.DB, dbRw *sql.DB) {
+	// Настраиваем канал для отправки сигнальных уведомлений.
+	// Нужно использовать буферизованный канал или есть риск пропустить сигнал
+	// если не готовы принять сигнал при отправке.
+	c := make(chan os.Signal, 1)
+
+	// Блокировать до получения сигнала.
+	s := <-c
+	fmt.Println("Got signal:", s)
+	err := dbRw.Close()
+	if err != nil {
+		log.Println(err)
+	}
+	err = dbRo.Close()
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func openDBRw(cfg *config.Config) *sql.DB {
