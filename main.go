@@ -81,9 +81,6 @@ func httpd() {
 	// Зарегистрировать маршрут для Sign-in пользователя.
 	s.POST("/signin", h.UserSignIn)
 
-	// Зарегистрировать маршрут для Sign-in пользователя.
-	s.POST("/save", h.UserSave)
-
 	// Run
 	if err := s.ListenAndServe(); err != nil {
 		panic(err)
