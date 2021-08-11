@@ -53,7 +53,8 @@ func (h *Handlers) postMessage(ctx *sa.RequestCtx) (*uint64, error) {
 	if err != nil {
 		return nil, err
 	}
-	shardId := domain.GetShardId(*toUser.City)
+	shardId := h.Server.Ring.GetId(*toUser.City)
+	hashId := h.Server.Ring.GetHashId(*toUser.City)
 	id := utils.RandomIdWithShardId(shardId)
 	if logger.DebugEnabled() {
 		logger.Debugf("shardId: %d", shardId)
@@ -64,6 +65,7 @@ func (h *Handlers) postMessage(ctx *sa.RequestCtx) (*uint64, error) {
 		FromUser: user.Id,
 		ToUser:   toUser.Id,
 		Message:  m.Message,
+		HashId:   hashId,
 	}
 	if logger.DebugEnabled() {
 		logger.Debugf("got message: %m", message.String())
@@ -118,7 +120,7 @@ func (h *Handlers) getDialogMessages(id uint64) ([]domain.UserDialogMessage, err
 	if err != nil {
 		return nil, err
 	}
-	shardId := domain.GetShardId(*user.City)
+	shardId := h.Server.Ring.GetId(*user.City)
 	messages, err := h.Server.DAO.DialogMessage.GetAllByUserId(shardId, id)
 
 	if err != nil {

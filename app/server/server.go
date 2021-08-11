@@ -7,6 +7,7 @@ import (
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/consistenthash"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/security"
 	"log"
@@ -15,7 +16,7 @@ import (
 
 // Server определяет параметры для запуска HTTP-сервера.
 type Server struct {
-	// Cache  *cache.Tarantool
+	Ring   *consistenthash.Ring
 	DAO    *domain.DAO
 	JWT    *security.JWT
 	Server *sa.Atreugo
@@ -40,8 +41,12 @@ func New(cfg *config.Config) *Server {
 		panic(err)
 	}
 
+	ring := consistenthash.NewRing()
+	ring.AddNode(0, "db-node-1")
+	ring.AddNode(1, "db-node-2")
+
 	return &Server{
-		// Cache:  cache.CreateTarantoolCacheClient(cfg),
+		Ring:   ring,
 		DAO:    dao,
 		JWT:    security.New(cfg),
 		Server: sa.New(c),

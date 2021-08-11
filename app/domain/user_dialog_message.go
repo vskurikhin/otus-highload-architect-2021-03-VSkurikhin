@@ -2,6 +2,7 @@ package domain
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/savsgio/go-logger/v2"
 )
 
@@ -32,18 +33,19 @@ const SELECT_ALL_DIALOG_MESSAGE_BY_SHARD_ID = `
           FROM dialog_message dm
           JOIN ` + "`user`" + ` fu ON fu.id = dm.from_user
           JOIN ` + "`user`" + ` tu ON tu.id = dm.to_user
-         WHERE dm.shard_id = ? AND dm.to_user = ?`
+         WHERE dm.shard_id = %d AND dm.to_user = ?`
 
 func (d *dialogMessage) GetAllByUserId(shardId uint8, userId uint64) ([]UserDialogMessage, error) {
 
-	stmtOut, err := d.dbRo.Prepare(SELECT_ALL_DIALOG_MESSAGE_BY_SHARD_ID)
+	sql := fmt.Sprintf(SELECT_ALL_DIALOG_MESSAGE_BY_SHARD_ID, shardId)
+	stmtOut, err := d.dbRo.Prepare(sql)
 
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
 	defer func() { _ = stmtOut.Close() }() // Закрывается оператор, когда выйдете из функции
 
-	rows, err := stmtOut.Query(shardId, userId) // .Scan(&dm.Id, &dm.FromUser, &dm.ToUser, &dm.Message, &dm.ParentId)
+	rows, err := stmtOut.Query(userId) // .Scan(&dm.Name, &dm.FromUser, &dm.ToUser, &dm.Message, &dm.ParentId)
 	if err != nil {
 		return nil, err
 	}

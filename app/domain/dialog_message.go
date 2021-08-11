@@ -2,6 +2,7 @@ package domain
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/savsgio/go-logger/v2"
 )
 
@@ -12,6 +13,7 @@ type DialogMessage struct {
 	ToUser   uint64
 	Message  string
 	ParentId *uint64
+	HashId   uint8
 }
 
 func (d *DialogMessage) String() string {
@@ -29,74 +31,25 @@ func (d *DialogMessage) Marshal() []byte {
 }
 
 func (d *dialogMessage) Create(shardId uint8, dm *DialogMessage) error {
-
-	switch shardId {
-	case 1:
-		return d.createOnShardId1(dm)
-	default:
-		return d.create(dm)
-	}
+	return d.create(dm, shardId)
 }
 
-const INSERT_INTO_DIALOG_MESSAGE = `
-	INSERT INTO dialog_message
-	    (shard_id, id, from_user, to_user, message, parent_id)
-	     VALUES
-	    (0, ?, ?, ?, ?, ?)`
+const INSERT_INTO_DIALOG_MESSAGE = "INSERT INTO dialog_message " +
+	" (shard_id, id, from_user, to_user, message, parent_id, hash_id) " +
+	"  VALUES " +
+	" (%d, ?, ?, ?, ?, ?, ?)"
 
-func (d *dialogMessage) create(dm *DialogMessage) error {
+func (d *dialogMessage) create(dm *DialogMessage, shardId uint8) error {
 	// Подготовить оператор для вставки данных
-	stmtIns, err := d.dbRw.Prepare(INSERT_INTO_DIALOG_MESSAGE) // ? = заполнитель
+	sql := fmt.Sprintf(INSERT_INTO_DIALOG_MESSAGE, shardId)
+	logger.Debugf("create sql: %s", sql)
+	stmtIns, err := d.dbRw.Prepare(sql) // ? = заполнитель
 
 	if err != nil {
 		return err // правильная обработка ошибок вместо паники
 	}
 	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
-	_, err = stmtIns.Exec(dm.Id, dm.FromUser, dm.ToUser, dm.Message, dm.ParentId)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-const INSERT_INTO_DIALOG_MESSAGE_SHARD_ID_1 = "INSERT INTO dialog_message" +
-	" (shard_id, id, from_user, to_user, message, parent_id)" +
-	" VALUES (1, ?, ?, ?, ?, ?)"
-
-func (d *dialogMessage) createOnShardId1(dm *DialogMessage) error {
-	// Подготовить оператор для вставки данных
-	stmtIns, err := d.dbRw.Prepare(INSERT_INTO_DIALOG_MESSAGE_SHARD_ID_1) // ? = заполнитель
-
-	if err != nil {
-		return err // правильная обработка ошибок вместо паники
-	}
-	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
-	_, err = stmtIns.Exec(dm.Id, dm.FromUser, dm.ToUser, dm.Message, dm.ParentId)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-const UPDATE_DIALOG_MESSAGE_MESSAGE = `
-	UPDATE dialog_message
-	   SET message = ?
-	 WHERE shard_id = ? AND id = ?`
-
-func (d *dialogMessage) update(dm *DialogMessage) error {
-	// Подготовить оператор для вставки данных
-	stmtIns, err := d.dbRw.Prepare(UPDATE_DIALOG_MESSAGE_MESSAGE) // ? = заполнитель
-
-	if err != nil {
-		return err // правильная обработка ошибок вместо паники
-	}
-	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
-
-	_, err = stmtIns.Exec(dm.Message, dm.ShardId, dm.Id)
+	_, err = stmtIns.Exec(dm.Id, dm.FromUser, dm.ToUser, dm.Message, dm.ParentId, dm.HashId)
 
 	if err != nil {
 		return err

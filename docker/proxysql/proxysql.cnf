@@ -67,12 +67,13 @@ mysql_users:
 # Basically, these define the rules used to classify and route the incoming MySQL traffic,
 # according to various criteria (patterns matched, user used to run the query, etc.).
 # @https://proxysql.com/documentation/main-runtime/#mysql_query_rules
+#        match_pattern="INSERT INTO dialog_message  \(shard_id, id, from_user, to_user, message, parent_id, hash_id\)   VALUES  \(1,"
 mysql_query_rules:
 (
     {
         rule_id=1
         active=1
-        match_pattern="INSERT INTO dialog_message \(shard_id, id, from_user, to_user, message\) VALUES \(1, "
+        match_pattern="VALUES  \(1,"
         destination_hostgroup=1
         apply=1
     },
