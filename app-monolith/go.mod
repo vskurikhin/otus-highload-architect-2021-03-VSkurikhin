@@ -1,4 +1,4 @@
-module github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin
+module github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-monolith
 
 // +heroku goVersion go1.15
 go 1.15

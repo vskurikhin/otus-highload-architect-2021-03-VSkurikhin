@@ -6,9 +6,9 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"github.com/savsgio/go-logger/v2"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/server"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/server/handlers"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-monolith/config"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-monolith/server"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-monolith/server/handlers"
 )
 
 func main() {
