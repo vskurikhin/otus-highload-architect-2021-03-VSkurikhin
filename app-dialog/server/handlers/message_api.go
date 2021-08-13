@@ -6,8 +6,8 @@ import (
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/valyala/fasthttp"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-lib/domain"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-lib/utils"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-dialog/domain"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-dialog/utils"
 	"strings"
 )
 
