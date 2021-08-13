@@ -23,6 +23,7 @@ require (
 	github.com/pressly/goose v2.7.0+incompatible // indirect
 	github.com/savsgio/atreugo/v11 v11.7.0
 	github.com/savsgio/go-logger/v2 v2.1.2
+	github.com/tarantool/go-tarantool v0.0.0-20210330210617-56fe55c5fa5c // indirect
 	github.com/valyala/fasthttp v1.24.0
 	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/crypto v0.0.0-20210415154028-4f45737414dc

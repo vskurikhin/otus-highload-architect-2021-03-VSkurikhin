@@ -47,13 +47,14 @@ func (h *Handlers) userSearch(ctx *sa.RequestCtx) ([]string, error) {
 		return nil, err
 	}
 	if logger.DebugEnabled() {
-		logger.Debugf("got user name: %s, surname: %s, profile", name, surname, p)
+		logger.Debugf("got user name: %s, surname: %s, profile", name, surname)
 	}
 
 	if err != nil {
 		return nil, err
 	}
 	users, err := h.Server.DAO.User.SearchUserList(p.Id, name, surname)
+	// users, err := h.Server.Cache.UserIndexNameSearch(name, surname)
 
 	if err != nil {
 		return nil, err
@@ -103,7 +104,7 @@ func (h *Handlers) searchBy(ctx *sa.RequestCtx) ([]string, error) {
 		return nil, err
 	}
 	if logger.DebugEnabled() {
-		logger.Debugf("got user field: %s, value: %s, profile", field, value, p)
+		logger.Debugf("got user field: %s, value: %s, profile", field, value)
 	}
 
 	if err != nil {
