@@ -1,7 +1,7 @@
 module github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-lib
 
 // +heroku goVersion go1.15
-go 1.15
+go 1.16
 
 require (
 	github.com/ClickHouse/clickhouse-go v1.4.3 // indirect
