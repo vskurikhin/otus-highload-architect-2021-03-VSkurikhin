@@ -15,9 +15,10 @@ import (
 
 // Server определяет параметры для запуска HTTP-сервера.
 type Server struct {
-	DAO    *domain.DAO
-	JWT    *security.JWT
-	Server *sa.Atreugo
+	DAO      *domain.DAO
+	JWT      *security.JWT
+	Server   *sa.Atreugo
+	Services *config.Services
 }
 
 // New инициализирует сервер для ответа на сетевые запросы HTTP.
@@ -40,9 +41,10 @@ func New(cfg *config.Config) *Server {
 	}
 
 	return &Server{
-		DAO:    dao,
-		JWT:    security.New(cfg),
-		Server: sa.New(c),
+		DAO:      dao,
+		JWT:      security.New(cfg),
+		Server:   sa.New(c),
+		Services: &config.Services{Dialog: cfg.Services.Dialog},
 	}
 }
 

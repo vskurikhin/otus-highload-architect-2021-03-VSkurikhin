@@ -12,6 +12,7 @@ type (
 		DataBase DataBase
 		Server   Server
 		Logging  Logging
+		Services Services
 	}
 	// DataBase обеспечивает конфигурацию подключения к БД.
 	Cache struct {
@@ -40,8 +41,11 @@ type (
 	// Server предоставляет конфигурацию сервера.
 	Server struct {
 		Host       string `envconfig:"SERVER_HOST" default:"0.0.0.0"`
-		Port       string `envconfig:"PORT" default:"8080"`
+		Port       string `envconfig:"PORT" default:"8079"`
 		JWTSignKey string `envconfig:"JWT_SIGN_KEY" default:"TestForFastHTTPWithJWT"`
+	}
+	Services struct {
+		Dialog string `envconfig:"DIALOG" default:"http://localhost:8078"`
 	}
 )
 
