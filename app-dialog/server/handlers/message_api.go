@@ -44,6 +44,7 @@ func (h *Handlers) postMessage(ctx *sa.RequestCtx) (*uint64, error) {
 	}
 
 	var m message
+	logger.Infof("%s", ctx.PostBody())
 	err = json.Unmarshal(ctx.PostBody(), &m)
 
 	if err != nil {
