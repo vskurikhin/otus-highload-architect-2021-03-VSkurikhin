@@ -8,16 +8,6 @@ modify_column_name
 Виктор Скурихин (Victor Skurikhin)
 
 - [Лекции](doc/lectures.md)
-<<<<<<< HEAD
-    1. [Проблемы высоких нагрузок](doc/lectures.md#проблемы-высоких-нагрузок)
-- [Домашние задания](doc/homeworks.md)
-    1. [Заготовка для социальной сети](doc/solutions_of_homework.md#заготовка-для-социальной-сети)
-        - [Заготовка для социальной сети](doc/solutions_of_homework.md#заготовка-для-социальной-сети)
-        - [Производительность индексов](doc/solutions_of_homework.md#производительность-индексов)
-        - [Лента новостей социальной сети](solutions_of_homework.md#лента-новостей-социальной-сети)
-        - [Полусинхронная репликация](doc/solutions_of_homework.md#полусинхронная-репликация)
-- [Разное](doc/other.md)
-=======
   1. [Проблемы высоких нагрузок](doc/lectures.md#проблемы-высоких-нагрузок)
 - [Домашние задания](doc/homeworks.md)
   1. [Заготовка для социальной сети](doc/solutions_of_homework.md#заготовка-для-социальной-сети)
@@ -25,6 +15,7 @@ modify_column_name
      - [Производительность индексов](doc/solutions_of_homework.md#производительность-индексов)
      - [Лента новостей социальной сети](solutions_of_homework.md#лента-новостей-социальной-сети)
      - [Полусинхронная репликация](doc/solutions_of_homework.md#полусинхронная-репликация)
+     - [In-Memory СУБД](doc/solutions_of_homework.md#in-memory-субд)
 - [Разное](doc/other.md)
 
 # Установка
@@ -59,4 +50,3 @@ modify_column_name
 - https://golang.org/x/crypto/bcrypt
 - https://golang.org/x/sync
 - https://gopkg.in/yaml.v2
->>>>>>> 8fe67f3d8cb85b763f0eda2466c0db9477cd163d
