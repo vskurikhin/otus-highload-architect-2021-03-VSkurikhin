@@ -1,5 +1,5 @@
-package otus_highload_architect_2021_03_VSkurikhin
+package lib
 
 func Version() string {
-	return "0.1"
+	return "0.1.SNAPSHOT"
 }
