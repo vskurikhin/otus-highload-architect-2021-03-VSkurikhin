@@ -2,7 +2,7 @@ package security
 
 import (
 	"errors"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-main/domain"
 	"regexp"
 )
 

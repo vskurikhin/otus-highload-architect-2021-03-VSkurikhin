@@ -2,7 +2,7 @@ package security
 
 import (
 	"errors"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-main/config"
 	"strconv"
 	"time"
 

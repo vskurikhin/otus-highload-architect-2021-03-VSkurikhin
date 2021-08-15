@@ -6,8 +6,9 @@ import (
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/valyala/fasthttp"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/security"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-dialog/config"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-dialog/domain"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-dialog/security"
 	"strconv"
 )
 
@@ -87,4 +88,22 @@ func (h *Handlers) userSignIn(ctx *sa.RequestCtx) (*domain.Token, error) {
 		return nil, err
 	}
 	return h.generateToken(ctx, l.Id), nil
+}
+
+func (h *Handlers) generateToken(ctx *sa.RequestCtx, sessionId uint64) *domain.Token {
+
+	tokenString, expireAt := h.Server.JWT.GenerateToken(sessionId)
+
+	// Set cookie for domain
+	cookie := fasthttp.AcquireCookie()
+	defer fasthttp.ReleaseCookie(cookie)
+
+	cookie.SetKey(config.ACCESS_TOKEN_COOKIE)
+	cookie.SetValue(tokenString)
+	cookie.SetExpire(expireAt)
+	ctx.Response.Header.SetCookie(cookie)
+
+	token := domain.Token{Token: tokenString}
+
+	return &token
 }

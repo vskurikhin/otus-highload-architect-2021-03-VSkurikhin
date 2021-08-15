@@ -6,10 +6,10 @@ import (
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/valyala/fasthttp"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/config"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/domain"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/security"
-	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app/utils"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-main/config"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-main/domain"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-main/security"
+	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-main/utils"
 	"golang.org/x/crypto/bcrypt"
 )
 
