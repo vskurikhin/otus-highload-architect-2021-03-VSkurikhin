@@ -5,7 +5,6 @@ go 1.15
 
 require (
 	github.com/ClickHouse/clickhouse-go v1.4.3 // indirect
-	github.com/andybalholm/brotli v1.0.3 // indirect
 	github.com/atreugo/websocket v1.0.8 // indirect
 	github.com/brianvoe/gofakeit/v6 v6.4.1 // indirect
 	github.com/denisenkom/go-mssqldb v0.10.0 // indirect
@@ -26,7 +25,6 @@ require (
 	github.com/savsgio/go-logger/v2 v2.1.2
 	github.com/tarantool/go-tarantool v0.0.0-20210330210617-56fe55c5fa5c // indirect
 	github.com/valyala/fasthttp v1.24.0
-	github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin v0.0.0-20210727095143-7fa4e0be4525 // indirect
 	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/crypto v0.0.0-20210415154028-4f45737414dc
 	gopkg.in/yaml.v2 v2.4.0
