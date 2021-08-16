@@ -1,11 +1,12 @@
 import './Login.css'
 
+import PropTypes from 'prop-types'
 import React, {useState} from 'react'
 import {Input} from "semantic-ui-react"
 import {useHistory} from "react-router-dom"
 
 import deleteCookie from "../../lib/deleteCookie";
-import {AFTER_LOGIN, POST} from "../../lib/consts";
+import {POST} from "../../lib/consts";
 
 async function loginUser(credentials) {
     return fetch('/login', {
@@ -30,7 +31,7 @@ export default function Login() {
         if (token.Code > 399 && token.Message) {
             history.push('/error/' + token.Message)
         } else {
-            history.push(AFTER_LOGIN)
+            history.push('/newslist')
         }
     }
 

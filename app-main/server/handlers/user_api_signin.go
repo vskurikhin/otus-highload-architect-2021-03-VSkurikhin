@@ -3,12 +3,14 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"github.com/google/uuid"
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/valyala/fasthttp"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-main/domain"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-main/security"
 	"strconv"
+	"strings"
 )
 
 func (h *Handlers) UserSignIn(ctx *sa.RequestCtx) error {
@@ -49,10 +51,12 @@ func (h *Handlers) userSignIn(ctx *sa.RequestCtx) (*domain.Token, error) {
 	if logger.DebugEnabled() {
 		logger.Debugf("got s: %s", s.String())
 	}
+	id := uuid.New()
 	password := security.HashAndSalt([]byte(s.Password))
-	login := domain.Login{Username: s.Username, Password: password}
-	l, err = h.Server.DAO.Login.Create(&login)
-	logger.Debugf("l: %s", l)
+	login := domain.Login{Username: s.Username}
+	login.SetId(&id)
+	login.SetPassword(password)
+	err = h.Server.DAO.Login.Create(&login)
 
 	if err != nil {
 		return nil, err
@@ -67,24 +71,32 @@ func (h *Handlers) userSignIn(ctx *sa.RequestCtx) (*domain.Token, error) {
 	if err != nil {
 		return nil, err
 	}
-	user := domain.User{
-		Id:       l.Id,
-		Username: s.Username,
-		Name:     &s.Name,
-		SurName:  &s.Surname,
-		Age:      int(age),
-		Sex:      int(sex),
-		City:     &s.City,
-		Friend:   true,
-	}
+	ins := strings.Split(s.Interests, "\n")
+	user := domain.Create(&id, s.Username, &s.Name, &s.Surname, int(age), int(sex), ins, &s.City, true)
 
 	if logger.DebugEnabled() {
 		logger.Debugf("got user: %s", user.String())
 	}
-	_, err = h.Server.DAO.User.Create(&user)
+	err = h.Server.DAO.User.Create(user)
 
 	if err != nil {
 		return nil, err
 	}
-	return h.generateToken(ctx, l.Id), nil
+	err = h.Server.DAO.Interest.OldCreateInterests(ins)
+
+	if err != nil && logger.DebugEnabled() {
+		logger.Debugf("OldCreateInterests has error: %v", err)
+	}
+	interests, _ := h.Server.DAO.Interest.GetExistsInterests(ins)
+	err = h.Server.DAO.UserHasInterests.LinkInterests(user, interests)
+
+	if err != nil && logger.DebugEnabled() {
+		logger.Debugf("LinkInterests has error: %v", err)
+	}
+	err = h.Server.DAO.Session.UpdateOrCreate(&login, id)
+
+	if err != nil && logger.DebugEnabled() {
+		logger.Debugf("UpdateOrCreate has error: %v", err)
+	}
+	return h.generateToken(ctx, id), nil
 }

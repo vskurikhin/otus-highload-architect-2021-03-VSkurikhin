@@ -2,13 +2,35 @@ package domain
 
 import (
 	"encoding/json"
+	"github.com/google/uuid"
 	"github.com/savsgio/go-logger/v2"
 )
 
 type Login struct {
-	Id       uint64
+	id       *uuid.UUID
 	Username string
-	Password string
+	password string
+}
+
+func (l *Login) Id() *uuid.UUID {
+	return l.id
+}
+
+func (l *Login) SetId(id *uuid.UUID) {
+	l.id = id
+}
+
+func (l *Login) NewId() {
+	id := uuid.New()
+	l.id = &id
+}
+
+func (l *Login) Password() string {
+	return l.password
+}
+
+func (l *Login) SetPassword(password string) {
+	l.password = password
 }
 
 func (l *Login) String() string {
@@ -25,37 +47,26 @@ func (l *Login) Marshal() []byte {
 	return login
 }
 
-const INSERT_INTO_LOGIN_USERNAME_PASSWORD = `
-	INSERT INTO login (username, password) VALUES (?, ?)`
-
-func (l *login) Create(login *Login) (*Login, error) {
+func (l *login) Create(login *Login) error {
 	// Подготовить оператор для вставки данных
-	stmtIns, err := l.dbRw.Prepare(INSERT_INTO_LOGIN_USERNAME_PASSWORD) // ? = заполнитель
+	stmtIns, err := l.dbRw.Prepare("INSERT INTO login (id, username, password) VALUES (?, ?, ?)") // ? = заполнитель
 
 	if err != nil {
-		return login, err // правильная обработка ошибок вместо паники
+		return err // правильная обработка ошибок вместо паники
 	}
 	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
 
-	res, err := stmtIns.Exec(login.Username, login.Password)
+	id, err := login.Id().MarshalBinary()
+	_, err = stmtIns.Exec(id, login.Username, login.Password())
 	if err != nil {
-		return login, err
+		return err
 	}
-	id, err := (res.LastInsertId())
-	if err != nil {
-		return login, err
-	}
-	login.Id = uint64(id)
-
-	return login, nil
+	return nil
 }
-
-const SELECT_ID_USERNAME_PASSWORD_FROM_LOGIN = `
-	SELECT id, username, password FROM login WHERE username = ?`
 
 func (l *login) Read(username string) (*Login, error) {
 
-	stmtOut, err := l.dbRw.Prepare(SELECT_ID_USERNAME_PASSWORD_FROM_LOGIN)
+	stmtOut, err := l.dbRw.Prepare(`SELECT id, username, password FROM login WHERE username = ?`)
 
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
@@ -63,9 +74,11 @@ func (l *login) Read(username string) (*Login, error) {
 	defer func() { _ = stmtOut.Close() }() // Закрывается оператор, когда выйдете из функции
 
 	var login Login
-	err = stmtOut.QueryRow(username).Scan(&login.Id, &login.Username, &login.Password)
+	err = stmtOut.QueryRow(username).
+		Scan(&login.id, &login.Username, &login.password)
 	if err != nil {
 		return nil, err
 	}
+
 	return &login, nil
 }
