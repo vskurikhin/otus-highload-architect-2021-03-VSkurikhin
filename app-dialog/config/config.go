@@ -16,16 +16,15 @@ type (
 	// DataBase обеспечивает конфигурацию подключения к БД.
 	Cache struct {
 		Host     string `envconfig:"CACHE_HOST" default:"localhost"`
-		Port     int    `envconfig:"CACHE_PORT" default:"6379"`
-		Username string `envconfig:"CACHE_USERNAME" default:"hl"`
-		Password string `envconfig:"CACHE_PASSWORD" default:"password"`
+		Port     int    `envconfig:"CACHE_PORT" default:"3301"`
+		Username string `envconfig:"CACHE_USERNAME" default:"guest"`
 	}
 	// DataBase обеспечивает конфигурацию подключения к БД.
 	DataBase struct {
 		HostRw   string `envconfig:"DB_HOST_RW" default:"localhost"`
-		PortRw   int    `envconfig:"DB_PORT_RW" default:"3306"`
+		PortRw   int    `envconfig:"DB_PORT_RW" default:"6033"`
 		HostRo   string `envconfig:"DB_HOST_RO" default:"localhost"`
-		PortRo   int    `envconfig:"DB_PORT_RO" default:"3306"`
+		PortRo   int    `envconfig:"DB_PORT_RO" default:"6033"`
 		DBName   string `envconfig:"DB_NAME" default:"hl"`
 		Username string `envconfig:"DB_USERNAME" default:"hl"`
 		Password string `envconfig:"DB_PASSWORD" default:"password"`

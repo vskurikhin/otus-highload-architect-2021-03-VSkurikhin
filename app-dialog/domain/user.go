@@ -5,65 +5,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/google/uuid"
 	"github.com/savsgio/go-logger/v2"
-	"strings"
+	"strconv"
 )
 
 type User struct {
-	id        *uuid.UUID
-	Username  string
-	Name      *string
-	SurName   *string
-	Age       int
-	Sex       int
-	Interests []string
-	City      *string
-	Friend    bool
-}
-
-func Create(
-	id *uuid.UUID,
-	username string,
-	name *string,
-	surname *string,
-	age int,
-	sex int,
-	interests []string,
-	city *string,
-	friend bool,
-) *User {
-	return &User{
-		id:        id,
-		Username:  username,
-		Name:      name,
-		SurName:   surname,
-		Age:       age,
-		Sex:       sex,
-		Interests: interests,
-		City:      city,
-		Friend:    friend,
-	}
-}
-
-func (u *User) Id() *uuid.UUID {
-	return u.id
-}
-
-func (u *User) SetId(id *uuid.UUID) {
-	u.id = id
-}
-
-func (u *User) NewId() {
-	id := uuid.New()
-	u.id = &id
-}
-
-func (u *User) StringInterests() string {
-	if len(u.Interests) > 0 {
-		return `["` + strings.Join(u.Interests, `", "`) + `"]`
-	}
-	return ""
+	Id       uint64
+	Username string
+	Name     *string
+	SurName  *string
+	Age      int
+	Sex      int
+	City     *string
+	Friend   bool
 }
 
 func (u *User) String() string {
@@ -72,170 +26,117 @@ func (u *User) String() string {
 
 func (u *User) Marshal() []byte {
 
-	user, err := json.Marshal(struct {
-		Id        *uuid.UUID
-		Username  string
-		Name      *string
-		SurName   *string
-		Age       int
-		Sex       int
-		Interests []string
-		City      *string
-		Friend    bool
-	}{
-		Id:        u.id,
-		Username:  u.Username,
-		Name:      u.Name,
-		SurName:   u.SurName,
-		Age:       u.Age,
-		Sex:       u.Sex,
-		Interests: u.Interests,
-		City:      u.City,
-		Friend:    u.Friend,
-	})
+	user, err := json.Marshal(*u)
 	if err != nil {
-		logger.Errorf("%v", err)
+		logger.Error(err)
 		return nil
 	}
 	return user
 }
 
-const INSERT_INTO_USER = `
-    INSERT INTO user
-	  (id, username, name, surname, age, sex, city)
-      VALUES
-      (?, ?, ?, ?, ?, ?, ?)`
+func (u *user) ReadUserById(id uint64) (*User, error) {
 
-func (u *user) Create(user *User) error {
-	// Подготовить оператор для вставки данных
-	stmtIns, err := u.dbRw.Prepare(INSERT_INTO_USER) // ? = заполнитель
-
-	if err != nil {
-		return err // правильная обработка ошибок вместо паники
-	}
-	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
-
-	id, err := user.Id().MarshalBinary()
-	_, err = stmtIns.Exec(id, user.Username, user.Name, user.SurName, user.Age, user.Sex, user.City)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (u *user) ReadUser(sid string) (*User, error) {
-
-	id, err := uuid.Parse(sid)
-
-	if err != nil {
-		return nil, err // правильная обработка ошибок вместо паники
-	}
 	user, err := u.readUser(id)
-
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
 }
 
-const SELECT_USER_JOIN_INTERESTS_WHERE_ID = `
-    SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests)
-      FROM user u
-      LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
-      LEFT JOIN interest i ON i.id = uhi.interest_id
-     WHERE u.id = ?
-     GROUP BY u.id, username, name, surname, age, sex, city`
+func (u *user) ReadUserBySid(sid string) (*User, error) {
 
-func (u *user) readUser(id uuid.UUID) (*User, error) {
+	id, err := strconv.ParseUint(sid, 10, 64)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	return u.ReadUserById(id)
+}
 
-	stmtOut, err := u.dbRo.Prepare(SELECT_USER_JOIN_INTERESTS_WHERE_ID)
+const SELECT_ID_USERNAME_NAME_SURNAME_AGE_SEX_CITY_FROM_USER = `
+    SELECT id, username, name, surname, age, sex, city
+      FROM user
+     WHERE id = ?`
+
+func (u *user) readUser(id uint64) (*User, error) {
+
+	stmtOut, err := u.dbRo.Prepare(SELECT_ID_USERNAME_NAME_SURNAME_AGE_SEX_CITY_FROM_USER)
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
 	defer func() { _ = stmtOut.Close() }()
 
 	var user User
-	var interests string
-	idBytes, err := id.MarshalBinary()
-	if err != nil {
-		return nil, err
-	}
-	err = stmtOut.QueryRow(idBytes).
-		Scan(&user.id, &user.Username, &user.Name, &user.SurName, &user.Age, &user.Sex, &user.City, &interests)
-	if err != nil {
-		return nil, err
-	}
-	err = json.Unmarshal([]byte(interests), &user.Interests)
 
+	err = stmtOut.QueryRow(id).
+		Scan(&user.Id, &user.Username, &user.Name, &user.SurName, &user.Age, &user.Sex, &user.City)
 	if err != nil {
 		return nil, err
 	}
 	return &user, nil
 }
 
-const SELECT_USER_JOIN_INTERESTS = `
-    SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests), NOT isnull(uhf.id) AS is_friend 
+func (u *user) ReadUserByName(name string) (*User, error) {
+	return u.readUserByName(name)
+}
+
+const SELECT_ID_USERNAME_NAME_SURNAME_AGE_SEX_CITY_FROM_USER_BY_NAME = `
+    SELECT u.id, u.username, u.name, u.surname, u.age, u.sex, u.city
       FROM user u
-      LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
-      LEFT JOIN interest i ON i.id = uhi.interest_id
-      LEFT JOIN user_has_friends uhf ON uhf.friend_id = u.id AND uhf.user_id = ?
-     GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
+      JOIN login l ON l.id = u.id
+     WHERE l.username = ?`
 
-func (u *user) ReadUserList(id *uuid.UUID) ([]User, error) {
+func (u *user) readUserByName(name string) (*User, error) {
 
-	idBytes, err := id.MarshalBinary()
-	if err != nil {
-		return nil, err
-	}
-	stmtOut, err := u.dbRo.Prepare(SELECT_USER_JOIN_INTERESTS)
+	stmtOut, err := u.dbRo.Prepare(SELECT_ID_USERNAME_NAME_SURNAME_AGE_SEX_CITY_FROM_USER_BY_NAME)
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
 	defer func() { _ = stmtOut.Close() }()
 
-	rows, err := stmtOut.Query(idBytes)
+	var user User
 
+	err = stmtOut.QueryRow(name).
+		Scan(&user.Id, &user.Username, &user.Name, &user.SurName, &user.Age, &user.Sex, &user.City)
 	if err != nil {
 		return nil, err
 	}
-	defer func() { _ = rows.Close() }()
+	return &user, nil
+}
 
-	var users []User
-	for rows.Next() {
+const INSERT_INTO_USER_USERNAME_NAME_SURNAME_AGE_SEX_CITY = `
+    INSERT INTO user
+       (id, username, name, surname, age, sex, city)
+      VALUES
+       (?, ?, ?, ?, ?, ?, ?)`
 
-		var r User
-		var interests string
+func (u *user) Create(user *User) (*User, error) {
+	// Подготовить оператор для вставки данных
+	stmtIns, err := u.dbRw.Prepare(INSERT_INTO_USER_USERNAME_NAME_SURNAME_AGE_SEX_CITY) // ? = заполнитель
 
-		err = rows.Scan(&r.id, &r.Username, &r.Name, &r.SurName, &r.Age, &r.Sex, &r.City, &interests, &r.Friend)
-
-		if err != nil {
-			return nil, err
-		}
-		err = json.Unmarshal([]byte(interests), &r.Interests)
-
-		if err != nil {
-			return nil, err
-		}
-		users = append(users, r)
+	if err != nil {
+		return user, err // правильная обработка ошибок вместо паники
 	}
-	return users, nil
+	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
+
+	res, err := stmtIns.Exec(user.Id, user.Username, user.Name, user.SurName, user.Age, user.Sex, user.City)
+	if err != nil {
+		return user, err
+	}
+	id, err := (res.LastInsertId())
+	if err != nil {
+		return user, err
+	}
+	user.Id = uint64(id)
+
+	return user, nil
 }
 
 const SELECT_USER_JOIN_INTERESTS_WHERE = `
-    SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests), NOT isnull(uhf.id) AS is_friend 
-      FROM user u
-      LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
-      LEFT JOIN interest i ON i.id = uhi.interest_id
-      LEFT JOIN user_has_friends uhf ON uhf.friend_id = u.id AND uhf.user_id = ?
-     WHERE name LIKE '%s%%%%' AND surname LIKE '%s%%%%'
-     GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
+    SELECT id, username, name, surname, age, sex, city
+      FROM user
+     WHERE name LIKE '%s%%%%' AND surname LIKE '%s%%%%'`
 
-func (u *user) SearchUserList(id *uuid.UUID, name, surname string) ([]User, error) {
-
-	idBytes, err := id.MarshalBinary()
-	if err != nil {
-		return nil, err
-	}
+func (u *user) SearchUserList(id uint64, name, surname string) ([]User, error) {
 
 	query := fmt.Sprintf(SELECT_USER_JOIN_INTERESTS_WHERE, name, surname)
 	if logger.DebugEnabled() {
@@ -247,7 +148,7 @@ func (u *user) SearchUserList(id *uuid.UUID, name, surname string) ([]User, erro
 	}
 	defer func() { _ = stmtOut.Close() }()
 
-	rows, err := stmtOut.Query(idBytes)
+	rows, err := stmtOut.Query()
 
 	if err != nil {
 		return nil, err
@@ -258,14 +159,7 @@ func (u *user) SearchUserList(id *uuid.UUID, name, surname string) ([]User, erro
 	for rows.Next() {
 
 		var r User
-		var interests string
-
-		err = rows.Scan(&r.id, &r.Username, &r.Name, &r.SurName, &r.Age, &r.Sex, &r.City, &interests, &r.Friend)
-
-		if err != nil {
-			return nil, err
-		}
-		err = json.Unmarshal([]byte(interests), &r.Interests)
+		err = rows.Scan(&r.Id, &r.Username, &r.Name, &r.SurName, &r.Age, &r.Sex, &r.City)
 
 		if err != nil {
 			return nil, err
@@ -276,30 +170,18 @@ func (u *user) SearchUserList(id *uuid.UUID, name, surname string) ([]User, erro
 }
 
 const SELECT_USER_JOIN_INTERESTS_WHERE_NAME = `
-    SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests), NOT isnull(uhf.id) AS is_friend 
-      FROM user u
-      LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
-      LEFT JOIN interest i ON i.id = uhi.interest_id
-      LEFT JOIN user_has_friends uhf ON uhf.friend_id = u.id AND uhf.user_id = ?
-     WHERE name LIKE '%s%%%%'
-     GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
+    SELECT id, username, name, surname, age, sex, city 
+      FROM user
+     WHERE name LIKE '%s%%%%'`
 
 const SELECT_USER_JOIN_INTERESTS_WHERE_SURNAME = `
-    SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests), NOT isnull(uhf.id) AS is_friend 
-      FROM user u
-      LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
-      LEFT JOIN interest i ON i.id = uhi.interest_id
-      LEFT JOIN user_has_friends uhf ON uhf.friend_id = u.id AND uhf.user_id = ?
-     WHERE surname LIKE '%s%%%%'
-     GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
+    SELECT id, username, name, surname, age, sex, city 
+      FROM user
+     WHERE surname LIKE '%s%%%%'`
 
-func (u *user) SearchByUserList(id *uuid.UUID, field, value string) ([]User, error) {
+func (u *user) SearchByUserList(id uint64, field, value string) ([]User, error) {
 
-	idBytes, err := id.MarshalBinary()
-	if err != nil {
-		return nil, err
-	}
-
+	var err error
 	var stmtOut *sql.Stmt
 	switch field {
 	case "name":
@@ -324,7 +206,7 @@ func (u *user) SearchByUserList(id *uuid.UUID, field, value string) ([]User, err
 	}
 	defer func() { _ = stmtOut.Close() }()
 
-	rows, err := stmtOut.Query(idBytes)
+	rows, err := stmtOut.Query()
 
 	if err != nil {
 		return nil, err
@@ -335,14 +217,7 @@ func (u *user) SearchByUserList(id *uuid.UUID, field, value string) ([]User, err
 	for rows.Next() {
 
 		var r User
-		var interests string
-
-		err = rows.Scan(&r.id, &r.Username, &r.Name, &r.SurName, &r.Age, &r.Sex, &r.City, &interests, &r.Friend)
-
-		if err != nil {
-			return nil, err
-		}
-		err = json.Unmarshal([]byte(interests), &r.Interests)
+		err = rows.Scan(&r.Id, &r.Username, &r.Name, &r.SurName, &r.Age, &r.Sex, &r.City)
 
 		if err != nil {
 			return nil, err
@@ -350,30 +225,4 @@ func (u *user) SearchByUserList(id *uuid.UUID, field, value string) ([]User, err
 		users = append(users, r)
 	}
 	return users, nil
-}
-
-const UPDATE_USER_WHERE_ID = `
-    UPDATE user SET
-      name = ?,
-      surname = ?,
-      age = ?,
-      sex = ?,
-      city = ?
-     WHERE id = ?`
-
-func (u *user) Update(user *User) error {
-	// Подготовить оператор для вставки данных
-	stmtIns, err := u.dbRw.Prepare(UPDATE_USER_WHERE_ID) // ? = заполнитель
-
-	if err != nil {
-		return err // правильная обработка ошибок вместо паники
-	}
-	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
-
-	id, err := user.Id().MarshalBinary()
-	_, err = stmtIns.Exec(user.Name, user.SurName, user.Age, user.Sex, user.City, id)
-	if err != nil {
-		return err
-	}
-	return nil
 }
