@@ -53,6 +53,13 @@ func main() {
 	s.GET("/profile", h.Profile)
 
 	// Зарегистрировать маршрут для списка пользователей.
+	s.GET("/users/all", h.UserList)
+
+	// Зарегистрировать маршруты для поиска пользователей.
+	s.GET("/users/search/{name}/{surname}", h.UserSearch)
+	s.GET("/users/search-by/{field}/{value}", h.SearchBy)
+
+	// Зарегистрировать маршрут для списка пользователей.
 	s.GET("/user/{id}", h.User)
 
 	// Зарегистрировать маршрут для Sign-in пользователя.

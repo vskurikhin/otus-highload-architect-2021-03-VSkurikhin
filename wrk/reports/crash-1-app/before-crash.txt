@@ -1,0 +1,5 @@
+CONTAINER ID   NAME              CPU %     MEM USAGE / LIMIT   MEM %     NET I/O           BLOCK I/O         PIDS
+be043d71ed36   my-app-main-2     72.28%    11.73MiB / 256MiB   4.58%     436MB / 900MB     0B / 0B           14
+da350b61db92   my-app-main-1     73.59%    12.29MiB / 256MiB   4.80%     435MB / 896MB     0B / 0B           16
+
+53f908023279   nginx-lb          17.81%    4.922MiB / 256MiB   1.92%     5.54GB / 5.73GB   4.12MB / 0B       2

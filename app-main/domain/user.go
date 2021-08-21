@@ -10,14 +10,15 @@ import (
 )
 
 type User struct {
-	Id       uint64
-	Username string
-	Name     *string
-	SurName  *string
-	Age      int
-	Sex      int
-	City     *string
-	Friend   bool
+	Id        uint64
+	Username  string
+	Name      *string
+	SurName   *string
+	Age       int
+	Sex       int
+	Interests []string
+	City      *string
+	Friend    bool
 }
 
 func (u *User) String() string {
@@ -129,6 +130,50 @@ func (u *user) Create(user *User) (*User, error) {
 	user.Id = uint64(id)
 
 	return user, nil
+}
+
+const SELECT_USER_JOIN_INTERESTS = `
+    SELECT u.id, username, name, surname, age, sex, city, JSON_ARRAYAGG(interests), NOT isnull(uhf.id) AS is_friend 
+      FROM user u
+      LEFT JOIN user_has_interests uhi ON uhi.user_id = u.id
+      LEFT JOIN interest i ON i.id = uhi.interest_id
+      LEFT JOIN user_has_friends uhf ON uhf.friend_id = u.id AND uhf.user_id = ?
+     GROUP BY u.id, username, name, surname, age, sex, city, uhf.id`
+
+func (u *user) ReadUserList(id uint64) ([]User, error) {
+
+	stmtOut, err := u.dbRo.Prepare(SELECT_USER_JOIN_INTERESTS)
+	if err != nil {
+		return nil, err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtOut.Close() }()
+
+	rows, err := stmtOut.Query(id)
+
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = rows.Close() }()
+
+	var users []User
+	for rows.Next() {
+
+		var r User
+		var interests string
+
+		err = rows.Scan(&r.Id, &r.Username, &r.Name, &r.SurName, &r.Age, &r.Sex, &r.City, &interests, &r.Friend)
+
+		if err != nil {
+			return nil, err
+		}
+		err = json.Unmarshal([]byte(interests), &r.Interests)
+
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, r)
+	}
+	return users, nil
 }
 
 const SELECT_USER_JOIN_INTERESTS_WHERE = `

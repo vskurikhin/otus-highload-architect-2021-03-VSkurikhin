@@ -1,0 +1,5 @@
+CONTAINER ID   NAME              CPU %     MEM USAGE / LIMIT   MEM %     NET I/O           BLOCK I/O         PIDS
+5631f5164ecc   my-app-main-2     65.56%    12.69MiB / 256MiB   4.96%     294MB / 606MB     643kB / 0B        15
+b0adb016d706   my-app-main-1     73.48%    12.41MiB / 256MiB   4.85%     301MB / 621MB     1.06MB / 0B       14
+6a4076165e3c   my-mysql-2        38.68%    370MiB / 1GiB       36.13%    66.2MB / 628MB    36.7MB / 16.3MB   40
+b553b94ec43b   my-mysql-0        45.82%    371.6MiB / 1GiB     36.29%    67.6MB / 637MB    36.6MB / 16.1MB   42

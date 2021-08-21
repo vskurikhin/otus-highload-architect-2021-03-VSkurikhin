@@ -122,7 +122,7 @@ func gracefulClose(dbRo *sql.DB, dbRw *sql.DB) {
 func openDBRw(cfg *config.Config) *sql.DB {
 
 	dbCFG := cfg.DataBase
-	dsn := fmt.Sprintf(`%s:%s@tcp(%s:%d)/%s`, dbCFG.Username, dbCFG.Password, dbCFG.HostRw, dbCFG.PortRw, dbCFG.DBName)
+	dsn := fmt.Sprintf(`%s:%s@tcp(%s:%d)/%s?timeout=5s`, dbCFG.Username, dbCFG.Password, dbCFG.HostRw, dbCFG.PortRw, dbCFG.DBName)
 	fmt.Println(dsn)
 	db, err := sql.Open("mysql", dsn)
 
@@ -135,7 +135,7 @@ func openDBRw(cfg *config.Config) *sql.DB {
 func openDBRo(cfg *config.Config) *sql.DB {
 
 	dbCFG := cfg.DataBase
-	dsn := fmt.Sprintf(`%s:%s@tcp(%s:%d)/%s`, dbCFG.Username, dbCFG.Password, dbCFG.HostRo, dbCFG.PortRo, dbCFG.DBName)
+	dsn := fmt.Sprintf(`%s:%s@tcp(%s:%d)/%s?timeout=1s`, dbCFG.Username, dbCFG.Password, dbCFG.HostRo, dbCFG.PortRo, dbCFG.DBName)
 	fmt.Println(dsn)
 	db, err := sql.Open("mysql", dsn)
 
