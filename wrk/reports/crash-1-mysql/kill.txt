@@ -1,0 +1,9 @@
+% docker exec -ti my-mysql-1 /bin/sh   
+# ls -al /proc/
+total 4
+dr-xr-xr-x 282 root  root      0 Aug 20 18:42 .
+drwxr-xr-x   1 root  root   4096 Aug 20 18:42 ..
+dr-xr-xr-x   9 mysql mysql     0 Aug 20 18:42 1
+...SKIP...
+# kill 1
+# %                                                                                                                                                                                                   
