@@ -1,0 +1,8 @@
+% docker exec -ti my-app-main-1 /bin/sh
+/ # ps
+PID   USER     TIME  COMMAND
+    1 root      2:00 /app-main
+   21 root      0:00 /bin/sh
+   28 root      0:00 ps
+/ # kill 1
+/ # % 

@@ -1,0 +1,4 @@
+CONTAINER ID   NAME              CPU %     MEM USAGE / LIMIT   MEM %     NET I/O           BLOCK I/O         PIDS
+6a4076165e3c   my-mysql-2        45.71%    369.3MiB / 1GiB     36.06%    48.2MB / 456MB    36.7MB / 16.3MB   40
+3d237f63de68   my-mysql-1        54.73%    369MiB / 1GiB       36.04%    48.8MB / 463MB    36.6MB / 16.3MB   41
+b553b94ec43b   my-mysql-0        45.40%    370.8MiB / 1GiB     36.21%    49.5MB / 466MB    36.6MB / 16.1MB   42

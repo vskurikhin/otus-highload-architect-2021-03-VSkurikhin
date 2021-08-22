@@ -1,9 +1,9 @@
 #!/bin/sh
 
 E=1
-D=10
+D=3
 
-for C in 1 10 100 1000
+for C in 10
 do
   (iostat 10 $((${D}*6)) | tee ./reports/${1}iostat-C$C.txt)&
   T=$(($E % 11))
@@ -11,5 +11,5 @@ do
   wrk -t$T -c$C -d${D}m --timeout 30s --latency -s config.lua 'http://localhost:8080' |
   tee ./reports/${1}wrk-C$C.txt
   E=$(($E * 2))
-  sleep 60
+  sleep 6
 done
