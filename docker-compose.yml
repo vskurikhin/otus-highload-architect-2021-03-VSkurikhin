@@ -211,6 +211,27 @@ services:
       - "8080:80"
       - "8888:8888"
 
+  my-cdc-producer:
+    image: vskurikhin/cdc-producer
+    container_name: my-cdc-producer
+    restart: on-failure
+    environment:
+      BOOTSTRAP_SERVERS: kafka:9092
+      DATABASE_HOSTNAME: my-mysql-0.localhost
+      DATABASE_PORT: 3306
+      DEBEZIUM_BOOTSTRAP_SERVERS: kafka:9092
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+    networks:
+      ab_subnet:
+        aliases:
+          - my-cdc-producer.localhost
+        ipv4_address: 172.16.1.218
+
+
 volumes:
   my-mysql-0-data:
   my-mysql-1-data:
