@@ -42,18 +42,6 @@ public class DebeziumConnectorConfiguration {
     @Value("${debezium.kafka.ssl-endpoint-identification-algorithm:#{null}}")
     private String sslEndpointIdentificationAlgorithm;
 
-    @Value("${debezium.kafka.key-store-location:#{null}}")
-    private String keyStoreLocation;
-
-    @Value("${debezium.kafka.key-store-password:#{null}}")
-    private String keyStorePassword;
-
-    @Value("${debezium.kafka.trust-store-location:#{null}}")
-    private String trustStoreLocation;
-
-    @Value("${debezium.kafka.trust-store-password:#{null}}")
-    private String trustStorePassword;
-
     @Value("${debezium.kafka.config.storage.topic:#{null}}")
     private String configStorageTopic;
 
@@ -108,9 +96,10 @@ public class DebeziumConnectorConfiguration {
                 .with("database.password", dbPassword)
                 .with("database.dbname", dbName)
                 .with("database.server.id", 85744)
-                .with("snapshot.mode", "when_needed")
+                .with("database.ssl.mode", "disabled")
+                .with("database.allowPublicKeyRetrieval", "true")
                 .with("database.include.list", "hl")
-                .with("table.include.list", "hl.session");
+                .with("table.include.list", "hl.dialog_message, hl.user");
         if (offsetStorageFileFilename != null) {
             builder.with("offset.storage", "org.apache.kafka.connect.storage.FileOffsetBackingStore")
                    .with("offset.storage.file.filename", offsetStorageFileFilename);

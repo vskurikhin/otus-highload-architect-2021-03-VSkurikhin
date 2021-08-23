@@ -8,7 +8,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
-import java.nio.ByteBuffer;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,7 +23,7 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public ProducerFactory<String, ByteBuffer> producerAuditFactory() {
+    public ProducerFactory<String, String> producerAuditFactory() {
 
         Map<String, Object> producerProperties = kafkaProperties.buildProducerProperties().entrySet().stream()
                 .peek(e -> log.debug("KafkaProperties({}): {}", e.getKey(), e.getValue()))
@@ -36,7 +35,7 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, ByteBuffer> kafkaTemplate() {
+    public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerAuditFactory());
     }
 }

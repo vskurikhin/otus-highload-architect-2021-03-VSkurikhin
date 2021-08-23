@@ -1,0 +1,144 @@
+#debug: true
+#trace: true
+#server.app:
+
+# Настройки соединений с БД
+abdb:
+  datasource:
+    databasename: ${DATABASE_NAME:hl}
+    host: ${DATABASE_HOSTNAME:localhost}
+    port: ${DATABASE_PORT:3306}
+    username: ${DATABASE_USERNAME:slave}
+    password: ${DATABASE_PASSWORD:password}
+    table:
+      names:
+        - "hl.dialog_message"
+        - "hl.user"
+
+app:
+  name: cdc-producer
+  topic: ${CAP_TOPIC:hl-cdc}
+
+debezium:
+  kafka:
+    bootstrap-servers: ${DEBEZIUM_BOOTSTRAP_SERVERS:localhost:9092}
+    client-id: hl
+    config:
+      storage:
+        partitions: 1
+        replication-factor: 1
+        topic: hl-debezium-config-storage
+    history:
+      kafka:
+        topic: hl-history-kafka-topic
+        bootstrap-servers: ${DEBEZIUM_BOOTSTRAP_SERVERS:localhost:9092}
+    offset:
+      flush-interval-ms: ${DEBEZIUM_FLUSH_INTERVAL_MS:500}
+      storage:
+        partitions: 1
+        replication-factor: 1
+        topic: hl-debezium-offset-storage
+    status:
+      storage:
+        partitions: 1
+        replication-factor: 1
+        topic: hl-debezium-status-storage
+
+logging:
+  level:
+    ROOT: INFO
+    ru:
+      sberbank:
+        ab: TRACE
+    org:
+      apache:
+        coyote:
+          http11:
+            Http11InputBuffer: INFO
+      hibernate:
+        engine:
+          transaction: INFO
+        hql:
+          internal:
+            ast:
+              ErrorTracker: INFO
+              HqlSqlWalker: INFO
+              QueryTranslatorImpl: INFO
+              util:
+                JoinProcessor: INFO
+      springframework:
+        web:
+          servlet:
+            DispatcherServlet: INFO
+            mvc:
+              method:
+                annotation:
+                  RequestMappingHandlerMapping: INFO
+
+management:
+  endpoint:
+    caches:
+      enabled: true
+    health:
+      group:
+        custom:
+          include: diskSpace,ping
+          show-details: when_authorized
+          show-components: when_authorized
+      enabled: true
+      show-details: when_authorized
+      show-components: when_authorized
+    info:
+      enabled: true
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  health:
+    db:
+      enabled: true
+    defaults:
+      enabled: false
+    ldap:
+      enabled: false
+    livenessstate:
+      enabled: true
+    ping:
+      enabled: true
+
+server:
+  address: ${SERVER_ADDRESS:0.0.0.0}
+  port: ${SERVER_PORT:8083}
+
+spring:
+  banner:
+    location: classpath:banner.txt
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  profiles:
+    active: development
+  kafka:
+    bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092}
+    client-id: hl-student-mysql-connector
+    consumer:
+      bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092}
+      client-id: hl-student-mysql-connector
+      group-id: group_id
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092}
+      client-id: hl-student-mysql-connector
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: 1
+    template:
+      default-topic: hl-counter-event
+  liquibase:
+    enabled: false
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
