@@ -1,3 +1,7 @@
+
 CREATE DATABASE IF NOT EXISTS hl DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 CREATE USER 'hl'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
 GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, CREATE VIEW, REFERENCES, INDEX, DROP, ALTER, EXECUTE, TRIGGER, CREATE TEMPORARY TABLES, LOCK TABLES ON hl.* TO 'hl'@'localhost';
+
+CREATE USER CREATE USER 'slave'@'my-cdc-producer.localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'slave'@'my-cdc-producer.localhost';
