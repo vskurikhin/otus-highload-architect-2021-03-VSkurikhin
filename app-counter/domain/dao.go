@@ -11,7 +11,12 @@ import (
 
 type (
 	DAO struct {
-		User *user
+		Counter *counter
+		User    *user
+	}
+	counter struct {
+		dbRo *sql.DB
+		dbRw *sql.DB
 	}
 	user struct {
 		dbRo *sql.DB
@@ -27,7 +32,8 @@ func New(cfg *config.Config) *DAO {
 	versionDB(dbRw)
 
 	return &DAO{
-		User: &user{dbRo: dbRo, dbRw: dbRw},
+		Counter: &counter{dbRo: dbRo, dbRw: dbRw},
+		User:    &user{dbRo: dbRo, dbRw: dbRw},
 	}
 }
 
