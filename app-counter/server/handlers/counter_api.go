@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/valyala/fasthttp"
@@ -9,9 +10,7 @@ import (
 
 func (h *Handlers) GetCounter(ctx *sa.RequestCtx) error {
 
-	// list, err := h.getMessages(ctx)
-	var err error
-	var result string
+	counter, err := h.getCounter(ctx)
 
 	if err != nil {
 		logger.Error(err)
@@ -21,7 +20,15 @@ func (h *Handlers) GetCounter(ctx *sa.RequestCtx) error {
 		}
 		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
 	}
-	// result := "[" + strings.Join(list, ", ") + "]"
+	return ctx.HTTPResponse(counter.String())
+}
 
-	return ctx.HTTPResponse(result)
+func (h *Handlers) getCounter(ctx *sa.RequestCtx) (*domain.Counter, error) {
+
+	username := fmt.Sprintf("%v", ctx.UserValue("username"))
+	counter, err := h.Server.DAO.Counter.ReadByUserName(username)
+	if err != nil {
+		return nil, err
+	}
+	return counter, nil
 }

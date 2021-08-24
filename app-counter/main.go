@@ -56,7 +56,7 @@ func httpd(environ *config.Config, dao *domain.DAO) {
 	// Зарегистрировать индексный маршрут.
 	s.GET("/", h.Root)
 
-	s.GET("/counter", h.GetCounter)
+	s.GET("/counter/{username}", h.GetCounter)
 
 	// Run
 	if err := s.ListenAndServe(); err != nil {
