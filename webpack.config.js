@@ -9,7 +9,7 @@ module.exports ={
     },
     // mode: "development",
     output: {
-        path: path.join(__dirname, 'web/public/generated'),
+        path: path.join(__dirname, 'app-main/web/public/generated'),
         filename: 'app-bundle.js'
     },
     resolve: {extensions: ['.js', '.jsx']},

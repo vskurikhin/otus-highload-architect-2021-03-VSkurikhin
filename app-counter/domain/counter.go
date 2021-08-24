@@ -62,9 +62,8 @@ func (c *counter) ReadByUserName(username string) (*Counter, error) {
 }
 
 const SELECT_USERNAME_TOTAL_UNREAD_FROM_COUNTER_BY_USERNAME = `
-    SELECT c.username, c.total, c.unread
-      FROM user u
-      JOIN counter c ON u.username = c.username
+    SELECT username, total, unread
+      FROM counter
      WHERE username = ?`
 
 func (c *counter) readUserByName(username string) (*Counter, error) {
