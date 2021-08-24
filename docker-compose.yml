@@ -217,7 +217,7 @@ services:
     restart: on-failure
     environment:
       BOOTSTRAP_SERVERS: kafka:9092
-      DATABASE_HOSTNAME: my-mysql-0.localhost
+      DATABASE_HOSTNAME: my-mysql-0
       DATABASE_PORT: 3306
       DEBEZIUM_BOOTSTRAP_SERVERS: kafka:9092
     deploy:

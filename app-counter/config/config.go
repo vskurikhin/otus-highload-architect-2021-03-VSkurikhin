@@ -14,7 +14,7 @@ type (
 		Logging  Logging
 		Server   Server
 	}
-	// DataBase обеспечивает конфигурацию подключения к БД.
+	// Cache обеспечивает конфигурацию подключения к Cache.
 	Cache struct {
 		Host     string `envconfig:"CACHE_HOST" default:"localhost"`
 		Port     int    `envconfig:"CACHE_PORT" default:"3301"`
@@ -26,16 +26,14 @@ type (
 		PortRw   int    `envconfig:"DB_PORT_RW" default:"6033"`
 		HostRo   string `envconfig:"DB_HOST_RO" default:"localhost"`
 		PortRo   int    `envconfig:"DB_PORT_RO" default:"6033"`
-		DBName   string `envconfig:"DB_NAME" default:"hl"`
-		Username string `envconfig:"DB_USERNAME" default:"hl"`
+		DBName   string `envconfig:"DB_NAME" default:"ct"`
+		Username string `envconfig:"DB_USERNAME" default:"ct"`
 		Password string `envconfig:"DB_PASSWORD" default:"password"`
 	}
 	Kafka struct {
-		Brokers    string `envconfig:"KAFKA_BROKERS"`
-		Topic      string `envconfig:"KAFKA_TOPIC" default:"AB.AB_RESULT_CUMULATIVE.DATA"`
-		Group      string `envconfig:"KAFKA_GROUP" default:"cap-kafka-loader"`
-		ClientCert string `envconfig:"KAFKA_TLS_CLIENT_CERT" default:"pki/client-cert.pem"`
-		ClientKey  string `envconfig:"KAFKA_TLS_CLIENT_KEY" default:"pki/client-key.pem"`
+		Brokers string `envconfig:"KAFKA_BROKERS" default:"localhost:9092"`
+		Topic   string `envconfig:"KAFKA_TOPIC" default:"hl-cdc-counter"`
+		Group   string `envconfig:"KAFKA_GROUP" default:"hl-cdc-group-counter"`
 	}
 	// Logging предоставляет конфигурацию журналирования.
 	Logging struct {

@@ -74,5 +74,4 @@ func consumer(environ *config.Config, dao *domain.DAO) {
 
 	consumer := kafka.NewConsumer(srv.NewService(dao))
 	consumerGroup.WaitConsumerGroup(environ.Kafka.Topic, consumer)
-
 }
