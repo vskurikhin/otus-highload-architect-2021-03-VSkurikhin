@@ -16,6 +16,10 @@ type message struct {
 	Message string
 }
 
+type readMessage struct {
+	id uint64
+}
+
 func (h *Handlers) PostMessage(ctx *sa.RequestCtx) error {
 
 	id, err := h.postMessage(ctx)
@@ -45,15 +49,17 @@ func (h *Handlers) postMessage(ctx *sa.RequestCtx) (*uint64, error) {
 
 	var m message
 	logger.Infof("%s", ctx.PostBody())
-	err = json.Unmarshal(ctx.PostBody(), &m)
 
+	err = json.Unmarshal(ctx.PostBody(), &m)
 	if err != nil {
 		return nil, err // правильная обработка ошибок вместо паники
 	}
+
 	toUser, err := h.Server.DAO.User.ReadUserByName(m.ToUser)
 	if err != nil {
 		return nil, err
 	}
+
 	shardId := h.Server.Ring.GetId(*toUser.City)
 	hashId := h.Server.Ring.GetHashId(*toUser.City)
 	id := utils.RandomIdWithShardId(shardId)
@@ -79,6 +85,44 @@ func (h *Handlers) postMessage(ctx *sa.RequestCtx) (*uint64, error) {
 		logger.Debugf("got message: %m", message.String())
 	}
 	return &id, nil
+}
+
+func (h *Handlers) PutMessage(ctx *sa.RequestCtx) error {
+
+	id, err := h.putMessage(ctx)
+
+	if err != nil {
+		logger.Error(err)
+		errorCase := domain.ApiMessage{
+			Code:    fasthttp.StatusPreconditionFailed,
+			Message: err.Error(),
+		}
+		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
+	}
+
+	return ctx.HTTPResponse(fmt.Sprintf("%d", id))
+}
+
+func (h *Handlers) putMessage(ctx *sa.RequestCtx) (*uint64, error) {
+
+	p, err := h.profile(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := h.Server.DAO.User.ReadUserById(p.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	shardId := h.Server.Ring.GetId(*user.City)
+
+	var m readMessage
+	logger.Infof("%s", ctx.PostBody())
+	err = json.Unmarshal(ctx.PostBody(), &m)
+	err = h.Server.DAO.DialogMessage.UpdateReadMessage(m.id, shardId)
+
+	return &m.id, nil
 }
 
 func (h *Handlers) GetMessages(ctx *sa.RequestCtx) error {

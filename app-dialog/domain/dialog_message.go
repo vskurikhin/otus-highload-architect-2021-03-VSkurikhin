@@ -57,3 +57,30 @@ func (d *dialogMessage) create(dm *DialogMessage, shardId uint8) error {
 
 	return nil
 }
+
+func (d *dialogMessage) UpdateReadMessage(id uint64, shardId uint8) error {
+	return d.updateReadMessage(id, shardId)
+}
+
+const UPDATE_DIALOG_MESSAGE_SET_ALREADY_READ_TRUE = "UPDATE dialog_message " +
+	"   SET already_read = true " +
+	" WHERE shard_id = %d AND id = ?"
+
+func (d *dialogMessage) updateReadMessage(id uint64, shardId uint8) error {
+	// Подготовить оператор для вставки данных
+	sql := fmt.Sprintf(UPDATE_DIALOG_MESSAGE_SET_ALREADY_READ_TRUE, shardId)
+	logger.Debugf("create sql: %s", sql)
+	stmtIns, err := d.dbRw.Prepare(sql) // ? = заполнитель
+
+	if err != nil {
+		return err // правильная обработка ошибок вместо паники
+	}
+	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
+	_, err = stmtIns.Exec(id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
