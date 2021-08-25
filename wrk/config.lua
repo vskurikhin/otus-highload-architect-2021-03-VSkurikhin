@@ -2,16 +2,17 @@
 math.randomseed(os.time())
 math.random(); math.random(); math.random()
 
-firstNames = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}
-surNames = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'}
-token = ''
+token = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2Mjk5NjA3NTUsImp0aSI6IjkzMzUxOTM5OTE4OTk2ODc2ODQifQ.6DARh7sBTnLxC9_-Tj4-5zTxupwqwrHGdMGUysICTNq35T6xpj-g7VmpvR0zsyt2aRIN2zj4q-zPkqXkn0V4Nw'
+
+wrk.method = "POST"
+wrk.body   = "foo=bar&baz=quux"
+wrk.headers["Content-Type"] = "application/x-www-form-urlencoded"
 
 request = function()
-  rangeFirstNames = table.getn(firstNames) - 1
-  rangeSurNames = table.getn(surNames) - 1
-  path = "/users/search/" .. firstNames[math.random(rangeFirstNames)] .. "/" .. surNames[math.random(rangeSurNames)]
+  path = "/message"
   -- Return the request object with the current URL path
-  return wrk.format('GET', path, {['Host'] = 'localhost', ["Cookie"] = "acs_jwt=" .. token .. ";"})
+  wrk.body = '{"Message": "test' .. math.random(9999999) .. '", "ToUser": "root"}'
+  return wrk.format('POST', path, {['Host'] = 'localhost', ["Content-Type"] = "application/x-www-form-urlencoded", ["Cookie"] = "acs_jwt=" .. token .. ";"})
 end
 
 response = function(status, headers, body)

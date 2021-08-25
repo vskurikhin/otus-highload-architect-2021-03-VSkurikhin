@@ -7,6 +7,7 @@ import (
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-counter/config"
 	"log"
 	"os"
+	"time"
 )
 
 type (
@@ -62,6 +63,8 @@ func openDBRw(cfg *config.Config) *sql.DB {
 	dsn := fmt.Sprintf(`%s:%s@tcp(%s:%d)/%s`, dbCFG.Username, dbCFG.Password, dbCFG.HostRw, dbCFG.PortRw, dbCFG.DBName)
 	fmt.Println(dsn)
 	db, err := sql.Open("mysql", dsn)
+	db.SetMaxOpenConns(37)
+	db.SetConnMaxLifetime(time.Hour)
 
 	if err != nil {
 		panic(err.Error())
@@ -75,6 +78,8 @@ func openDBRo(cfg *config.Config) *sql.DB {
 	dsn := fmt.Sprintf(`%s:%s@tcp(%s:%d)/%s`, dbCFG.Username, dbCFG.Password, dbCFG.HostRo, dbCFG.PortRo, dbCFG.DBName)
 	fmt.Println(dsn)
 	db, err := sql.Open("mysql", dsn)
+	db.SetMaxOpenConns(66)
+	db.SetConnMaxLifetime(time.Hour)
 
 	if err != nil {
 		panic(err.Error())

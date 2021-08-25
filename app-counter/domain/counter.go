@@ -1,7 +1,10 @@
 package domain
 
 import (
+	"context"
+	"database/sql"
 	"encoding/json"
+	"fmt"
 	"github.com/savsgio/go-logger/v2"
 )
 
@@ -83,47 +86,62 @@ func (c *counter) readUserByName(username string) (*Counter, error) {
 	return &value, nil
 }
 
+const SELECT_USERNAME_TOTAL_UNREAD_FROM_COUNTER_BY_USERNAME_1 = `
+    SELECT (total > -1)
+      FROM counter
+     WHERE username = ?`
+
 const INSERT_INTO_COUNTER_USERNAME_TOTAL_UNREAD = `
     INSERT INTO counter
        (username, total, unread)
       VALUES
-       (?, ?, ?)`
-
-func (c *counter) Create(counter *Counter) (*Counter, error) {
-	// Подготовить оператор для вставки данных
-	stmtIns, err := c.dbRw.Prepare(INSERT_INTO_COUNTER_USERNAME_TOTAL_UNREAD) // ? = заполнитель
-
-	if err != nil {
-		return counter, err // правильная обработка ошибок вместо паники
-	}
-	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
-
-	_, err = stmtIns.Exec(counter.Username, counter.Total, counter.Unread)
-	if err != nil {
-		return counter, err
-	}
-
-	return counter, nil
-}
+       (?, 0, 0)`
 
 const UPDATE_COUNTER_TOTAL_UNREAD_BY_USERNAME = `
     UPDATE counter
-       SET total = ?, unread = ?
+       SET total = total + 1,
+           unread = unread + 1
      WHERE username = ?`
 
-func (c *counter) Update(counter *Counter) (*Counter, error) {
-	// Подготовить оператор для вставки данных
-	stmtIns, err := c.dbRw.Prepare(UPDATE_COUNTER_TOTAL_UNREAD_BY_USERNAME) // ? = заполнитель
+// Create a helper function for preparing failure results.
+func fail(err error, id int) error {
+	return fmt.Errorf("Upsert: (%d, %v)", id, err)
+}
 
+func (c *counter) Upsert(username string) error {
+
+	ctx := context.Background()
+
+	// Get a Tx for making transaction requests.
+	tx, err := c.dbRw.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
 	if err != nil {
-		return counter, err // правильная обработка ошибок вместо паники
+		return fail(err, 1)
 	}
-	defer func() { _ = stmtIns.Close() }() // Закрывается оператор, когда выйдете из функции
+	// Defer a rollback in case anything fails.
+	defer func() { _ = tx.Rollback() }()
 
-	_, err = stmtIns.Exec(counter.Total, counter.Unread, counter.Username)
+	// Confirm that album inventory is enough for the order.
+	var enough bool
+	if err = tx.QueryRowContext(ctx, SELECT_USERNAME_TOTAL_UNREAD_FROM_COUNTER_BY_USERNAME_1, username).
+		Scan(&enough); err != nil {
+		if err == sql.ErrNoRows {
+			// Insert the album inventory to remove the quantity in the order.
+			_, err = tx.ExecContext(ctx, INSERT_INTO_COUNTER_USERNAME_TOTAL_UNREAD, username)
+			if err != nil {
+				return fail(err, 2)
+			}
+		}
+	}
+
+	// Update the album inventory to remove the quantity in the order.
+	_, err = tx.ExecContext(ctx, UPDATE_COUNTER_TOTAL_UNREAD_BY_USERNAME, username)
 	if err != nil {
-		return counter, err
+		return fail(err, 4)
 	}
 
-	return counter, nil
+	// Commit the transaction.
+	if err = tx.Commit(); err != nil {
+		return fail(err, 5)
+	}
+	return nil
 }
