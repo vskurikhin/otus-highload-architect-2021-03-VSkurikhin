@@ -48,6 +48,7 @@ func main() {
 
 	s.GET("/messages", h.GetMessages)
 	s.POST("/message", h.PostMessage)
+	s.PUT("/message", h.PutMessage)
 
 	// Run
 	if err := s.ListenAndServe(); err != nil {
