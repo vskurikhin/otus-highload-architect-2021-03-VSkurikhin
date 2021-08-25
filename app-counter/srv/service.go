@@ -68,59 +68,18 @@ func (s *Service) upsertCounter(dm *dto.KafkaDialogMessage) {
 	for i := 0; i < MAX_COUNT; i++ {
 		user, err := s.dao.User.ReadUserById(dm.To_user)
 		if err != nil {
-			if err == sql.ErrNoRows {
-				time.Sleep(8 * time.Second)
-			} else {
+			if err != sql.ErrNoRows {
 				logger.Errorf("upsertCounter: 1: %s", err)
 				return
 			}
 		} else {
-			counter, err := s.dao.Counter.ReadByUserId(dm.To_user)
+			err := s.dao.Counter.Upsert(user.Username)
 			if err != nil {
-				if err == sql.ErrNoRows {
-					counter := &domain.Counter{Username: user.Username, Total: 1, Unread: 1}
-					s.insertCounter(dm, counter)
-					return
-				} else {
-					logger.Errorf("upsertCounter: 2: %s", err)
-					return
-				}
+				logger.Errorf("upsertCounter: 2: %s", err)
 			} else {
-				s.updateCounter(dm, counter)
 				return
 			}
 		}
-	}
-}
-
-func (s *Service) insertCounter(dm *dto.KafkaDialogMessage, counter *domain.Counter) {
-
-	if dm.Operation == "c" && dm.Already_read == 0 {
-		_, err := s.dao.Counter.Create(counter)
-		if err != nil {
-			logger.Errorf("insertCounter: 1: %s", err)
-		}
-	}
-}
-
-func (s *Service) updateCounter(dm *dto.KafkaDialogMessage, counter *domain.Counter) {
-
-	if dm.Operation == "c" {
-		counter.Total += 1
-		if dm.Already_read == 0 {
-			counter.Unread += 1
-		}
-		_, err := s.dao.Counter.Update(counter)
-		if err != nil {
-			logger.Errorf("updateCounter: 1: %s", err)
-		}
-	} else if dm.Operation == "u" {
-		if dm.Already_read == 1 {
-			counter.Unread -= 1
-			_, err := s.dao.Counter.Update(counter)
-			if err != nil {
-				logger.Errorf("updateCounter: 2: %s", err)
-			}
-		}
+		time.Sleep(8 * time.Second)
 	}
 }

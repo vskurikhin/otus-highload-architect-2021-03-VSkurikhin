@@ -11,6 +11,7 @@ import (
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-main/security"
 	"log"
 	"os"
+	"time"
 )
 
 // Server определяет параметры для запуска HTTP-сервера.
@@ -125,6 +126,8 @@ func openDBRw(cfg *config.Config) *sql.DB {
 	dsn := fmt.Sprintf(`%s:%s@tcp(%s:%d)/%s?timeout=5s`, dbCFG.Username, dbCFG.Password, dbCFG.HostRw, dbCFG.PortRw, dbCFG.DBName)
 	fmt.Println(dsn)
 	db, err := sql.Open("mysql", dsn)
+	db.SetMaxOpenConns(37)
+	db.SetConnMaxLifetime(time.Hour)
 
 	if err != nil {
 		panic(err.Error())
@@ -138,6 +141,8 @@ func openDBRo(cfg *config.Config) *sql.DB {
 	dsn := fmt.Sprintf(`%s:%s@tcp(%s:%d)/%s?timeout=1s`, dbCFG.Username, dbCFG.Password, dbCFG.HostRo, dbCFG.PortRo, dbCFG.DBName)
 	fmt.Println(dsn)
 	db, err := sql.Open("mysql", dsn)
+	db.SetMaxOpenConns(66)
+	db.SetConnMaxLifetime(time.Hour)
 
 	if err != nil {
 		panic(err.Error())
