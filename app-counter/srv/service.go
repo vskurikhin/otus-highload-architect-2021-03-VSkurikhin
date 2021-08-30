@@ -66,6 +66,26 @@ func (s *Service) doKafkaDialogMessage(value []byte) error {
 func (s *Service) upsertCounter(dm *dto.KafkaDialogMessage) {
 
 	for i := 0; i < MAX_COUNT; i++ {
+		/*
+			if dm.Operation == "c" {
+					counter.Total += 1
+					if dm.Already_read == 0 {
+						counter.Unread += 1
+					}
+					_, err := s.dao.Counter.Update(counter)
+					if err != nil {
+						logger.Errorf("updateCounter: 1: %s", err)
+					}
+				} else if dm.Operation == "u" {
+					if dm.Already_read == 1 {
+						counter.Unread -= 1
+						_, err := s.dao.Counter.Update(counter)
+						if err != nil {
+							logger.Errorf("updateCounter: 2: %s", err)
+						}
+					}
+				}
+		*/
 		user, err := s.dao.User.ReadUserById(dm.To_user)
 		if err != nil {
 			if err != sql.ErrNoRows {
