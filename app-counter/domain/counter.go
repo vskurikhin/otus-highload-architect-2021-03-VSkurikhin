@@ -113,7 +113,7 @@ func (c *counter) Upsert(username string) error {
 	ctx := context.Background()
 
 	// Get a Tx for making transaction requests.
-	tx, err := c.dbRw.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelSerializable})
+	tx, err := c.dbRw.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelRepeatableRead})
 	if err != nil {
 		return fail(err, 1)
 	}

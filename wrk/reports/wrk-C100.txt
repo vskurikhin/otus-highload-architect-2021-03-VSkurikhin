@@ -1,0 +1,14 @@
+Running 3m test @ http://localhost:8080
+  4 threads and 100 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   730.72ms  478.88ms   5.10s    74.64%
+    Req/Sec    38.14     24.99   170.00     68.79%
+  Latency Distribution
+     50%  687.51ms
+     75%  951.83ms
+     90%    1.26s 
+     99%    2.45s 
+  25819 requests in 3.00m, 4.86MB read
+  Non-2xx or 3xx responses: 9688
+Requests/sec:    143.37
+Transfer/sec:     27.61KB
