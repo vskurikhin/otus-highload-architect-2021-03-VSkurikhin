@@ -6,6 +6,7 @@ import (
 	"github.com/savsgio/go-logger/v2"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-counter/domain"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-counter/domain/dto"
+	"math/rand"
 	"time"
 )
 
@@ -65,27 +66,8 @@ func (s *Service) doKafkaDialogMessage(value []byte) error {
 
 func (s *Service) upsertCounter(dm *dto.KafkaDialogMessage) {
 
+	rand.Seed(time.Now().Unix())
 	for i := 0; i < MAX_COUNT; i++ {
-		/*
-			if dm.Operation == "c" {
-					counter.Total += 1
-					if dm.Already_read == 0 {
-						counter.Unread += 1
-					}
-					_, err := s.dao.Counter.Update(counter)
-					if err != nil {
-						logger.Errorf("updateCounter: 1: %s", err)
-					}
-				} else if dm.Operation == "u" {
-					if dm.Already_read == 1 {
-						counter.Unread -= 1
-						_, err := s.dao.Counter.Update(counter)
-						if err != nil {
-							logger.Errorf("updateCounter: 2: %s", err)
-						}
-					}
-				}
-		*/
 		user, err := s.dao.User.ReadUserById(dm.To_user)
 		if err != nil {
 			if err != sql.ErrNoRows {
@@ -93,13 +75,22 @@ func (s *Service) upsertCounter(dm *dto.KafkaDialogMessage) {
 				return
 			}
 		} else {
-			err := s.dao.Counter.Upsert(user.Username)
-			if err != nil {
-				logger.Errorf("upsertCounter: 2: %s", err)
-			} else {
-				return
+			if dm.Operation == "c" {
+				err := s.dao.Counter.Upsert(user.Username)
+				if err != nil {
+					logger.Errorf("upsertCounter: 2: %s", err)
+				} else {
+					return
+				}
+			} else if dm.Operation == "u" {
+				err := s.dao.Counter.Read(user.Username)
+				if err != nil {
+					logger.Errorf("upsertCounter: 3: %s", err)
+				} else {
+					return
+				}
 			}
 		}
-		time.Sleep(8 * time.Second)
+		time.Sleep(time.Duration(5*rand.Int31n(3)) * time.Second)
 	}
 }

@@ -145,3 +145,42 @@ func (c *counter) Upsert(username string) error {
 	}
 	return nil
 }
+
+const UPDATE_COUNTER_TOTAL_DOWN_COUNT_UNREAD_BY_USERNAME = `
+    UPDATE counter
+       SET unread = unread - 1 
+     WHERE username = ?`
+
+func (c *counter) Read(username string) error {
+
+	ctx := context.Background()
+
+	// Get a Tx for making transaction requests.
+	tx, err := c.dbRw.BeginTx(ctx, &sql.TxOptions{Isolation: sql.LevelRepeatableRead})
+	if err != nil {
+		return fail(err, 1)
+	}
+	// Defer a rollback in case anything fails.
+	defer func() { _ = tx.Rollback() }()
+
+	// Confirm that album inventory is enough for the order.
+	var enough bool
+	if err = tx.QueryRowContext(ctx, SELECT_USERNAME_TOTAL_UNREAD_FROM_COUNTER_BY_USERNAME_1, username).
+		Scan(&enough); err != nil {
+		if err == sql.ErrNoRows {
+			return fail(err, 2)
+		}
+	}
+
+	// Update the album inventory to remove the quantity in the order.
+	_, err = tx.ExecContext(ctx, UPDATE_COUNTER_TOTAL_DOWN_COUNT_UNREAD_BY_USERNAME, username)
+	if err != nil {
+		return fail(err, 4)
+	}
+
+	// Commit the transaction.
+	if err = tx.Commit(); err != nil {
+		return fail(err, 5)
+	}
+	return nil
+}
