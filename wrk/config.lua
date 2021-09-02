@@ -4,7 +4,7 @@ math.random(); math.random(); math.random()
 
 userNames = {'root', 'user', 'name', 'koch2804', 'lang8129', 'kihn1299', 'hahn1712', 'kris8365', 'nolan7356', 'auer2414'}
 
-token = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MzAzNjU3NDEsImp0aSI6IjkzMzYwNjM2OTE3MzA0Mzc3OTAifQ.WzVFOa_sJ5_FtvIqpGSW4WBjCqVzBswwQUwgPakHESB6ouvHmqZpjgh1CiMTbmXyA5rIOQsc8nk6_YLl3tMjzA'
+token = ''
 
 wrk.method = "POST"
 wrk.body   = "foo=bar&baz=quux"

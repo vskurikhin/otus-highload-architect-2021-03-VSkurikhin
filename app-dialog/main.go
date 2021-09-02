@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/hashicorp/consul/api"
+	"github.com/hashicorp/consul/connect"
 	"github.com/joho/godotenv"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-dialog/config"
@@ -49,6 +51,10 @@ func main() {
 	s.GET("/messages", h.GetMessages)
 	s.POST("/message", h.PostMessage)
 	s.PUT("/message", h.PutMessage)
+
+	client, _ := api.NewClient(api.DefaultConfig())
+	svc, _ := connect.NewService("my-app-dialog", client)
+	defer svc.Close()
 
 	// Run
 	if err := s.ListenAndServe(); err != nil {
