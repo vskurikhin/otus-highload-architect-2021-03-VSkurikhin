@@ -62,6 +62,61 @@ services:
       # Mysql Admin Port
       - "6032:6032"
 
+  my-consul-0:
+    image: consul:latest
+    container_name: my-consul-0
+    command: 'agent -dev -client=0.0.0.0 -bind=0.0.0.0'
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 256M
+    networks:
+      ab_subnet:
+        aliases:
+          - my-consul-0.localhost
+    ports:
+      - '8500:8500'
+      - '8600:8600/tcp'
+      - '8600:8600/udp'
+    volumes:
+      - ./20-agent-0.json:/consul/config/20-agent.json
+
+  my-consul-1:
+    image: consul:latest
+    container_name: my-consul-1
+    command: 'agent -dev -client=0.0.0.0 -bind=0.0.0.0'
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 256M
+    networks:
+      ab_subnet:
+        aliases:
+          - my-consul-1.localhost
+    volumes:
+      - ./20-agent-1.json:/consul/config/20-agent.json
+
+  my-consul-2:
+    image: consul:latest
+    container_name: my-consul-2
+    command: 'agent -dev -client=0.0.0.0 -bind=0.0.0.0'
+    restart: on-failure
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 256M
+    networks:
+      ab_subnet:
+        aliases:
+          - my-consul-2.localhost
+    volumes:
+      - ./20-agent-2.json:/consul/config/20-agent.json
+
 volumes:
   db-node-1-data:
   db-node-2-data:
