@@ -3,7 +3,6 @@ package handlers
 import (
 	"fmt"
 	"github.com/hashicorp/consul/api"
-	"github.com/hashicorp/consul/connect"
 	sa "github.com/savsgio/atreugo/v11"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/valyala/fasthttp"
@@ -11,10 +10,11 @@ import (
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-main/domain"
 )
 
+const SERVICE_NAME = "my-app-dialog"
+
 func (h *Handlers) PostMessage(ctx *sa.RequestCtx) error {
 
-	// Создать клиента Resty
-	c, err := client.NewDialog(ctx)
+	resp, err := h.postMessage(ctx)
 	if err != nil {
 		logger.Error(err)
 		errorCase := domain.ApiMessage{
@@ -23,51 +23,74 @@ func (h *Handlers) PostMessage(ctx *sa.RequestCtx) error {
 		}
 		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
 	}
-	resp, err := c.R().
-		SetBody(ctx.PostBody()).
-		Post(fmt.Sprintf("%s/%s", h.Server.Services.Dialog, "message"))
-	if err != nil {
-		logger.Error(err)
-		errorCase := domain.ApiMessage{
-			Code:    fasthttp.StatusPreconditionFailed,
-			Message: err.Error(),
-		}
-		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
-	}
+	return ctx.HTTPResponse(string(resp))
+}
 
-	return ctx.HTTPResponse(resp.String())
+func (h *Handlers) postMessage(ctx *sa.RequestCtx) ([]byte, error) {
+
+	// Создать клиента Consul
+	cc, err := api.NewClient(api.DefaultConfig())
+	if err != nil {
+		return nil, err
+	}
+	// Создать клиента Resty
+	rc, err := client.NewDialog(ctx)
+
+	svc, _, err := cc.Health().Service(SERVICE_NAME, "", true, &api.QueryOptions{})
+	for _, entry := range svc {
+		if SERVICE_NAME != entry.Service.Service {
+			continue
+		}
+		logger.Infof("entry.Service: %s", entry.Service)
+		address := fmt.Sprintf("%s:%d", entry.Service.Address, entry.Service.Port)
+		resp, err := rc.R().
+			SetBody(ctx.PostBody()).
+			Post(fmt.Sprintf("http://%s/%s", address, "message"))
+		if err != nil {
+			return nil, err
+		}
+		return []byte(resp.String()), nil
+	}
+	return []byte("{}"), nil
 }
 
 func (h *Handlers) GetMessages(ctx *sa.RequestCtx) error {
 
+	resp, err := h.getMessages(ctx)
+	if err != nil {
+		logger.Error(err)
+		errorCase := domain.ApiMessage{
+			Code:    fasthttp.StatusPreconditionFailed,
+			Message: err.Error(),
+		}
+		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
+	}
+
+	return ctx.HTTPResponse(string(resp))
+}
+
+func (h *Handlers) getMessages(ctx *sa.RequestCtx) ([]byte, error) {
+
+	// Создать клиента Consul
+	cc, err := api.NewClient(api.DefaultConfig())
+	if err != nil {
+		return nil, err
+	}
 	// Создать клиента Resty
-	c, err := client.NewDialog(ctx)
-	if err != nil {
-		logger.Error(err)
-		errorCase := domain.ApiMessage{
-			Code:    fasthttp.StatusPreconditionFailed,
-			Message: err.Error(),
+	rc, err := client.NewDialog(ctx)
+
+	svc, _, err := cc.Health().Service(SERVICE_NAME, "", true, &api.QueryOptions{})
+	for _, entry := range svc {
+		if SERVICE_NAME != entry.Service.Service {
+			continue
 		}
-		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
-	}
-	client, _ := api.NewClient(api.DefaultConfig())
-
-	// Create an instance representing this service. "my-service" is the
-	// name of _this_ service. The service should be cleaned up via Close.
-	svc, _ := connect.NewService("my-app-dialog", client)
-	defer svc.Close()
-
-	<-svc.ReadyWait()
-	logger.Infof("%s", svc.HTTPClient())
-
-	resp, err := c.R().Get(fmt.Sprintf("%s/%s", h.Server.Services.Dialog, "messages"))
-	if err != nil {
-		logger.Error(err)
-		errorCase := domain.ApiMessage{
-			Code:    fasthttp.StatusPreconditionFailed,
-			Message: err.Error(),
+		logger.Infof("entry.Service: %s", entry.Service)
+		address := fmt.Sprintf("%s:%d", entry.Service.Address, entry.Service.Port)
+		resp, err := rc.R().Get(fmt.Sprintf("http://%s/%s", address, "messages"))
+		if err != nil {
+			return nil, err
 		}
-		return ctx.HTTPResponse(errorCase.String(), fasthttp.StatusPreconditionFailed)
+		return []byte(resp.String()), nil
 	}
-	return ctx.HTTPResponse(resp.String())
+	return []byte("{}"), nil
 }

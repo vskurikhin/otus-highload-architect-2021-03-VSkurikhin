@@ -5,12 +5,15 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/hashicorp/consul/api"
-	"github.com/hashicorp/consul/connect"
 	"github.com/joho/godotenv"
 	"github.com/savsgio/go-logger/v2"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-dialog/config"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-dialog/server"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-dialog/server/handlers"
+	"log"
+	"net"
+	"os"
+	"strconv"
 )
 
 func main() {
@@ -52,9 +55,37 @@ func main() {
 	s.POST("/message", h.PostMessage)
 	s.PUT("/message", h.PutMessage)
 
+	hostname, err := os.Hostname()
+	if err != nil {
+		logger.Error(err)
+	}
+	addr, err := net.LookupIP(hostname)
+	if err != nil {
+		fmt.Println("Unknown host")
+	} else {
+		fmt.Println("IP address: ", addr)
+	}
+	port, err := strconv.ParseInt(environ.Server.Port, 10, 64)
+	if err != nil {
+		logger.Error(err)
+	}
+
+	service := &api.AgentServiceRegistration{
+		ID:      "my-app-dialog",
+		Name:    "my-app-dialog",
+		Port:    int(port),
+		Address: addr[0].String(),
+		Check: &api.AgentServiceCheck{
+			HTTP:     "http://" + addr[0].String() + ":" + fmt.Sprintf("%d", port),
+			Interval: "5s",
+			Timeout:  "1s",
+		},
+	}
 	client, _ := api.NewClient(api.DefaultConfig())
-	svc, _ := connect.NewService("my-app-dialog", client)
-	defer svc.Close()
+
+	if err := client.Agent().ServiceRegister(service); err != nil {
+		log.Fatal(err)
+	}
 
 	// Run
 	if err := s.ListenAndServe(); err != nil {
