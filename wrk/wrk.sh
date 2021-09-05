@@ -1,9 +1,9 @@
 #!/bin/sh
 
 E=1
-D=3
+D=1
 
-for C in 1 10 100
+for C in 1 10
 do
   (iostat 10 $((${D}*6)) | tee ./reports/${1}iostat-C$C.txt)&
   T=$(($E % 11))

@@ -71,7 +71,7 @@ func main() {
 	}
 
 	service := &api.AgentServiceRegistration{
-		ID:      "my-app-dialog",
+		ID:      "my-app-dialog-" + hostname,
 		Name:    "my-app-dialog",
 		Port:    int(port),
 		Address: addr[0].String(),
