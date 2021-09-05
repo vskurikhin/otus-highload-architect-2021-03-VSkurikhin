@@ -10,7 +10,6 @@ import (
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-dialog/config"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-dialog/server"
 	"github.com/vskurikhin/otus-highload-architect-2021-03-VSkurikhin/app-dialog/server/handlers"
-	"log"
 	"net"
 	"os"
 	"strconv"
@@ -55,13 +54,23 @@ func main() {
 	s.POST("/message", h.PostMessage)
 	s.PUT("/message", h.PutMessage)
 
+	serviceRegistration(environ)
+
+	// Run
+	if err := s.ListenAndServe(); err != nil {
+		panic(err)
+	}
+}
+
+func serviceRegistration(environ *config.Config) {
+
 	hostname, err := os.Hostname()
 	if err != nil {
 		logger.Error(err)
 	}
 	addr, err := net.LookupIP(hostname)
 	if err != nil {
-		fmt.Println("Unknown host")
+		panic("Unknown host")
 	} else {
 		fmt.Println("IP address: ", addr)
 	}
@@ -84,11 +93,6 @@ func main() {
 	client, _ := api.NewClient(api.DefaultConfig())
 
 	if err := client.Agent().ServiceRegister(service); err != nil {
-		log.Fatal(err)
-	}
-
-	// Run
-	if err := s.ListenAndServe(); err != nil {
-		panic(err)
+		logger.Fatal(err)
 	}
 }

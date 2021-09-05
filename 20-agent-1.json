@@ -1,0 +1,14 @@
+{
+  "node_name": "my-consul-1",
+  "datacenter": "ab",
+  "domain": "sberbank.ru",
+  "server": true,
+  "ui_config": {
+    "enabled": true
+  },
+  "data_dir": "/consul/data",
+  "addresses": {
+    "http": "0.0.0.0"
+  },
+  "retry_join": ["my-consul-0", "my-consul-2"]
+}
