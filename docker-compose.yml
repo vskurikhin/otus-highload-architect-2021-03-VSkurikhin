@@ -286,6 +286,28 @@ services:
     volumes:
       - ./20-agent-2.json:/consul/config/20-agent.json
 
+  my-zabbix:
+    image: zabbix/zabbix-appliance:latest
+    container_name: my-zabbix
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          memory: 128M
+    networks:
+      ab_subnet:
+        aliases:
+          - my-zabbix.localhost
+    ports:
+      - 80:8080
+      - 10051:10051
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys/fs/cgroup:/host/cgroup:ro
+
 volumes:
   my-mysql-0-data:
   my-mysql-1-data:
