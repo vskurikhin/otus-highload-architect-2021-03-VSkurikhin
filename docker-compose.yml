@@ -29,7 +29,7 @@ services:
       - my-mysql-0-data:/var/lib/mysql
       - /proc:/host/proc:ro
       - /sys/fs/cgroup:/host/cgroup:ro
-      - /Users/a18578179/docker/volumes/my-mysql-0/conf.d:/etc/mysql/conf.d
+      - /volumes/my-mysql-0/conf.d:/etc/mysql/conf.d
 
   my-mysql-1:
     image: mysql:8.0.23
@@ -60,7 +60,7 @@ services:
       - my-mysql-1-data:/var/lib/mysql
       - /proc:/host/proc:ro
       - /sys/fs/cgroup:/host/cgroup:ro
-      - /Users/a18578179/docker/volumes/my-mysql-1/conf.d:/etc/mysql/conf.d
+      - /volumes/my-mysql-1/conf.d:/etc/mysql/conf.d
 
   my-mysql-2:
     image: mysql:8.0.23
@@ -91,7 +91,7 @@ services:
       - my-mysql-2-data:/var/lib/mysql
       - /proc:/host/proc:ro
       - /sys/fs/cgroup:/host/cgroup:ro
-      - /Users/a18578179/docker/volumes/my-mysql-2/conf.d:/etc/mysql/conf.d
+      - /volumes/my-mysql-2/conf.d:/etc/mysql/conf.d
 
   my-haproxy:
     image: haproxy:2.1.7
@@ -286,6 +286,137 @@ services:
     volumes:
       - ./20-agent-2.json:/consul/config/20-agent.json
 
+  my-zabbix:
+    image: zabbix/zabbix-appliance:latest
+    container_name: my-zabbix
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          memory: 128M
+    networks:
+      ab_subnet:
+        aliases:
+          - my-zabbix.localhost
+    ports:
+      - 80:8080
+      - 10051:10051
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys/fs/cgroup:/host/cgroup:ro
+
+  my-zabbix:
+    image: zabbix/zabbix-appliance:latest
+    container_name: my-zabbix
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          memory: 128M
+    networks:
+      ab_subnet:
+        aliases:
+          - my-zabbix.localhost
+        ipv4_address: 172.16.1.10
+    ports:
+      - 80:8082
+      - 10051:10051
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys/fs/cgroup:/host/cgroup:ro
+
+  my-zabbix-agent:
+    image: local/zabbix-agent-mysql:latest
+    container_name: my-zabbix-agent
+    privileged: true
+    hostname: my-zabbix-agent
+    domainname: localhost
+    networks:
+      ab_subnet:
+        aliases:
+          - my-zabbix-agent.localhost
+        ipv4_address: 172.16.1.11
+    extra_hosts:
+      - "localhost
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          memory: 64M
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys/fs/cgroup:/host/cgroup:ro
+      - /volumes/my-zabbix-agent/zabbix_agentd.conf:/etc/zabbix/zabbix_agentd.conf:ro
+      - /volumes/my-zabbix-agent/zabbix_agentd.d:/etc/zabbix/zabbix_agentd.d:rw
+    tmpfs:
+      - /run
+      - /tmp
+    ports:
+      - 20050:10050
+    links:
+      - my-zabbix
+
+  my-prometheus:
+    image: registry.sigma.sbrf.ru/registry_redhat_io/openshift4/ose-prometheus
+    container_name: my-prometheus
+    hostname: my-prometheus
+    domainname: localhost
+    networks:
+      ab_subnet:
+        aliases:
+          - my-prometheus.localhost
+        ipv4_address: 172.16.1.12
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 640M
+        reservations:
+          memory: 128M
+    volumes:
+      - /volumes/prometheus/conf:/etc/prometheus
+      - /volumes/prometheus/data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - "9090:9090"
+
+  my-grafana:
+    image: registry.sigma.sbrf.ru/registry_redhat_io/openshift4/ose-grafana
+    container_name: my-grafana
+    hostname: my-grafana
+    domainname: localhost
+    networks:
+      ab_subnet:
+        aliases:
+          - my-grafana.localhost
+        ipv4_address: 172.16.1.13
+    deploy:
+      resources:
+        limits:
+          cpus: '2.00'
+          memory: 640M
+        reservations:
+          memory: 128M
+    depends_on:
+      - my-prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - /volumes/grafana:/var/lib/grafana
+      - /volumes/grafana/provisioning:/etc/grafana/provisioning/
+      - /volumes/grafana-conf/defaults.ini:/usr/share/grafana/conf/defaults.ini:ro
+    restart: always
+
 volumes:
   my-mysql-0-data:
   my-mysql-1-data:
@@ -294,3 +425,4 @@ volumes:
 networks:
   ab_subnet:
     external: true
+
