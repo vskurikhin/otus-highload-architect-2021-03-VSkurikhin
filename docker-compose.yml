@@ -365,62 +365,54 @@ services:
       - my-zabbix
 
   my-prometheus:
-    image: registry.sigma.sbrf.ru/registry_redhat_io/openshift4/ose-prometheus
+    image: prom/prometheus:v2.17.1
     container_name: my-prometheus
-    hostname: my-prometheus
-    domainname: localhost
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    expose:
+      - 9090
+    ports:
+      - '9090:9090/tcp'
     networks:
       ab_subnet:
         aliases:
           - my-prometheus.localhost
-        ipv4_address: 172.16.1.12
-    deploy:
-      resources:
-        limits:
-          cpus: '2.00'
-          memory: 640M
-        reservations:
-          memory: 128M
-    volumes:
-      - /volumes/prometheus/conf:/etc/prometheus
-      - /volumes/prometheus/data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-    ports:
-      - "9090:9090"
 
   my-grafana:
-    image: registry.sigma.sbrf.ru/registry_redhat_io/openshift4/ose-grafana
+    image: grafana/grafana:6.7.2
     container_name: my-grafana
-    hostname: my-grafana
-    domainname: localhost
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    restart: unless-stopped
+    expose:
+      - 3000
+    ports:
+      - '3000:3000/tcp'
     networks:
       ab_subnet:
         aliases:
           - my-grafana.localhost
-        ipv4_address: 172.16.1.13
-    deploy:
-      resources:
-        limits:
-          cpus: '2.00'
-          memory: 640M
-        reservations:
-          memory: 128M
-    depends_on:
-      - my-prometheus
-    ports:
-      - 3000:3000
-    volumes:
-      - /volumes/grafana:/var/lib/grafana
-      - /volumes/grafana/provisioning:/etc/grafana/provisioning/
-      - /volumes/grafana-conf/defaults.ini:/usr/share/grafana/conf/defaults.ini:ro
-    restart: always
 
 volumes:
   my-mysql-0-data:
   my-mysql-1-data:
   my-mysql-2-data:
+  prometheus_data:
+  grafana_data:
 
 networks:
   ab_subnet:

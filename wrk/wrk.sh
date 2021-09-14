@@ -1,7 +1,7 @@
 #!/bin/sh
 
 E=1
-D=1
+D=5
 
 for C in 1 10
 do
