@@ -308,29 +308,6 @@ services:
       - /proc:/host/proc:ro
       - /sys/fs/cgroup:/host/cgroup:ro
 
-  my-zabbix:
-    image: zabbix/zabbix-appliance:latest
-    container_name: my-zabbix
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 512M
-        reservations:
-          memory: 128M
-    networks:
-      ab_subnet:
-        aliases:
-          - my-zabbix.localhost
-        ipv4_address: 172.16.1.10
-    ports:
-      - 80:8082
-      - 10051:10051
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys/fs/cgroup:/host/cgroup:ro
-
   my-zabbix-agent:
     image: local/zabbix-agent-mysql:latest
     container_name: my-zabbix-agent
@@ -363,6 +340,22 @@ services:
       - 20050:10050
     links:
       - my-zabbix
+
+  my-nginx-prometheus-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    container_name: my-nginx-prometheus-exporter
+    restart: on-failure
+    environment:
+      - SCRAPE_URI=http://my-nginx/stub_status
+    depends_on:
+      - my-nginx
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 256M
+    networks:
+      - ab_subnet
 
   my-prometheus:
     image: prom/prometheus:v2.17.1
